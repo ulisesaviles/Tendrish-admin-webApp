@@ -1,0 +1,23 @@
+import Agenda_ from "./Agenda";
+import CreateAd_ from "./CreateAd";
+import CreateEvent_ from "./CreateEvent";
+import CreateIngredient_ from "./CreateIngredient";
+import CreateRecipe_ from "./CreateRecipe";
+import EditUser_ from "./EditUser";
+import Login_ from "./Login";
+import Profiles_ from "./Profiles";
+import Recipe_ from "./Recipe";
+import Stats_ from "./Stats";
+import Root_ from "./Root";
+
+export const Agenda = Agenda_;
+export const CreateAd = CreateAd_;
+export const CreateEvent = CreateEvent_;
+export const CreateIngredient = CreateIngredient_;
+export const CreateRecipe = CreateRecipe_;
+export const EditUser = EditUser_;
+export const Login = Login_;
+export const Profiles = Profiles_;
+export const Recipe = Recipe_;
+export const Stats = Stats_;
+export const Root = Root_;
