@@ -1,10 +1,19 @@
-import "../App.css";
+// Navigation-related imports
 import { Link } from "react-router-dom";
+
+// Pages
 import * as Pages from "../pages";
 
-function Root({ location }) {
+// Styles
+import "../App.css";
+
+const Root = ({ location }) => {
+  // Get current tab from url
   let tab = new URLSearchParams(location.search).get("tab");
 
+  // Constants
+
+  // Functions
   const currentTab = (tab) => {
     if (tab === "Agenda") {
       return <Pages.Agenda />;
@@ -18,7 +27,7 @@ function Root({ location }) {
       return <Pages.CreateRecipe />;
     } else if (tab === "EditUser") {
       return <Pages.EditUser />;
-    } else if (tab === "Login") {
+    } else if (tab === null) {
       return <Pages.Login />;
     } else if (tab === "Profiles") {
       return <Pages.Profiles />;
@@ -29,6 +38,7 @@ function Root({ location }) {
     }
   };
 
+  // Render
   return (
     <div>
       <div>
@@ -118,6 +128,6 @@ function Root({ location }) {
       {currentTab(tab)}
     </div>
   );
-}
+};
 
 export default Root;
