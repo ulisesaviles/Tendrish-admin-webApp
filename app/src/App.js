@@ -6,7 +6,7 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/Tendrish/" component={Pages.Root} />
+        <Route path="/Tendrish-admin-webApp/" component={Pages.Root} />
       </Switch>
     </Router>
   );

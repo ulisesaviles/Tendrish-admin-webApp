@@ -34,52 +34,82 @@ function Root({ location }) {
       <div>
         <ul>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=Agenda">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=Agenda"
+            >
               Agenda
             </Link>
           </li>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=CreateAd">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=CreateAd"
+            >
               Create Ad
             </Link>
           </li>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=CreateEvent">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=CreateEvent"
+            >
               Create Event
             </Link>
           </li>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=CreateIngredient">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=CreateIngredient"
+            >
               Create Ingredient
             </Link>
           </li>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=CreateRecipe">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=CreateRecipe"
+            >
               Create Recipe
             </Link>
           </li>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=EditUser">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=EditUser"
+            >
               Edit User
             </Link>
           </li>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=Login">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=Login"
+            >
               Login
             </Link>
           </li>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=Profiles">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=Profiles"
+            >
               Profiles
             </Link>
           </li>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=Recipe">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=Recipe"
+            >
               Recipe
             </Link>
           </li>
           <li>
-            <Link className="nav-item-link" to="/Tendrish?tab=Stats">
+            <Link
+              className="nav-item-link"
+              to="/Tendrish-admin-webApp?tab=Stats"
+            >
               Stats
             </Link>
           </li>
