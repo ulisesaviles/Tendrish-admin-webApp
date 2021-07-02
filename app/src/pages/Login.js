@@ -52,8 +52,7 @@ const Login = () => {
       if (response.status === 200) {
         let storedUser = {
           id: response.data.id,
-          email,
-          password: keepSignedIn ? password : null,
+          personalInfo: response.data.personalInfo,
         };
         localStorage.setItem("user", JSON.stringify(storedUser));
         history.push("Tendrish-admin-webApp?tab=Stats");

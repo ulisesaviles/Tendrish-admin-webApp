@@ -156,6 +156,10 @@ body {
 }
 
 /* NavBar */
+.nav-container {
+  width: 18%;
+  z-index: 10;
+}
 
 .App {
   text-align: center;

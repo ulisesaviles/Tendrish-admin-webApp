@@ -1,5 +1,8 @@
+// React imports
+import { useState, useEffect } from "react";
+
 // Navigation-related imports
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 // Pages
 import * as Pages from "../pages";
@@ -8,13 +11,15 @@ import * as Pages from "../pages";
 import "../App.css";
 
 const Root = ({ location }) => {
-  // Get current tab from url
-  let tab = new URLSearchParams(location.search).get("tab");
-
   // Constants
+  const [user, setUser] = useState(null);
+  const history = useHistory();
 
   // Functions
   const currentTab = (tab) => {
+    if (tab === null || user === null) {
+      history.push("Tendrish-admin-webApp?tab=Login");
+    }
     if (tab === "Agenda") {
       return <Pages.Agenda />;
     } else if (tab === "CreateAd") {
@@ -27,7 +32,7 @@ const Root = ({ location }) => {
       return <Pages.CreateRecipe />;
     } else if (tab === "EditUser") {
       return <Pages.EditUser />;
-    } else if (tab === null || tab === "Login") {
+    } else if (tab === "Login") {
       return <Pages.Login />;
     } else if (tab === "Profiles") {
       return <Pages.Profiles />;
@@ -38,11 +43,33 @@ const Root = ({ location }) => {
     }
   };
 
+  const getUser = () => {
+    let tempUser = localStorage.getItem("user");
+    if (tempUser !== null) {
+      tempUser = JSON.parse(tempUser);
+      setUser(tempUser);
+    }
+  };
+
+  // Logic
+  // Get current tab from url
+  let tab = new URLSearchParams(location.search).get("tab");
+  useEffect(() => {
+    // Get user
+    if (user === null) {
+      getUser();
+    }
+  }, [user]);
+
   // Render
   return (
     <div className="app-container">
-      {tab !== null && tab !== "Login" ? (
-        <div>
+      {tab !== null && tab !== "Login" && user !== null ? (
+        <div className="nav-container">
+          <div className="nav-profile-container">
+            <p className="nav-user-rol">{user.personalInfo.rol}</p>
+            <p className="nav-user-name">{user.personalInfo.name}</p>
+          </div>
           <ul>
             <li>
               <Link
