@@ -17,9 +17,6 @@ const Root = ({ location }) => {
 
   // Functions
   const currentTab = (tab) => {
-    if (tab === null || user === null) {
-      history.push("Tendrish-admin-webApp?tab=Login");
-    }
     if (tab === "Agenda") {
       return <Pages.Agenda />;
     } else if (tab === "CreateAd") {
@@ -40,6 +37,8 @@ const Root = ({ location }) => {
       return <Pages.Recipe />;
     } else if (tab === "Stats") {
       return <Pages.Stats />;
+    } else {
+      history.replace("?tab=Login");
     }
   };
 
@@ -55,11 +54,15 @@ const Root = ({ location }) => {
   // Get current tab from url
   let tab = new URLSearchParams(location.search).get("tab");
   useEffect(() => {
-    // Get user
-    if (user === null) {
-      getUser();
+    if (tab === null || user === null) {
+      history.replace("?tab=Login");
     }
-  }, [user]);
+  }, []);
+  // Get user
+  if (user === null) {
+    console.log("User is null");
+    getUser();
+  }
 
   // Render
   return (

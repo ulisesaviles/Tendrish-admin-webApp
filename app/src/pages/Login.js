@@ -55,7 +55,7 @@ const Login = () => {
           personalInfo: response.data.personalInfo,
         };
         localStorage.setItem("user", JSON.stringify(storedUser));
-        history.push("Tendrish-admin-webApp?tab=Stats");
+        history.push("?tab=Stats");
       } else {
         setSubmited(false);
         console.log(`${response.status}: ${response.data.error}`);
