@@ -1,23 +1,25 @@
 {
   "files": {
-    "main.css": "/Tendrish-admin-webApp/static/css/main.8c8b27cf.chunk.css",
-    "main.js": "/Tendrish-admin-webApp/static/js/main.3fc1a791.chunk.js",
-    "main.js.map": "/Tendrish-admin-webApp/static/js/main.3fc1a791.chunk.js.map",
-    "runtime-main.js": "/Tendrish-admin-webApp/static/js/runtime-main.67f06a98.js",
-    "runtime-main.js.map": "/Tendrish-admin-webApp/static/js/runtime-main.67f06a98.js.map",
-    "static/js/2.9fa07324.chunk.js": "/Tendrish-admin-webApp/static/js/2.9fa07324.chunk.js",
-    "static/js/2.9fa07324.chunk.js.map": "/Tendrish-admin-webApp/static/js/2.9fa07324.chunk.js.map",
-    "static/js/3.d4e19724.chunk.js": "/Tendrish-admin-webApp/static/js/3.d4e19724.chunk.js",
-    "static/js/3.d4e19724.chunk.js.map": "/Tendrish-admin-webApp/static/js/3.d4e19724.chunk.js.map",
+    "main.css": "/Tendrish-admin-webApp/static/css/main.2de5aa29.chunk.css",
+    "main.js": "/Tendrish-admin-webApp/static/js/main.e5cba47a.chunk.js",
+    "main.js.map": "/Tendrish-admin-webApp/static/js/main.e5cba47a.chunk.js.map",
+    "runtime-main.js": "/Tendrish-admin-webApp/static/js/runtime-main.3eb739d3.js",
+    "runtime-main.js.map": "/Tendrish-admin-webApp/static/js/runtime-main.3eb739d3.js.map",
+    "static/js/2.4551f147.chunk.js": "/Tendrish-admin-webApp/static/js/2.4551f147.chunk.js",
+    "static/js/2.4551f147.chunk.js.map": "/Tendrish-admin-webApp/static/js/2.4551f147.chunk.js.map",
+    "static/js/3.b390d9ee.chunk.js": "/Tendrish-admin-webApp/static/js/3.b390d9ee.chunk.js",
+    "static/js/3.b390d9ee.chunk.js.map": "/Tendrish-admin-webApp/static/js/3.b390d9ee.chunk.js.map",
     "index.html": "/Tendrish-admin-webApp/index.html",
-    "static/css/main.8c8b27cf.chunk.css.map": "/Tendrish-admin-webApp/static/css/main.8c8b27cf.chunk.css.map",
-    "static/js/2.9fa07324.chunk.js.LICENSE.txt": "/Tendrish-admin-webApp/static/js/2.9fa07324.chunk.js.LICENSE.txt",
+    "static/css/main.2de5aa29.chunk.css.map": "/Tendrish-admin-webApp/static/css/main.2de5aa29.chunk.css.map",
+    "static/js/2.4551f147.chunk.js.LICENSE.txt": "/Tendrish-admin-webApp/static/js/2.4551f147.chunk.js.LICENSE.txt",
+    "static/media/dark.9d88e7a2.jpg": "/Tendrish-admin-webApp/static/media/dark.9d88e7a2.jpg",
+    "static/media/light.6366b6e5.jpg": "/Tendrish-admin-webApp/static/media/light.6366b6e5.jpg",
     "static/media/logo.6ce24c58.svg": "/Tendrish-admin-webApp/static/media/logo.6ce24c58.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.67f06a98.js",
-    "static/js/2.9fa07324.chunk.js",
-    "static/css/main.8c8b27cf.chunk.css",
-    "static/js/main.3fc1a791.chunk.js"
+    "static/js/runtime-main.3eb739d3.js",
+    "static/js/2.4551f147.chunk.js",
+    "static/css/main.2de5aa29.chunk.css",
+    "static/js/main.e5cba47a.chunk.js"
   ]
 }
