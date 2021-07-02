@@ -17,6 +17,7 @@
     rgb(221, 161, 85)
   );
   --div-border-radius: 20px;
+  --nav-item-border-radius: 10px;
   /* Fonts */
   --primary-font-color: rgb(148, 32, 84);
   --secondary-font-color: rgb(190, 130, 55);
@@ -159,8 +160,81 @@ body {
 .nav-container {
   width: 18%;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.nav-profile-container {
+  margin: 0;
+  min-width: 80%;
+}
+.nav-user-rol {
+  color: var(--secondary-font-color);
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0;
+}
+.nav-name-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: var(--primary-font-color);
+  cursor: pointer;
+}
+.nav-user-name {
+  margin: 0;
+}
+.nav-logo {
+  width: 150px;
+  height: auto;
+  box-shadow: var(--shadow);
+  border-radius: var(--div-border-radius);
+  max-width: 100%;
+  margin: 40px 0;
+}
+.nav-items {
+  margin: 0;
+  width: 80%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.nav-item {
+  text-decoration: none;
+  list-style-type: none;
+  padding: 7px 10px;
+  border-radius: var(--nav-item-border-radius);
+  box-shadow: 0;
+  transition: var(--animation-short);
+  color: var(--primary-font-color);
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  line-height: 16px;
+}
+.nav-item:hover {
+  box-shadow: var(--shadow);
+}
+.nav-item-icon-container {
+  color: var(--secondary);
+}
+.nav-item-icon {
+  min-width: 20px;
+  max-width: 20px;
+  margin-right: 10px;
+}
+.nav-item-selected {
+  background-image: var(--gradient);
+  font-weight: 600;
+  color: white;
+}
+.nav-item-icon-selected {
+  color: white;
 }
 
+/* Default */
 .App {
   text-align: center;
 }
@@ -174,14 +248,14 @@ body {
   }
 }
 .App-header {
-  background-color: #282c34;
+  background-color: var(--background);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  width: 82vw;
 }
 .App-link {
   color: #61dafb;

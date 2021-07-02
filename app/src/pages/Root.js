@@ -10,13 +10,26 @@ import * as Pages from "../pages";
 // Styles
 import "../App.css";
 
+// Icons
+import { MdKeyboardArrowDown } from "react-icons/md";
+
+// Local imports
+import lightLogo from "../assets/logos/light.jpg";
+import darkLogo from "../assets/logos/dark.jpg";
+import { tabs } from "../config/text";
+
 const Root = ({ location }) => {
   // Constants
   const [user, setUser] = useState(null);
   const history = useHistory();
+  const [logo, setLogo] = useState(lightLogo);
+  const [theme, setTheme] = useState({
+    lang: "es",
+    colorScheme: "light",
+  });
 
   // Functions
-  const currentTab = (tab) => {
+  const renderCurrentTab = (tab) => {
     if (tab === "Agenda") {
       return <Pages.Agenda />;
     } else if (tab === "CreateAd") {
@@ -48,13 +61,16 @@ const Root = ({ location }) => {
       tempUser = JSON.parse(tempUser);
       setUser(tempUser);
     }
+    if (theme.colorScheme === "dark") {
+      setLogo(darkLogo);
+    }
   };
 
   // Logic
   // Get current tab from url
-  let tab = new URLSearchParams(location.search).get("tab");
+  let currentTab = new URLSearchParams(location.search).get("tab");
   useEffect(() => {
-    if (tab === null || user === null) {
+    if (currentTab === null || user === null) {
       history.replace("?tab=Login");
     }
   }, []);
@@ -67,97 +83,41 @@ const Root = ({ location }) => {
   // Render
   return (
     <div className="app-container">
-      {tab !== null && tab !== "Login" && user !== null ? (
+      {currentTab !== null && currentTab !== "Login" && user !== null ? (
         <div className="nav-container">
           <div className="nav-profile-container">
             <p className="nav-user-rol">{user.personalInfo.rol}</p>
-            <p className="nav-user-name">{user.personalInfo.name}</p>
+            <div className="nav-name-container">
+              <p className="nav-user-name">{user.personalInfo.name}</p>
+              <MdKeyboardArrowDown className="nav-v-icon" />
+            </div>
           </div>
-          <ul>
-            <li>
+          <img src={logo} alt="Logo" className="nav-logo" />
+          <div className="nav-items">
+            {tabs.map((tab) => (
               <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=Agenda"
+                className={
+                  currentTab === tab.key
+                    ? "nav-item nav-item-selected"
+                    : "nav-item"
+                }
+                to={tab.to}
               >
-                Agenda
+                <div
+                  className={
+                    currentTab === tab.key ? "" : "nav-item-icon-container"
+                  }
+                >
+                  {tab.icon}
+                </div>
+                {tab.name[theme.lang]}
               </Link>
-            </li>
-            <li>
-              <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=CreateAd"
-              >
-                Create Ad
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=CreateEvent"
-              >
-                Create Event
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=CreateIngredient"
-              >
-                Create Ingredient
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=CreateRecipe"
-              >
-                Create Recipe
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=EditUser"
-              >
-                Edit User
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=Login"
-              >
-                Login
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=Profiles"
-              >
-                Profiles
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=Recipe"
-              >
-                Recipe
-              </Link>
-            </li>
-            <li>
-              <Link
-                className="nav-item-link"
-                to="/Tendrish-admin-webApp?tab=Stats"
-              >
-                Stats
-              </Link>
-            </li>
-          </ul>
+            ))}
+          </div>
         </div>
       ) : null}
-      {currentTab(tab)}
+
+      {renderCurrentTab(currentTab)}
     </div>
   );
 };
