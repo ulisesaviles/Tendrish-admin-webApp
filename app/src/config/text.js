@@ -84,3 +84,46 @@ export const tabs = [
     icon: <MdEvent className="nav-item-icon" />,
   },
 ];
+
+export const login = {
+  title: {
+    es: "Iniciar sesión",
+    en: "Log in",
+  },
+  mailInput: {
+    name: {
+      es: "Correo",
+      en: "Email",
+    },
+    placeHolder: {
+      es: "alguien@ejemplo.com",
+      en: "someone@example.com",
+    },
+  },
+  passwordInput: {
+    name: {
+      es: "Contraseña",
+      en: "Password",
+    },
+    placeHolder: {
+      es: "Contraseña",
+      en: "Password",
+    },
+  },
+  keepSignedIn: {
+    es: "Mantener sesión iniciada",
+    en: "keep logged in",
+  },
+  btn: {
+    es: "Iniciar sesión",
+    en: "Log in",
+  },
+  forgotPassword: {
+    es: "Olvidé mi contraseña",
+    en: "I forgot my password",
+  },
+  error: {
+    es: "Error al iniciar sesión, comprueba tu correo y contraseña",
+    en: "Login failed, check your email and password",
+  },
+};

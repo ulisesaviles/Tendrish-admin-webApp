@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import lightLogo from "../assets/logos/light.jpg";
 import darkLogo from "../assets/logos/dark.jpg";
 import { getTheme } from "../config/theme";
+import { login as strings } from "../config/text";
 
 // Animations
 import { JackInTheBox } from "react-awesome-reveal";
@@ -55,10 +56,10 @@ const Login = () => {
       } else {
         setSubmited(false);
         console.log(`${response.status}: ${response.data.error}`);
-        setError("Error al iniciar sesión, comprueba tu correo y contraseña");
+        setError(strings.error[theme.lang]);
       }
     } catch (error) {
-      setError("Error al iniciar sesión, comprueba tu correo y contraseña");
+      setError(strings.error[theme.lang]);
       setSubmited(false);
       console.log(`Error: ${error}`);
     }
@@ -79,20 +80,24 @@ const Login = () => {
         <img alt="Logo" src={logo} className="login-logo" />
       </JackInTheBox>
       <div className="login-form-container">
-        <h1 className="sign-in">Iniciar sesión</h1>
+        <h1 className="sign-in">{strings.title[theme.lang]}</h1>
         <div className="login-input-container">
-          <p className="login-input-name">Correo</p>
+          <p className="login-input-name">
+            {strings.mailInput.name[theme.lang]}
+          </p>
           <input
             className="login-input"
-            placeholder="alguien@example.com"
+            placeholder={strings.mailInput.placeHolder[theme.lang]}
             onChange={(text) => setEmail(text.target.value)}
           />
         </div>
         <div className="login-input-container">
-          <p className="login-input-name">Contraseña</p>
+          <p className="login-input-name">
+            {strings.passwordInput.name[theme.lang]}
+          </p>
           <input
             className="login-input"
-            placeholder="Contraseña"
+            placeholder={strings.passwordInput.placeHolder[theme.lang]}
             type="password"
             onChange={(text) => setPassword(text.target.value)}
             id="password-input"
@@ -117,7 +122,7 @@ const Login = () => {
           ) : (
             <MdCheckBoxOutlineBlank className="keep-siged-in-icon" />
           )}
-          <p className="keep-signed-in">Mantener sesión iniciada</p>
+          <p className="keep-signed-in">{strings.keepSignedIn[theme.lang]}</p>
         </div>
         <div
           className={submited ? "sign-in-btn btn submited" : "sign-in-btn btn"}
@@ -126,7 +131,7 @@ const Login = () => {
             handleSignIn();
           }}
         >
-          Iniciar sesión
+          {strings.btn[theme.lang]}
         </div>
         <p
           className={
@@ -135,7 +140,7 @@ const Login = () => {
               : "login-forgot-password"
           }
         >
-          Olvidé mi contraseña
+          {strings.forgotPassword[theme.lang]}
         </p>
       </div>
     </div>
