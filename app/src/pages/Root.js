@@ -17,16 +17,20 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import lightLogo from "../assets/logos/light.jpg";
 import darkLogo from "../assets/logos/dark.jpg";
 import { tabs } from "../config/text";
+import { SetTheme } from "../config/theme";
 
 const Root = ({ location }) => {
   // Constants
   const [user, setUser] = useState(null);
   const history = useHistory();
   const [logo, setLogo] = useState(lightLogo);
-  const [theme, setTheme] = useState({
-    lang: "es",
-    colorScheme: "light",
-  });
+  const url = new URLSearchParams(location.search);
+  let theme = {
+    lang: url.get("lang"),
+    colorScheme: url.get("colorScheme"),
+    tab: url.get("tab"),
+  };
+  theme = SetTheme(theme);
 
   // Functions
   const renderCurrentTab = (tab) => {
@@ -61,19 +65,21 @@ const Root = ({ location }) => {
       tempUser = JSON.parse(tempUser);
       setUser(tempUser);
     }
-    if (theme.colorScheme === "dark") {
-      setLogo(darkLogo);
-    }
   };
 
   // Logic
   // Get current tab from url
-  let currentTab = new URLSearchParams(location.search).get("tab");
   useEffect(() => {
-    if (currentTab === null || user === null) {
+    console.log("reload");
+    if (theme.tab === null || user === null) {
       history.replace("?tab=Login");
     }
   }, []);
+  if (theme.colorScheme === "dark" && logo !== darkLogo) {
+    setLogo(darkLogo);
+  } else if (theme.colorScheme === "light" && logo === darkLogo) {
+    setLogo(lightLogo);
+  }
   // Get user
   if (user === null) {
     console.log("User is null");
@@ -82,8 +88,8 @@ const Root = ({ location }) => {
 
   // Render
   return (
-    <div className="app-container">
-      {currentTab !== null && currentTab !== "Login" && user !== null ? (
+    <div className={`app-container app-${theme.colorScheme}`}>
+      {theme.tab !== null && theme.tab !== "Login" && user !== null ? (
         <div className="nav-container">
           <div className="nav-profile-container">
             <p className="nav-user-rol">{user.personalInfo.rol}</p>
@@ -97,15 +103,15 @@ const Root = ({ location }) => {
             {tabs.map((tab) => (
               <Link
                 className={
-                  currentTab === tab.key
+                  theme.tab === tab.key
                     ? "nav-item nav-item-selected"
                     : "nav-item"
                 }
-                to={tab.to}
+                to={`?tab=${tab.key}&lang=${theme.lang}&colorScheme=${theme.colorScheme}`}
               >
                 <div
                   className={
-                    currentTab === tab.key ? "" : "nav-item-icon-container"
+                    theme.tab === tab.key ? "" : "nav-item-icon-container"
                   }
                 >
                   {tab.icon}
@@ -114,10 +120,62 @@ const Root = ({ location }) => {
               </Link>
             ))}
           </div>
+          <div className="toggles-container">
+            <div className="toggle-container">
+              <p className="toggle-name">Idioma</p>
+              <div className="toggle">
+                <Link
+                  className={
+                    theme.lang === "es"
+                      ? "toggle-item toggle-item-selected"
+                      : "toggle-item"
+                  }
+                  to={`?tab=${theme.tab}&lang=es&colorScheme=${theme.colorScheme}`}
+                >
+                  ES
+                </Link>
+                <Link
+                  className={
+                    theme.lang !== "es"
+                      ? "toggle-item toggle-item-selected"
+                      : "toggle-item"
+                  }
+                  to={`?tab=${theme.tab}&lang=en&colorScheme=${theme.colorScheme}`}
+                >
+                  EN
+                </Link>
+              </div>
+            </div>
+            <div className="toggle-container">
+              <p className="toggle-name">Color</p>
+              <div className="toggle">
+                <Link
+                  className={
+                    theme.colorScheme !== "dark"
+                      ? "toggle-item toggle-item-selected"
+                      : "toggle-item"
+                  }
+                  to={`?tab=${theme.tab}&lang=${theme.lang}&colorScheme=light`}
+                >
+                  Claro
+                </Link>
+                <Link
+                  className={
+                    theme.colorScheme === "dark"
+                      ? "toggle-item toggle-item-selected"
+                      : "toggle-item"
+                  }
+                  to={`?tab=${theme.tab}&lang=${theme.lang}&colorScheme=dark`}
+                >
+                  Oscuro
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       ) : null}
 
-      {renderCurrentTab(currentTab)}
+      {renderCurrentTab(theme.tab)}
     </div>
   );
 };

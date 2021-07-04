@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 // Local imports
 import lightLogo from "../assets/logos/light.jpg";
 import darkLogo from "../assets/logos/dark.jpg";
-// import { getTheme } from "../config/theme";
+import { getTheme } from "../config/theme";
 
 // Animations
 import { JackInTheBox } from "react-awesome-reveal";
@@ -25,11 +25,7 @@ const Login = () => {
   // Conatants
   const [logo, setLogo] = useState(lightLogo);
   const [submited, setSubmited] = useState(false);
-  // const [theme, setTheme] = useState(getTheme());
-  const [theme, setTheme] = useState({
-    lang: "es",
-    colorScheme: "light",
-  });
+  const theme = getTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [keepSignedIn, setKeepSignedIn] = useState(false);
@@ -69,11 +65,12 @@ const Login = () => {
   };
 
   //Logic
-  useEffect(() => {
-    if (theme.colorScheme === "dark") {
-      setLogo(darkLogo);
-    }
-  }, [theme]);
+  if (theme.colorScheme === "dark" && logo !== darkLogo) {
+    setLogo(darkLogo);
+  }
+  if (theme.colorScheme === "light" && logo !== lightLogo) {
+    setLogo(lightLogo);
+  }
 
   // Render
   return (

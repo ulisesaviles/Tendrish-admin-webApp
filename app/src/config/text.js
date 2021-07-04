@@ -13,7 +13,6 @@ import { IoIosNutrition } from "react-icons/io";
 export const tabs = [
   {
     key: "Stats",
-    to: "/Tendrish-admin-webApp?tab=Stats",
     name: {
       es: "Estadísticas",
       en: "Stats",
@@ -22,7 +21,6 @@ export const tabs = [
   },
   {
     key: "Profiles",
-    to: "/Tendrish-admin-webApp?tab=Profiles",
     name: {
       es: "Administrar perfiles",
       en: "Magane profiles",
@@ -31,7 +29,6 @@ export const tabs = [
   },
   {
     key: "EditUser",
-    to: "/Tendrish-admin-webApp?tab=EditUser",
     name: {
       es: "Editar plan de los usuarios",
       en: "Edit user's meal plan",
@@ -40,7 +37,6 @@ export const tabs = [
   },
   {
     key: "Agenda",
-    to: "/Tendrish-admin-webApp?tab=Agenda",
     name: {
       es: "Agenda",
       en: "Agenda",
@@ -49,7 +45,6 @@ export const tabs = [
   },
   {
     key: "Recipe",
-    to: "/Tendrish-admin-webApp?tab=Recipe",
     name: {
       es: "Ver recetas",
       en: "View recipes",
@@ -58,7 +53,6 @@ export const tabs = [
   },
   {
     key: "CreateRecipe",
-    to: "/Tendrish-admin-webApp?tab=CreateRecipe",
     name: {
       es: "Crear receta",
       en: "Create recipe",
@@ -67,7 +61,6 @@ export const tabs = [
   },
   {
     key: "CreateIngredient",
-    to: "/Tendrish-admin-webApp?tab=CreateIngredient",
     name: {
       es: "Crear ingrediente",
       en: "Create ingredient",
@@ -76,7 +69,6 @@ export const tabs = [
   },
   {
     key: "CreateAd",
-    to: "/Tendrish-admin-webApp?tab=CreateAd",
     name: {
       es: "Crear anuncio",
       en: "Create ad",
@@ -85,7 +77,6 @@ export const tabs = [
   },
   {
     key: "CreateEvent",
-    to: "/Tendrish-admin-webApp?tab=CreateEvent",
     name: {
       es: "Crear evento",
       en: "Create event",
