@@ -1,5 +1,5 @@
 // Imports from React
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 // Local imports
 import lightLogo from "../assets/logos/light.jpg";
@@ -86,7 +86,7 @@ const Login = () => {
             {strings.mailInput.name[theme.lang]}
           </p>
           <input
-            className="login-input"
+            className="input"
             placeholder={strings.mailInput.placeHolder[theme.lang]}
             onChange={(text) => setEmail(text.target.value)}
           />
@@ -96,7 +96,7 @@ const Login = () => {
             {strings.passwordInput.name[theme.lang]}
           </p>
           <input
-            className="login-input"
+            className="input"
             placeholder={strings.passwordInput.placeHolder[theme.lang]}
             type="password"
             onChange={(text) => setPassword(text.target.value)}
