@@ -40,6 +40,14 @@ function Createingredient() {
   const [nutriValues, setNutriValues] = useState(initialNutriValues);
 
   // Functions
+  const cleanNameInputs = () => {
+    let tempNames = JSON.parse(`${JSON.stringify(names)}`);
+    for (let i = 0; i < usedLangs.length; i++) {
+      tempNames[usedLangs[i]] = "";
+    }
+    setNames(tempNames);
+  };
+
   const handleChangeNames = (lang, value) => {
     let tempNames_ = { ...names };
     tempNames_[lang] = value;
@@ -66,6 +74,7 @@ function Createingredient() {
       if (response.status === 200) {
         alert("Agregado exitosamente!");
         setNutriValues(initialNutriValues);
+        cleanNameInputs();
       } else {
         alert("Error al crear ingredient");
       }
