@@ -32,24 +32,23 @@
   /* Animations */
   --animation-short: all 0.1s ease-in-out;
   /* Scroll */
-  --scroll: rgb(255, 255, 255);
-  --scroll-background: rgb(240, 240, 240);
+  --scroll: rgb(230, 230, 230);
+  --scroll-hover: rgb(200, 200, 200);
+  --scroll-background: var(--container-background);
 }
 
 /* Global */
-.app-light {
-  --container-background: rgb(255, 255, 255);
-  --primary-font-color: rgb(148, 32, 84);
-  --scroll: rgb(255, 255, 255);
-  --scroll-background: rgb(240, 240, 240);
-  --background: rgb(245, 245, 245);
-}
+
 .app-dark {
   --primary-font-color: rgb(255, 231, 242);
   --container-background: rgb(15, 15, 15);
-  --scroll: rgb(20, 20, 20);
-  --scroll-background: rgb(0, 0, 0);
   --background: rgb(0, 0, 0);
+  --shadow: 0px 4px 10px rgb(0, 0, 0);
+  --shadow-hover: 0px 4px 10px rgb(0, 0, 0);
+  --separators-color: rgb(110, 82, 78);
+  --scroll: rgb(25, 25, 25);
+  --scroll-hover: rgb(30, 30, 30);
+  --scroll-background: var(--container-background);
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
@@ -80,15 +79,63 @@ body {
   width: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--scroll);
+  background: var(--scroll-background);
   border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 5px;
   background: var(--scroll);
+  border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--scroll-background);
+  background: var(--scroll-hover);
+}
+.tab-container {
+  background-color: var(--background);
+  color: var(--primary-font-color);
+  display: flex;
+  min-width: 82vw;
+  justify-content: center;
+  align-items: center;
+}
+.content-container {
+  background-color: var(--container-background);
+  border-radius: var(--div-border-radius);
+  box-shadow: var(--shadow);
+  width: 95%;
+  height: 90vh;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+.subsection {
+  padding: 20px;
+  box-shadow: var(--shadow);
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+}
+.section-title {
+  color: var(--secondary);
+  font-weight: 600;
+  font-size: 24px;
+  margin: 0;
+}
+.input-name {
+  color: var(--secondary);
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 5px 0;
+}
+.input-section {
+  margin: 10px 0px;
+}
+.input-container {
+  display: flex;
+  flex-direction: row;
+}
+.input-lang {
+  font-weight: 500;
+  margin: 0 5px 0 0;
 }
 
 /* Login */
@@ -132,7 +179,7 @@ body {
   font-size: 14px;
   margin: 0;
 }
-.login-input {
+.input {
   width: 100%;
   border: 0;
   border-bottom: solid 1px var(--separators-color);
@@ -143,7 +190,7 @@ body {
   color: var(--primary-font-color);
   background-color: var(--container-background);
 }
-.login-input:focus {
+.input:focus {
   outline: none;
 }
 .sign-in-btn {
@@ -320,6 +367,46 @@ body {
   .toggles-container {
     flex-direction: column;
   }
+}
+
+/* Create ingredient */
+.ingredient-general-container {
+  z-index: 2;
+  width: 40%;
+}
+.ingredient-nutrivalue-container {
+  z-index: 1;
+  width: 60%;
+  box-shadow: none;
+}
+.ingredient-lang-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.ingredient-lang-container:hover {
+  cursor: pointer;
+}
+.ingredient-lang-checkbox {
+  color: var(--secondary);
+  margin-right: 5px;
+}
+.ingredient-lang {
+  margin: 0 0 2px 0;
+}
+.create-ingredient-btn {
+  padding: 5px 20px;
+  width: auto;
+  align-self: center;
+  font-size: 20px;
+  margin-top: 20px;
+}
+.ingredient-error {
+  color: var(--errors);
+  align-self: center;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 /* Default */

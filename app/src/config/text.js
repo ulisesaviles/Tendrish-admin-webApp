@@ -127,3 +127,191 @@ export const login = {
     en: "Login failed, check your email and password",
   },
 };
+
+export const createIngredient = {
+  general: {
+    title: {
+      es: "General",
+      en: "General",
+    },
+    langs: {
+      es: "Idiomas",
+      en: "Languages",
+    },
+    name: {
+      title: {
+        es: "Nombre",
+        en: "Name",
+      },
+      placeHolder: {
+        es: "Ingresa el nombre del ingrediente",
+        en: "Enter the ingredient's name",
+      },
+    },
+  },
+  nutritionalInfo: [
+    {
+      key: "calories",
+      name: {
+        es: "Calorías totales",
+        en: "Total calories",
+      },
+      placeholder: {
+        es: "Ingresa las calorías totales",
+        en: "Enter total calories",
+      },
+    },
+    {
+      key: "totalFat",
+      name: {
+        es: "Grasa total (gr)",
+        en: "Total fat (gr)",
+      },
+      placeholder: {
+        es: "Ingresa la grasa total",
+        en: "Enter total fat",
+      },
+    },
+    {
+      key: "saturatedFat",
+      name: {
+        es: "Grasa saturada (gr)",
+        en: "Saturated fat (gr)",
+      },
+      placeholder: {
+        es: "Ingresa la grasa saturada",
+        en: "Enter saturated fat",
+      },
+    },
+    {
+      key: "cholesterol",
+      name: {
+        es: "Colesterol (mg)",
+        en: "Cholesterol (mg)",
+      },
+      placeholder: {
+        es: "Ingresa el colesterol",
+        en: "Enter cholesterol",
+      },
+    },
+    {
+      key: "carbohydrates",
+      name: {
+        es: "Carbohidratos (mg)",
+        en: "Carbohydrates (mg)",
+      },
+      placeholder: {
+        es: "Ingresa los carbohidratos",
+        en: "Enter carbohydrates",
+      },
+    },
+    {
+      key: "dietaryFiber",
+      name: {
+        es: "Fibra dietética (gr)",
+        en: "Dietary fiber (gr)",
+      },
+      placeholder: {
+        es: "Ingresa la fibra dietética",
+        en: "Enter dietary fiber",
+      },
+    },
+    {
+      key: "sugar",
+      name: {
+        es: "Azúcar (gr)",
+        en: "Sugar (gr)",
+      },
+      placeholder: {
+        es: "Ingresa la azúcar",
+        en: "Enter the sugar",
+      },
+    },
+    {
+      key: "protein",
+      name: {
+        es: "Proteína (gr)",
+        en: "Protein (gr)",
+      },
+      placeholder: {
+        es: "Ingresa la proteína",
+        en: "Enter the protein",
+      },
+    },
+    {
+      key: "sodium",
+      name: {
+        es: "Sodio (mg)",
+        en: "Sodium (mg)",
+      },
+      placeholder: {
+        es: "Ingresa el sodio",
+        en: "Enter the sodium",
+      },
+    },
+    {
+      key: "calcium",
+      name: {
+        es: "Calcio (mg)",
+        en: "Calcium (mg)",
+      },
+      placeholder: {
+        es: "Ingresa el calcio",
+        en: "Enter the calcium",
+      },
+    },
+    {
+      key: "iron",
+      name: {
+        es: "Hierro (mg)",
+        en: "Iron (mg)",
+      },
+      placeholder: {
+        es: "Ingresa el hierro",
+        en: "Enter the iron",
+      },
+    },
+    {
+      key: "potassium",
+      name: {
+        es: "Potasio (mg)",
+        en: "Potassium (mg)",
+      },
+      placeholder: {
+        es: "Ingresa el potasio",
+        en: "Enter the potassium",
+      },
+    },
+    {
+      key: "vitaminD",
+      name: {
+        es: "Vitamina D (mcg)",
+        en: "Vitamin D (mcg)",
+      },
+      placeholder: {
+        es: "Ingresa la vitamina D",
+        en: "Enter the vitamin D",
+      },
+    },
+  ],
+  nutritionalInfoTitle: {
+    es: "Valor nutricional",
+    en: "Nutritional value",
+  },
+  createBtn: {
+    es: "Crear ingrediente",
+    en: "Create ingredient",
+  },
+  error: {
+    es: "Asegúrate de haber ingresado toda la información correctamente",
+    en: "Make sure you have entered all the information correctly",
+  },
+};
+
+export const langs = {
+  available: [
+    { key: "en", name: { es: "Inglés", en: "English" } },
+    { key: "es", name: { es: "Español", en: "Spanish" } },
+  ],
+  default: "en",
+};
