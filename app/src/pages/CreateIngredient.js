@@ -165,7 +165,9 @@ function Createingredient() {
           </div>
         </div>
         <div className="subsection ingredient-nutrivalue-container">
-          <h1 className="section-title">Valor nutricional</h1>
+          <h1 className="section-title">
+            {strings.nutritionalInfoTitle[theme.lang]}
+          </h1>
           {strings.nutritionalInfo.map((nutriFact) => (
             <div>
               <h3 className="input-name">{nutriFact.name[theme.lang]}</h3>
