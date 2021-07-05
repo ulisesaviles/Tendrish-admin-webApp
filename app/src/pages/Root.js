@@ -74,7 +74,7 @@ const Root = ({ location }) => {
     if (theme.tab === null || user === null) {
       history.replace("?tab=Login");
     }
-  }, []);
+  }, [history, theme.tab, user]);
   if (theme.colorScheme === "dark" && logo !== darkLogo) {
     setLogo(darkLogo);
   } else if (theme.colorScheme === "light" && logo === darkLogo) {
