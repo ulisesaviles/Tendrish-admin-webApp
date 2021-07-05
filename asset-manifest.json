@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/Tendrish-admin-webApp/static/css/main.f76194d0.chunk.css",
-    "main.js": "/Tendrish-admin-webApp/static/js/main.ba3ab03f.chunk.js",
-    "main.js.map": "/Tendrish-admin-webApp/static/js/main.ba3ab03f.chunk.js.map",
+    "main.js": "/Tendrish-admin-webApp/static/js/main.4e35a1f2.chunk.js",
+    "main.js.map": "/Tendrish-admin-webApp/static/js/main.4e35a1f2.chunk.js.map",
     "runtime-main.js": "/Tendrish-admin-webApp/static/js/runtime-main.1c60b8e9.js",
     "runtime-main.js.map": "/Tendrish-admin-webApp/static/js/runtime-main.1c60b8e9.js.map",
     "static/js/2.7db2dcbc.chunk.js": "/Tendrish-admin-webApp/static/js/2.7db2dcbc.chunk.js",
@@ -20,6 +20,6 @@
     "static/js/runtime-main.1c60b8e9.js",
     "static/js/2.7db2dcbc.chunk.js",
     "static/css/main.f76194d0.chunk.css",
-    "static/js/main.ba3ab03f.chunk.js"
+    "static/js/main.4e35a1f2.chunk.js"
   ]
 }
