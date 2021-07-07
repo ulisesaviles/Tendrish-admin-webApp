@@ -315,3 +315,190 @@ export const langs = {
   ],
   default: "en",
 };
+
+export const createRecipe = {
+  general: {
+    title: {
+      es: "General",
+      en: "General",
+    },
+    langs: {
+      es: "Idiomas",
+      en: "Languages",
+    },
+    img: {
+      title: {
+        es: "Foto",
+        en: "Photo",
+      },
+      btn: {
+        es: "Agregar foto",
+        en: "Add photo",
+      },
+      placeholder: {
+        es: "(Agrega una foto)",
+        en: "(Add a photo)",
+      },
+    },
+    name: {
+      title: {
+        es: "Nombre",
+        en: "Name",
+      },
+      placeholder: {
+        es: "Ingresa el nombre de la receta",
+        en: "Enter the recipe's name",
+      },
+    },
+    description: {
+      title: {
+        es: "Descripción",
+        en: "Description",
+      },
+      placeholder: {
+        es: "Describe la receta",
+        en: "Describe de recepy",
+      },
+    },
+    category: {
+      title: {
+        es: "Categoría",
+        en: "Category",
+      },
+      create: {
+        title: {
+          es: "Crear nueva categoría",
+          en: "Create new category",
+        },
+        placeholder: {
+          es: "Ingresa la nueva categoría",
+          en: "Enter the new category's name",
+        },
+        btn: {
+          es: "Crear categoría",
+          en: "Create category",
+        },
+      },
+    },
+  },
+  prep: {
+    title: {
+      es: "Preparación",
+      en: "Preparation",
+    },
+    servings: {
+      es: "Porciones de la receta",
+      en: "Recipe servings",
+    },
+    time: {
+      title: {
+        es: "Tiempo",
+        en: "Time",
+      },
+      prep: {
+        es: "Minutos de preparación",
+        en: "Preparation minutes",
+      },
+      cook: {
+        es: "Minutos de cocción/cocina",
+        en: "Cooking minutes",
+      },
+      total: {
+        es: (total) => `Total: ${total} minutos`,
+        en: (total) => `Total: ${total} minutes`,
+      },
+    },
+    ingredients: {
+      title: {
+        es: "Ingerdientes",
+        en: "Ingredients",
+      },
+      placeholder: {
+        es: "Ingresa el nombre del ingrediente",
+        en: "Enter the ingredient's name",
+      },
+      amount: {
+        es: "Cantidad",
+        en: "Quantity",
+      },
+      unit: {
+        title: {
+          es: "Unidad",
+          en: "Unit",
+        },
+        placeholder: {
+          es: "Ingresa la unidad de la cantidad del ingrediente",
+          en: "Enter the unit of the ingredient's quantity",
+        },
+      },
+      btn: {
+        es: "Agregar ingrediente",
+        en: "Add ingredient",
+      },
+    },
+    instructions: {
+      title: {
+        es: "Instrucciones",
+        en: "Instructions",
+      },
+      placeHolder: {
+        es: "Ingresa la instrucción",
+        en: "Enter the instruction",
+      },
+      btn: {
+        es: "Agregar instrucción",
+        en: "Add instruction",
+      },
+    },
+  },
+  Opc: {
+    title: {
+      es: "Opcionales",
+      en: "Optionals",
+    },
+    notes: {
+      title: {
+        es: "Notas (opcional)",
+        en: "Notes (optional)",
+      },
+      placeholder: {
+        es: "Ingresa las notas",
+        en: "Enter the notes",
+      },
+    },
+    hashtags: {
+      title: {
+        es: "# Etiquetas (opcional)",
+        en: "# Hashtags (optional)",
+      },
+      create: {
+        title: {
+          es: "Crear nueva etiqueta",
+          en: "Create new tag",
+        },
+        placeholder: {
+          es: "Ingresa el nombre de la nueva etiqueta",
+          en: "Enter the new hashtag's name",
+        },
+        btn: {
+          es: "Crear etiqueta",
+          en: "Create tag",
+        },
+      },
+    },
+    creator: {
+      es: "Asignar creador (opcional)",
+      en: "Asign creator (optional)",
+    },
+    submit: {
+      publish: {
+        es: "Publicar receta",
+        en: "Publish recipe",
+      },
+      saveDraft: {
+        es: "Guardar borrador",
+        en: "Save draft",
+      },
+    },
+  },
+};

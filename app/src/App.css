@@ -38,7 +38,6 @@
 }
 
 /* Global */
-
 .app-dark {
   --primary-font-color: rgb(255, 231, 242);
   --container-background: rgb(15, 15, 15);
@@ -128,14 +127,24 @@ body {
 }
 .input-section {
   margin: 10px 0px;
+  display: flex;
+  flex-direction: column;
 }
 .input-container {
   display: flex;
   flex-direction: row;
+  width: 100%;
 }
 .input-lang {
   font-weight: 500;
   margin: 0 5px 0 0;
+}
+.dropdown-icon {
+  color: var(--secondary);
+  transition: var(--animation-short);
+}
+.dropdown-icon-selected {
+  transform: rotate(180deg);
 }
 
 /* Login */
@@ -407,6 +416,89 @@ body {
   margin: 0;
   font-size: 14px;
   font-weight: 500;
+}
+
+/* Create recipe */
+.createRecipe-general-container {
+  width: 25%;
+  z-index: 2;
+}
+.createRecipe-prep-container {
+  width: 40%;
+  z-index: 1;
+}
+.createRecipe-opc-container {
+  width: 35%;
+  z-index: 0;
+}
+.createRecipe-selected-image {
+  width: 50px;
+  height: auto;
+}
+.createCat-title-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--secondary);
+}
+.create-category-btn {
+  width: 70%;
+  padding: 5px 10px;
+  justify-self: center;
+}
+.createCat-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.createRecipe-image {
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 70%;
+  min-height: 100px;
+  height: auto;
+  max-width: 100px;
+  margin-top: 10px;
+  box-shadow: var(--shadow);
+  border-radius: var(--div-border-radius);
+}
+.recipe-img-input {
+  justify-self: flex-end;
+  padding: 2px 30px;
+}
+.createRecipe-img-header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.createRecepy-quantity-input-container {
+  display: flex;
+  width: 50%;
+  align-self: center;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  font-size: 20px;
+}
+.createRecepy-add-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+}
+.createRecipe-timeType {
+  margin: 15px 0 5px 0;
+  align-self: center;
+}
+.createRecipe-totalTime {
+  font-weight: 600;
 }
 
 /* Default */
