@@ -33,6 +33,7 @@ function Createingredient() {
     tags: [],
     creators: [],
   });
+
   // General
   let defaultLangObj = {};
   defaultLangObj[langs.default] = "";
@@ -43,6 +44,10 @@ function Createingredient() {
   const [description, setDescription] = useState(defaultLangObj);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const [displayCreateCat, setDisplayCreateCat] = useState(false);
+  const [newCategory, setNewCategory] = useState(defaultLangObj);
+  const [createCategoryWasClicked, setCreateCategoryWasClicked] =
+    useState(false);
+
   // Prep
   const [servings, setServings] = useState(1);
   const [time, setTime] = useState({ prep: 10, cook: 0 });
@@ -59,6 +64,14 @@ function Createingredient() {
   const [ingredients, setIngredients] = useState([defaultIngredient]);
   const [instructions, setInstructions] = useState([defaultLangObj]);
 
+  // Opc
+  const [notes, setNotes] = useState(defaultLangObj);
+  const [selectedCreatorIndex, setSelectedCreatorIndex] = useState(0);
+  const [selectedTagsIds, setSelectedTagsIds] = useState([]);
+  const [displayCreateTag, setDisplayCreateTag] = useState(false);
+  const [newTag, setNewTag] = useState(defaultLangObj);
+  const [createTagWasClicked, setCreateTagWasClicked] = useState(false);
+
   // Functions
   const addIngredient = () => {
     setIngredients([...ingredients, defaultIngredient]);
@@ -66,6 +79,64 @@ function Createingredient() {
 
   const addInstruction = () => {
     setInstructions([...instructions, defaultLangObj]);
+  };
+
+  const createCategory = async () => {
+    if (
+      newCategory.es === undefined ||
+      newCategory.en === undefined ||
+      createCategoryWasClicked
+    ) {
+      return;
+    }
+    if (newCategory.es.length < 2 || newCategory.en.length < 2) {
+      return;
+    }
+    setCreateCategoryWasClicked(true);
+    let response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "createCategory",
+        category: newCategory,
+      },
+    });
+    setCreateCategoryWasClicked(false);
+    if (response.status === 200) {
+      setDefaultValues({
+        ...defaultValues,
+        categories: response.data.categories,
+      });
+    }
+  };
+
+  const createTag = async () => {
+    if (
+      newTag.es === undefined ||
+      newTag.en === undefined ||
+      createTagWasClicked
+    ) {
+      return;
+    }
+    if (newTag.es.length < 2 || newTag.en.length < 2) {
+      return;
+    }
+    setCreateTagWasClicked(true);
+    let response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "createTag",
+        tag: newTag,
+      },
+    });
+    setCreateTagWasClicked(false);
+    if (response.status === 200) {
+      setDefaultValues({
+        ...defaultValues,
+        tags: response.data.tags,
+      });
+    }
   };
 
   const getSuggestions = (ingredientName, ingredientIndex) => {
@@ -92,6 +163,16 @@ function Createingredient() {
       setIngredients(tempIngredients);
     }
     return suggestions;
+  };
+
+  const handleClickTag = (id) => {
+    let tempSelectedTags = [...selectedTagsIds];
+    if (selectedTagsIds.includes(id)) {
+      tempSelectedTags.splice(tempSelectedTags.indexOf(id), 1);
+    } else {
+      tempSelectedTags.push(id);
+    }
+    setSelectedTagsIds(tempSelectedTags);
   };
 
   const handleDecriptionChange = (value, lang) => {
@@ -146,6 +227,24 @@ function Createingredient() {
     let tempNames = { ...name };
     tempNames[lang] = value;
     setName(tempNames);
+  };
+
+  const handleNewCategoryChange = (value, lang) => {
+    let tempCategory = { ...newCategory };
+    tempCategory[lang] = value;
+    setNewCategory(tempCategory);
+  };
+
+  const handleNewTagChange = (value, lang) => {
+    let tempTag = { ...newTag };
+    tempTag[lang] = value;
+    setNewTag(tempTag);
+  };
+
+  const handleNotesChange = (value, lang) => {
+    let tempNotes = { ...notes };
+    tempNotes[lang] = value;
+    setNotes(tempNotes);
   };
 
   const handleServingsChange = (type) => {
@@ -383,14 +482,19 @@ function Createingredient() {
                       placeholder={
                         strings.general.category.create.placeholder[lang.key]
                       }
-                      // value={names[lang]}
-                      // onChange={(event) =>
-                      //   handleChangeNames(lang, event.target.value)
-                      // }
+                      value={newCategory[lang.key]}
+                      onChange={(event) =>
+                        handleNewCategoryChange(event.target.value, lang.key)
+                      }
                     />
                   </div>
                 ))}
-                <div className="btn create-category-btn">
+                <div
+                  className={`btn create-category-btn${
+                    createCategoryWasClicked ? " submited" : ""
+                  }`}
+                  onClick={createCategory}
+                >
                   {strings.general.category.create.btn[theme.lang]}
                 </div>
               </div>
@@ -640,7 +744,7 @@ function Createingredient() {
                       <input
                         className="input"
                         placeholder={
-                          strings.prep.instructions.placeHolder[theme.lang]
+                          strings.prep.instructions.placeHolder[lang]
                         }
                         value={
                           instructions[instructions.indexOf(instruction)][lang]
@@ -667,6 +771,109 @@ function Createingredient() {
         {/* Optionals */}
         <div className="subsection createRecipe-opc-container">
           <h1 className="section-title">{strings.Opc.title[theme.lang]}</h1>
+          {/* Notes */}
+          <div className="input-section">
+            <h3 className="input-name">
+              {strings.Opc.notes.title[theme.lang]}
+            </h3>
+            {usedLangs.map((lang) => (
+              <div className="input-container">
+                <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
+                <input
+                  className="input"
+                  placeholder={strings.Opc.notes.placeholder[lang]}
+                  value={notes[lang]}
+                  onChange={(event) =>
+                    handleNotesChange(event.target.value, lang)
+                  }
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Tags */}
+          <div className="input-section">
+            <h3 className="input-name">
+              {strings.Opc.hashtags.title[theme.lang]}
+            </h3>
+            <div className="createRecipe-tags-container">
+              {defaultValues.tags.map((tag) => (
+                <div
+                  onClick={() => handleClickTag(tag.id)}
+                  className={`tagContainer btn${
+                    selectedTagsIds.includes(tag.id) ? "" : " unselected-tag"
+                  }`}
+                >
+                  {tag.name[theme.lang]}
+                </div>
+              ))}
+            </div>
+            <div
+              onClick={() => setDisplayCreateTag(!displayCreateTag)}
+              className="createCat-title-container"
+            >
+              <p className="createCat">
+                {strings.Opc.hashtags.create.title[theme.lang]}{" "}
+              </p>
+              <MdKeyboardArrowDown
+                className={
+                  displayCreateTag
+                    ? "dropdown-icon dropdown-icon-selected"
+                    : "dropdown-icon"
+                }
+              />
+            </div>
+            {displayCreateTag ? (
+              <div className="createCat-container">
+                {langs.available.map((lang) => (
+                  <div className="input-container">
+                    <p className="input-lang">{`${lang.key.toUpperCase()}: `}</p>
+                    <input
+                      className="input"
+                      placeholder={
+                        strings.Opc.hashtags.create.placeholder[lang.key]
+                      }
+                      value={newTag[lang.key]}
+                      onChange={(event) =>
+                        handleNewTagChange(event.target.value, lang.key)
+                      }
+                    />
+                  </div>
+                ))}
+                <div
+                  className={`btn create-category-btn create-tag-btn${
+                    createTagWasClicked ? " submited" : ""
+                  }`}
+                  onClick={createTag}
+                >
+                  {strings.Opc.hashtags.create.btn[theme.lang]}
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          {/* Creator */}
+          <div className="input-section">
+            <h3 className="input-name">{strings.Opc.creator[theme.lang]}</h3>
+            {defaultValues.creators.map((creator) => (
+              <div
+                className="ingredient-lang-container"
+                onClick={() => {
+                  setSelectedCreatorIndex(
+                    defaultValues.creators.indexOf(creator)
+                  );
+                }}
+              >
+                {defaultValues.creators.indexOf(creator) ===
+                selectedCreatorIndex ? (
+                  <MdCheckBox className="ingredient-lang-checkbox" />
+                ) : (
+                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                )}
+                <p className="ingredient-lang">{creator.name}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
