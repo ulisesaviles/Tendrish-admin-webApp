@@ -11,6 +11,7 @@ import {
   MdKeyboardArrowDown,
   MdAdd,
   MdRemove,
+  MdRemoveCircle,
 } from "react-icons/md";
 
 // Style
@@ -33,26 +34,128 @@ function Createingredient() {
     creators: [],
   });
   // General
+  let defaultLangObj = {};
+  defaultLangObj[langs.default] = "";
   const [usedLangs, setUsedLangs] = useState([langs.default]);
   const imgInputRef = useRef();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [name, setName] = useState(defaultLangObj);
+  const [description, setDescription] = useState(defaultLangObj);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const [displayCreateCat, setDisplayCreateCat] = useState(false);
   // Prep
   const [servings, setServings] = useState(1);
   const [time, setTime] = useState({ prep: 10, cook: 0 });
-  const [ingredients, setIngredients] = useState([
-    {
-      ingredient: "",
-      cuantity: {
-        numerator: 1,
-        denominator: 1,
-      },
-      unit: "",
+  const [focusedInputIndex, setFocusedInputIndex] = useState(null);
+  const defaultIngredient = {
+    name: "",
+    id: null,
+    cuantity: {
+      numerator: 1,
+      denominator: 1,
     },
-  ]);
+    unit: "",
+  };
+  const [ingredients, setIngredients] = useState([defaultIngredient]);
+  const [instructions, setInstructions] = useState([defaultLangObj]);
 
   // Functions
+  const addIngredient = () => {
+    setIngredients([...ingredients, defaultIngredient]);
+  };
+
+  const addInstruction = () => {
+    setInstructions([...instructions, defaultLangObj]);
+  };
+
+  const getSuggestions = (ingredientName, ingredientIndex) => {
+    let suggestions = [];
+    let tempIngredients = [...ingredients];
+    let id = null;
+    for (let i = 0; i < defaultValues.ingredients.length; i++) {
+      if (
+        defaultValues.ingredients[i].name[theme.lang]
+          .substring(0, ingredientName.length)
+          .toLowerCase() === ingredientName.toLowerCase()
+      ) {
+        suggestions.push(defaultValues.ingredients[i].name[theme.lang]);
+      }
+      if (
+        defaultValues.ingredients[i].name[theme.lang].toLowerCase() ===
+        ingredientName.toLowerCase()
+      ) {
+        id = defaultValues.ingredients[i].id;
+      }
+    }
+    tempIngredients[ingredientIndex].id = id;
+    if (JSON.stringify(tempIngredients) !== JSON.stringify(ingredients)) {
+      setIngredients(tempIngredients);
+    }
+    return suggestions;
+  };
+
+  const handleDecriptionChange = (value, lang) => {
+    let tempDescription = { ...description };
+    tempDescription[lang] = value;
+    setDescription(tempDescription);
+  };
+
+  const handleIngredientQuantityChange = (index, isNumerator, changeType) => {
+    let tempIngredients = [...ingredients];
+    tempIngredients[index].cuantity[
+      isNumerator ? "numerator" : "denominator"
+    ] +=
+      changeType === "sum"
+        ? 1
+        : tempIngredients[index].cuantity[
+            isNumerator ? "numerator" : "denominator"
+          ] === 1
+        ? 0
+        : -1;
+    setIngredients(tempIngredients);
+  };
+
+  const handleIngredientsChange = (changeType, index, value) => {
+    let tempIngredients = [...ingredients];
+    if (changeType === "name") {
+      tempIngredients[index].name = value;
+    }
+    setIngredients(tempIngredients);
+  };
+
+  const handleInstructionsChange = (value, lang, index) => {
+    let tempInstructions = [...instructions];
+    tempInstructions[index][lang] = value;
+    setInstructions(tempInstructions);
+  };
+
+  const handleLangClick = (lang) => {
+    let tempLangs = [...usedLangs];
+    if (lang !== langs.default) {
+      if (tempLangs.includes(lang)) {
+        tempLangs.splice(tempLangs.indexOf(lang), 1);
+        setUsedLangs(tempLangs);
+      } else {
+        tempLangs.push(lang);
+        setUsedLangs(tempLangs);
+      }
+    }
+  };
+
+  const handleNameChange = (value, lang) => {
+    let tempNames = { ...name };
+    tempNames[lang] = value;
+    setName(tempNames);
+  };
+
+  const handleServingsChange = (type) => {
+    if (type === "sum") {
+      setServings(servings + 1);
+    } else {
+      setServings(servings <= 1 ? servings : servings - 1);
+    }
+  };
+
   const handleSetupQuery = async () => {
     setQueryCounter(queryCounter + 1);
     if (queryCounter > 3) {
@@ -74,27 +177,12 @@ function Createingredient() {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }
   };
-  console.log(`Van ${queryCounter} consultas`);
 
-  const handleLangClick = (lang) => {
-    let tempLangs = JSON.parse(`${JSON.stringify(usedLangs)}`);
-    if (lang !== langs.default) {
-      if (tempLangs.includes(lang)) {
-        tempLangs.splice(tempLangs.indexOf(lang), 1);
-        setUsedLangs(tempLangs);
-      } else {
-        tempLangs.push(lang);
-        setUsedLangs(tempLangs);
-      }
-    }
-  };
-
-  const handleServingsChange = (type) => {
-    if (type === "sum") {
-      setServings(servings + 1);
-    } else {
-      setServings(servings <= 1 ? servings : servings - 1);
-    }
+  const handleSuggestionClick = (suggestion) => {
+    console.log(`Clicked ${suggestion}`);
+    let tempIngredients = [...ingredients];
+    tempIngredients[focusedInputIndex].name = suggestion;
+    setIngredients(tempIngredients);
   };
 
   const handleTimeChange = (valueToChange, type) => {
@@ -131,6 +219,18 @@ function Createingredient() {
     } else {
       setSelectedImage(null);
     }
+  };
+
+  const removeIngredient = (index) => {
+    let tempIngredients = [...ingredients];
+    tempIngredients.splice(index, 1);
+    setIngredients(tempIngredients);
+  };
+
+  const removeInstruction = (index) => {
+    let tempInstructions = [...instructions];
+    tempInstructions.splice(index, 1);
+    setInstructions(tempInstructions);
   };
 
   // Logic
@@ -187,11 +287,7 @@ function Createingredient() {
               style={{ display: "none" }}
             />
             {selectedImage !== null ? (
-              <img
-                src={selectedImage}
-                alt="Select an image"
-                className="createRecipe-image"
-              />
+              <img src={selectedImage} alt="" className="createRecipe-image" />
             ) : (
               <div className="createRecipe-image">
                 {strings.general.img.placeholder[theme.lang]}
@@ -210,10 +306,10 @@ function Createingredient() {
                 <input
                   className="input"
                   placeholder={strings.general.name.placeholder[lang]}
-                  // value={names[lang]}
-                  // onChange={(event) =>
-                  //   handleChangeNames(lang, event.target.value)
-                  // }
+                  value={name[lang]}
+                  onChange={(event) =>
+                    handleNameChange(event.target.value, lang)
+                  }
                 />
               </div>
             ))}
@@ -230,10 +326,10 @@ function Createingredient() {
                 <input
                   className="input"
                   placeholder={strings.general.description.placeholder[lang]}
-                  // value={names[lang]}
-                  // onChange={(event) =>
-                  //   handleChangeNames(lang, event.target.value)
-                  // }
+                  value={description[lang]}
+                  onChange={(event) =>
+                    handleDecriptionChange(event.target.value, lang)
+                  }
                 />
               </div>
             ))}
@@ -279,13 +375,13 @@ function Createingredient() {
             </div>
             {displayCreateCat ? (
               <div className="createCat-container">
-                {usedLangs.map((lang) => (
+                {langs.available.map((lang) => (
                   <div className="input-container">
-                    <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
+                    <p className="input-lang">{`${lang.key.toUpperCase()}: `}</p>
                     <input
                       className="input"
                       placeholder={
-                        strings.general.category.create.placeholder[theme.lang]
+                        strings.general.category.create.placeholder[lang.key]
                       }
                       // value={names[lang]}
                       // onChange={(event) =>
@@ -377,6 +473,144 @@ function Createingredient() {
             <h3 className="input-name">
               {strings.prep.ingredients.title[theme.lang]}
             </h3>
+            {ingredients.map((ingredient) => (
+              <div className="createRecipe-ingredient-container">
+                <div>
+                  <h1 className="createRecipe-ingredient-bullet">•</h1>
+                  {ingredients.length > 1 ? (
+                    <MdRemoveCircle
+                      className="createRecipe-deleteIcon"
+                      onClick={() =>
+                        removeIngredient(ingredients.indexOf(ingredient))
+                      }
+                    />
+                  ) : null}
+                </div>
+                <div className="createRecipe-ingredient-inputs-container">
+                  <div className="createRecipe-ingredient-input-container">
+                    <input
+                      className={`input${
+                        ingredient.id === null ? " input-error" : ""
+                      }`}
+                      placeholder={
+                        strings.prep.ingredients.placeholder[theme.lang]
+                      }
+                      value={ingredient.name}
+                      onChange={(event) =>
+                        handleIngredientsChange(
+                          "name",
+                          ingredients.indexOf(ingredient),
+                          event.target.value
+                        )
+                      }
+                      onFocus={() =>
+                        setFocusedInputIndex(ingredients.indexOf(ingredient))
+                      }
+                      onBlur={() =>
+                        setTimeout(() => setFocusedInputIndex(null), 200)
+                      }
+                    />
+                    {focusedInputIndex === ingredients.indexOf(ingredient) ? (
+                      <div className="hide-overflow-y">
+                        <div className="suggestions-container">
+                          {getSuggestions(
+                            ingredient.name,
+                            ingredients.indexOf(ingredient)
+                          ).map((suggestion) => (
+                            <div
+                              className="suggestion-container"
+                              onClick={() => handleSuggestionClick(suggestion)}
+                            >
+                              {suggestion}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="input-container">
+                    <p className="input-lang">{`${
+                      strings.prep.ingredients.unit.title[theme.lang]
+                    }: `}</p>
+                    <input
+                      className="input"
+                      placeholder={
+                        strings.prep.ingredients.unit.placeholder[theme.lang]
+                      }
+                      // value={names[lang]}
+                      // onChange={(event) =>
+                      //   handleChangeNames(lang, event.target.value)
+                      // }
+                    />
+                  </div>
+                  <div className="createRecipe-cuantity-container">
+                    <p className="input-lang">{`${
+                      strings.prep.ingredients.quantity[theme.lang]
+                    }: `}</p>
+                    <div className="fraction-container">
+                      <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                        <div
+                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                          onClick={() =>
+                            handleIngredientQuantityChange(
+                              ingredients.indexOf(ingredient),
+                              true,
+                              "subs"
+                            )
+                          }
+                        >
+                          <MdRemove />
+                        </div>
+                        {ingredient.cuantity.numerator}
+                        <div
+                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                          onClick={() =>
+                            handleIngredientQuantityChange(
+                              ingredients.indexOf(ingredient),
+                              true,
+                              "sum"
+                            )
+                          }
+                        >
+                          <MdAdd />
+                        </div>
+                      </div>
+                      <div className="dividedBy" />
+                      <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                        <div
+                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                          onClick={() =>
+                            handleIngredientQuantityChange(
+                              ingredients.indexOf(ingredient),
+                              false,
+                              "subs"
+                            )
+                          }
+                        >
+                          <MdRemove />
+                        </div>
+                        {ingredient.cuantity.denominator}
+                        <div
+                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                          onClick={() =>
+                            handleIngredientQuantityChange(
+                              ingredients.indexOf(ingredient),
+                              false,
+                              "sum"
+                            )
+                          }
+                        >
+                          <MdAdd />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div className="btn add-ingredient-btn" onClick={addIngredient}>
+              {strings.prep.ingredients.btn[theme.lang]}
+            </div>
           </div>
 
           {/* Instructions */}
@@ -384,6 +618,49 @@ function Createingredient() {
             <h3 className="input-name">
               {strings.prep.instructions.title[theme.lang]}
             </h3>
+            {instructions.map((instruction) => (
+              <div className="createRecipe-ingredient-container">
+                <div>
+                  <h1 className="createRecipe-ingredient-bullet createRecipe-instructions-num">
+                    {instructions.indexOf(instruction) + 1}
+                  </h1>
+                  {instructions.length > 1 ? (
+                    <MdRemoveCircle
+                      className="createRecipe-deleteIcon"
+                      onClick={() =>
+                        removeInstruction(instructions.indexOf(instruction))
+                      }
+                    />
+                  ) : null}
+                </div>
+                <div className="input-section">
+                  {usedLangs.map((lang) => (
+                    <div className="input-container">
+                      <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
+                      <input
+                        className="input"
+                        placeholder={
+                          strings.prep.instructions.placeHolder[theme.lang]
+                        }
+                        value={
+                          instructions[instructions.indexOf(instruction)][lang]
+                        }
+                        onChange={(event) =>
+                          handleInstructionsChange(
+                            event.target.value,
+                            lang,
+                            instructions.indexOf(instruction)
+                          )
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <div className="btn add-ingredient-btn" onClick={addInstruction}>
+              {strings.prep.instructions.btn[theme.lang]}
+            </div>
           </div>
         </div>
 

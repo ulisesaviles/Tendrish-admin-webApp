@@ -129,6 +129,7 @@ body {
   margin: 10px 0px;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 .input-container {
   display: flex;
@@ -145,6 +146,16 @@ body {
 }
 .dropdown-icon-selected {
   transform: rotate(180deg);
+}
+.createRecipe-deleteIcon {
+  color: var(--errors);
+  font-size: 12px;
+  opacity: 50%;
+  transition: var(--animation-short);
+}
+.createRecipe-deleteIcon:hover {
+  opacity: 100%;
+  transform: scale(1.5);
 }
 
 /* Login */
@@ -201,6 +212,9 @@ body {
 }
 .input:focus {
   outline: none;
+}
+.input-error {
+  color: var(--errors);
 }
 .sign-in-btn {
   width: 190px;
@@ -499,6 +513,82 @@ body {
 }
 .createRecipe-totalTime {
   font-weight: 600;
+}
+.createRecipe-ingredient-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  margin: 5px 0;
+}
+.createRecipe-ingredient-bullet {
+  margin: -10px 10px 0 0;
+  font-size: 30px;
+  color: var(--secondary);
+}
+.createRecipe-ingredient-inputs-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.createRecipe-ingredient-input-container {
+  width: 100%;
+}
+.hide-overflow-y {
+  overflow-y: hidden;
+  position: relative;
+  margin-top: -15px;
+  box-shadow: var(--shadow);
+  border-radius: 0 0 var(--div-border-radius) var(--div-border-radius);
+}
+.suggestions-container {
+  background-color: var(--container-background);
+  padding: 10px;
+  max-height: 150px;
+  overflow-y: scroll;
+}
+.suggestion-container {
+  margin: 10px 0;
+}
+.suggestion-container:hover {
+  color: var(--secondary);
+  cursor: pointer;
+}
+.fraction-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+.dividedBy {
+  margin: 5px 0;
+  width: 50px;
+  background-color: var(--secondary);
+  border-radius: var(--div-border-radius);
+  height: 2px;
+}
+.createRecepy-add-btn-mini {
+  width: 20px;
+  height: 20px;
+  font-size: 15px;
+}
+.createRecepy-quantity-input-container-mini {
+  width: 30%;
+}
+.createRecipe-cuantity-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.add-ingredient-btn {
+  padding: 5px 20px;
+  min-width: 40%;
+  align-self: center;
+}
+.createRecipe-instructions-num {
+  margin: 0 10px 0 0;
 }
 
 /* Default */

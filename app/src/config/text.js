@@ -417,7 +417,7 @@ export const createRecipe = {
         es: "Ingresa el nombre del ingrediente",
         en: "Enter the ingredient's name",
       },
-      amount: {
+      quantity: {
         es: "Cantidad",
         en: "Quantity",
       },
