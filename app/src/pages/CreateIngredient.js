@@ -41,7 +41,7 @@ function Createingredient() {
 
   // Functions
   const cleanNameInputs = () => {
-    let tempNames = JSON.parse(`${JSON.stringify(names)}`);
+    let tempNames = { ...names };
     for (let i = 0; i < usedLangs.length; i++) {
       tempNames[usedLangs[i]] = "";
     }
@@ -55,7 +55,7 @@ function Createingredient() {
   };
 
   const handleChangeNutriValue = (key, value) => {
-    let tempValues = JSON.parse(`${JSON.stringify(nutriValues)}`);
+    let tempValues = { ...nutriValues };
     tempValues[key] = value;
     setNutriValues(tempValues);
   };
@@ -82,7 +82,7 @@ function Createingredient() {
   };
 
   const handleLangClick = (lang) => {
-    let tempLangs = JSON.parse(`${JSON.stringify(usedLangs)}`);
+    let tempLangs = [...usedLangs];
     if (lang !== langs.default) {
       if (tempLangs.includes(lang)) {
         tempLangs.splice(tempLangs.indexOf(lang), 1);
