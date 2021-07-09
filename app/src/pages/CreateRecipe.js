@@ -103,6 +103,7 @@ function Createingredient() {
     });
     setCreateCategoryWasClicked(false);
     if (response.status === 200) {
+      setNewCategory({ es: "", en: "" });
       setDefaultValues({
         ...defaultValues,
         categories: response.data.categories,
@@ -132,6 +133,7 @@ function Createingredient() {
     });
     setCreateTagWasClicked(false);
     if (response.status === 200) {
+      setNewTag({ es: "", en: "" });
       setDefaultValues({
         ...defaultValues,
         tags: response.data.tags,
