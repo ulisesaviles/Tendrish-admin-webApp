@@ -354,6 +354,7 @@ function Createingredient() {
                 onClick={() => {
                   handleLangClick(lang.key);
                 }}
+                key={langs.available.indexOf(lang)}
               >
                 {usedLangs.includes(lang.key) ? (
                   <MdCheckBox className="ingredient-lang-checkbox" />
@@ -400,7 +401,7 @@ function Createingredient() {
               {strings.general.name.title[theme.lang]}
             </h3>
             {usedLangs.map((lang) => (
-              <div className="input-container">
+              <div className="input-container" key={usedLangs.indexOf(lang)}>
                 <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
                 <input
                   className="input"
@@ -420,7 +421,7 @@ function Createingredient() {
               {strings.general.description.title[theme.lang]}
             </h3>
             {usedLangs.map((lang) => (
-              <div className="input-container">
+              <div className="input-container" key={usedLangs.indexOf(lang)}>
                 <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
                 <input
                   className="input"
@@ -441,6 +442,7 @@ function Createingredient() {
             </h3>
             {defaultValues.categories.map((category) => (
               <div
+                key={defaultValues.categories.indexOf(category)}
                 className="ingredient-lang-container"
                 onClick={() => {
                   setSelectedCategoryIndex(
@@ -475,7 +477,10 @@ function Createingredient() {
             {displayCreateCat ? (
               <div className="createCat-container">
                 {langs.available.map((lang) => (
-                  <div className="input-container">
+                  <div
+                    className="input-container"
+                    key={langs.available.indexOf(lang)}
+                  >
                     <p className="input-lang">{`${lang.key.toUpperCase()}: `}</p>
                     <input
                       className="input"
@@ -578,17 +583,19 @@ function Createingredient() {
               {strings.prep.ingredients.title[theme.lang]}
             </h3>
             {ingredients.map((ingredient) => (
-              <div className="createRecipe-ingredient-container">
+              <div
+                className="createRecipe-ingredient-container"
+                key={ingredients.indexOf(ingredient)}
+              >
                 <div>
                   <h1 className="createRecipe-ingredient-bullet">•</h1>
-                  {ingredients.length > 1 ? (
-                    <MdRemoveCircle
-                      className="createRecipe-deleteIcon"
-                      onClick={() =>
-                        removeIngredient(ingredients.indexOf(ingredient))
-                      }
-                    />
-                  ) : null}
+                  <MdRemoveCircle
+                    className="deleteIcon"
+                    onClick={() =>
+                      removeIngredient(ingredients.indexOf(ingredient))
+                    }
+                  />
+                  {ingredients.length > 1 ? null : null}
                 </div>
                 <div className="createRecipe-ingredient-inputs-container">
                   <div className="createRecipe-ingredient-input-container">
@@ -611,7 +618,7 @@ function Createingredient() {
                         setFocusedInputIndex(ingredients.indexOf(ingredient))
                       }
                       onBlur={() =>
-                        setTimeout(() => setFocusedInputIndex(null), 200)
+                        setTimeout(() => setFocusedInputIndex(null), 300)
                       }
                     />
                     {focusedInputIndex === ingredients.indexOf(ingredient) ? (
@@ -723,23 +730,28 @@ function Createingredient() {
               {strings.prep.instructions.title[theme.lang]}
             </h3>
             {instructions.map((instruction) => (
-              <div className="createRecipe-ingredient-container">
+              <div
+                className="createRecipe-ingredient-container"
+                key={instructions.indexOf(instruction)}
+              >
                 <div>
                   <h1 className="createRecipe-ingredient-bullet createRecipe-instructions-num">
                     {instructions.indexOf(instruction) + 1}
                   </h1>
-                  {instructions.length > 1 ? (
-                    <MdRemoveCircle
-                      className="createRecipe-deleteIcon"
-                      onClick={() =>
-                        removeInstruction(instructions.indexOf(instruction))
-                      }
-                    />
-                  ) : null}
+                  <MdRemoveCircle
+                    className="deleteIcon"
+                    onClick={() =>
+                      removeInstruction(instructions.indexOf(instruction))
+                    }
+                  />
+                  {instructions.length > 1 ? null : null}
                 </div>
                 <div className="input-section">
                   {usedLangs.map((lang) => (
-                    <div className="input-container">
+                    <div
+                      className="input-container"
+                      key={usedLangs.indexOf(lang)}
+                    >
                       <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
                       <input
                         className="input"
@@ -777,7 +789,7 @@ function Createingredient() {
               {strings.Opc.notes.title[theme.lang]}
             </h3>
             {usedLangs.map((lang) => (
-              <div className="input-container">
+              <div className="input-container" key={usedLangs.indexOf(lang)}>
                 <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
                 <input
                   className="input"
@@ -799,6 +811,7 @@ function Createingredient() {
             <div className="createRecipe-tags-container">
               {defaultValues.tags.map((tag) => (
                 <div
+                  key={defaultValues.tags.indexOf(tag)}
                   onClick={() => handleClickTag(tag.id)}
                   className={`tagContainer btn${
                     selectedTagsIds.includes(tag.id) ? "" : " unselected-tag"
@@ -826,7 +839,10 @@ function Createingredient() {
             {displayCreateTag ? (
               <div className="createCat-container">
                 {langs.available.map((lang) => (
-                  <div className="input-container">
+                  <div
+                    className="input-container"
+                    key={langs.available.indexOf(lang)}
+                  >
                     <p className="input-lang">{`${lang.key.toUpperCase()}: `}</p>
                     <input
                       className="input"
@@ -857,6 +873,7 @@ function Createingredient() {
             <h3 className="input-name">{strings.Opc.creator[theme.lang]}</h3>
             {defaultValues.creators.map((creator) => (
               <div
+                key={defaultValues.creators.indexOf(creator)}
                 className="ingredient-lang-container"
                 onClick={() => {
                   setSelectedCreatorIndex(

@@ -23,7 +23,8 @@
   --secondary-font-color: rgb(190, 130, 55);
   --bold: 600;
   --non-bold: 400;
-  --errors: rgb(231, 16, 16);
+  --errors: rgba(231, 16, 16);
+  --errors-nonHover: rgba(231, 16, 16, 0.5);
   /* Extras */
   --separators-color: rgb(235, 174, 164);
   /* Shadows */
@@ -147,15 +148,15 @@ body {
 .dropdown-icon-selected {
   transform: rotate(180deg);
 }
-.createRecipe-deleteIcon {
-  color: var(--errors);
+.deleteIcon {
+  color: var(--errors-nonHover);
   font-size: 12px;
-  opacity: 50%;
   transition: var(--animation-short);
 }
-.createRecipe-deleteIcon:hover {
-  opacity: 100%;
+.deleteIcon:hover {
   transform: scale(1.5);
+  cursor: pointer;
+  color: var(--errors);
 }
 
 /* Login */
