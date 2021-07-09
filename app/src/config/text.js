@@ -499,6 +499,16 @@ export const createRecipe = {
         es: "Guardar borrador",
         en: "Save draft",
       },
+      error: {
+        network: {
+          es: "Error de conexión",
+          en: "Network error",
+        },
+        inputs: {
+          es: "Ingresa información válida",
+          en: "Invalid inputs",
+        },
+      },
     },
   },
 };

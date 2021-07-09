@@ -35,16 +35,15 @@ function Createingredient() {
   });
 
   // General
-  let defaultLangObj = {};
-  defaultLangObj[langs.default] = "";
   const [usedLangs, setUsedLangs] = useState([langs.default]);
   const imgInputRef = useRef();
   const [selectedImage, setSelectedImage] = useState(null);
-  const [name, setName] = useState(defaultLangObj);
-  const [description, setDescription] = useState(defaultLangObj);
+  const [selectedImageObj, setSelectedImageObj] = useState(null);
+  const [name, setName] = useState({});
+  const [description, setDescription] = useState({});
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const [displayCreateCat, setDisplayCreateCat] = useState(false);
-  const [newCategory, setNewCategory] = useState(defaultLangObj);
+  const [newCategory, setNewCategory] = useState({});
   const [createCategoryWasClicked, setCreateCategoryWasClicked] =
     useState(false);
 
@@ -53,7 +52,6 @@ function Createingredient() {
   const [time, setTime] = useState({ prep: 10, cook: 0 });
   const [focusedInputIndex, setFocusedInputIndex] = useState(null);
   const defaultIngredient = {
-    name: "",
     id: null,
     cuantity: {
       numerator: 1,
@@ -62,23 +60,26 @@ function Createingredient() {
     unit: "",
   };
   const [ingredients, setIngredients] = useState([defaultIngredient]);
-  const [instructions, setInstructions] = useState([defaultLangObj]);
+  const [ingredientsInputs, setIngredientsInputs] = useState([""]);
+  const [instructions, setInstructions] = useState([{}]);
 
   // Opc
-  const [notes, setNotes] = useState(defaultLangObj);
+  const [notes, setNotes] = useState({});
   const [selectedCreatorIndex, setSelectedCreatorIndex] = useState(0);
   const [selectedTagsIds, setSelectedTagsIds] = useState([]);
   const [displayCreateTag, setDisplayCreateTag] = useState(false);
-  const [newTag, setNewTag] = useState(defaultLangObj);
+  const [newTag, setNewTag] = useState({});
   const [createTagWasClicked, setCreateTagWasClicked] = useState(false);
+  const [error, setError] = useState(null);
 
   // Functions
   const addIngredient = () => {
     setIngredients([...ingredients, defaultIngredient]);
+    setIngredientsInputs([...ingredientsInputs, ""]);
   };
 
   const addInstruction = () => {
-    setInstructions([...instructions, defaultLangObj]);
+    setInstructions([...instructions, {}]);
   };
 
   const createCategory = async () => {
@@ -108,6 +109,45 @@ function Createingredient() {
         ...defaultValues,
         categories: response.data.categories,
       });
+    }
+  };
+
+  const createRecipe = async (publish) => {
+    if (inputsAreValid()) {
+      setError(null);
+      const imgUrl = (await uploadImgs())[0];
+      let recipe = {
+        general: {
+          langs: usedLangs,
+          img: imgUrl,
+          name,
+          description,
+          category: defaultValues.categories[selectedCategoryIndex].id,
+        },
+        prep: {
+          servings,
+          time,
+          ingredients, // Quitarle el name
+          instructions,
+        },
+        opc: {
+          notes,
+          tags: selectedTagsIds,
+          creator: defaultValues.creators[selectedCreatorIndex].id,
+        },
+      };
+      console.log({ method: "createRecipe", recipe, publish });
+      const response = await axios({
+        method: "post",
+        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+        data: { method: "createRecipe", recipe, publish },
+      });
+      if (response.status === 200) {
+        alert("Agregado exitosamente");
+        clearInputs();
+      }
+    } else {
+      setError(strings.Opc.submit.error.inputs[theme.lang]);
     }
   };
 
@@ -141,7 +181,30 @@ function Createingredient() {
     }
   };
 
-  const getSuggestions = (ingredientName, ingredientIndex) => {
+  const clearInputs = () => {
+    const multiLangObj = { es: "", en: "" };
+    setUsedLangs([langs.default]);
+    setSelectedImage(null);
+    setSelectedImageObj(null);
+    setName({ ...multiLangObj });
+    setDescription({ ...multiLangObj });
+    setSelectedCategoryIndex(0);
+    setDisplayCreateCat(false);
+    setNewCategory({ ...multiLangObj });
+    setServings(1);
+    setTime({ prep: 10, cook: 0 });
+    setIngredients([defaultIngredient]);
+    setIngredientsInputs([""]);
+    setInstructions([{ ...multiLangObj }]);
+    setNotes({ ...multiLangObj });
+    setSelectedTagsIds([]);
+    setDisplayCreateTag(false);
+    setNewTag({ ...multiLangObj });
+    setSelectedCreatorIndex(0);
+  };
+
+  const getSuggestions = (ingredientIndex) => {
+    let ingredientName = ingredientsInputs[ingredientIndex];
     let suggestions = [];
     let tempIngredients = [...ingredients];
     let id = null;
@@ -199,11 +262,11 @@ function Createingredient() {
   };
 
   const handleIngredientsChange = (changeType, index, value) => {
-    let tempIngredients = [...ingredients];
+    let tempIngredientInputs = [...ingredientsInputs];
     if (changeType === "name") {
-      tempIngredients[index].name = value;
+      tempIngredientInputs[index] = value;
     }
-    setIngredients(tempIngredients);
+    setIngredientsInputs(tempIngredientInputs);
   };
 
   const handleInstructionsChange = (value, lang, index) => {
@@ -280,10 +343,9 @@ function Createingredient() {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    console.log(`Clicked ${suggestion}`);
-    let tempIngredients = [...ingredients];
-    tempIngredients[focusedInputIndex].name = suggestion;
-    setIngredients(tempIngredients);
+    let tempIngredientsInputs = [...ingredientsInputs];
+    tempIngredientsInputs[focusedInputIndex] = suggestion;
+    setIngredientsInputs(tempIngredientsInputs);
   };
 
   const handleTimeChange = (valueToChange, type) => {
@@ -314,11 +376,62 @@ function Createingredient() {
     }
   };
 
+  const handleIngredientUnitChange = (ingredientIndex, unit) => {
+    let tempIngredients = [...ingredients];
+    tempIngredients[ingredientIndex].unit = unit;
+    setIngredients(tempIngredients);
+  };
+
+  const inputsAreValid = () => {
+    try {
+      if (selectedImage === null) {
+        return false;
+      }
+      if (time.cook === 0 && time.prep === 0) {
+        return false;
+      }
+      // Check lang-dependent inputs
+      for (let i = 0; i < usedLangs.length; i++) {
+        if (
+          name[usedLangs[i]] === undefined ||
+          name[usedLangs[i]].length <= 1
+        ) {
+          return false;
+        }
+        if (
+          description[usedLangs[i]] === undefined ||
+          description[usedLangs[i]].length <= 1
+        ) {
+          return false;
+        }
+        for (let j = 0; j < instructions.length; j++) {
+          if (
+            instructions[j][usedLangs[i]] === undefined ||
+            instructions[j][usedLangs[i]].length <= 1
+          ) {
+            return false;
+          }
+        }
+      }
+      // Check ingredients
+      for (let i = 0; i < ingredients.length; i++) {
+        if (ingredients[i].id == null) {
+          return false;
+        }
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
+  };
+
   const imageWasSelected = (event) => {
     if (event.target.files.length > 0) {
       setSelectedImage(URL.createObjectURL(event.target.files[0]));
+      setSelectedImageObj(event.target.files[0]);
     } else {
       setSelectedImage(null);
+      setSelectedImageObj(null);
     }
   };
 
@@ -326,12 +439,30 @@ function Createingredient() {
     let tempIngredients = [...ingredients];
     tempIngredients.splice(index, 1);
     setIngredients(tempIngredients);
+    let tempIngredientsInputs = [...ingredientsInputs];
+    tempIngredientsInputs.splice(index, 1);
+    setIngredientsInputs(tempIngredientsInputs);
   };
 
   const removeInstruction = (index) => {
     let tempInstructions = [...instructions];
     tempInstructions.splice(index, 1);
     setInstructions(tempInstructions);
+  };
+
+  const uploadImgs = async () => {
+    let formData = new FormData();
+    formData.append("method", "uploadImgs");
+    formData.append("destination", "recepiesImgs");
+    formData.append("img", selectedImageObj);
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: formData,
+    });
+    if (response.status === 200) {
+      return response.data.urls;
+    }
   };
 
   // Logic
@@ -608,7 +739,7 @@ function Createingredient() {
                       placeholder={
                         strings.prep.ingredients.placeholder[theme.lang]
                       }
-                      value={ingredient.name}
+                      value={ingredientsInputs[ingredients.indexOf(ingredient)]}
                       onChange={(event) =>
                         handleIngredientsChange(
                           "name",
@@ -626,17 +757,18 @@ function Createingredient() {
                     {focusedInputIndex === ingredients.indexOf(ingredient) ? (
                       <div className="hide-overflow-y">
                         <div className="suggestions-container">
-                          {getSuggestions(
-                            ingredient.name,
-                            ingredients.indexOf(ingredient)
-                          ).map((suggestion) => (
-                            <div
-                              className="suggestion-container"
-                              onClick={() => handleSuggestionClick(suggestion)}
-                            >
-                              {suggestion}
-                            </div>
-                          ))}
+                          {getSuggestions(ingredients.indexOf(ingredient)).map(
+                            (suggestion) => (
+                              <div
+                                className="suggestion-container"
+                                onClick={() =>
+                                  handleSuggestionClick(suggestion)
+                                }
+                              >
+                                {suggestion}
+                              </div>
+                            )
+                          )}
                         </div>
                       </div>
                     ) : null}
@@ -650,10 +782,13 @@ function Createingredient() {
                       placeholder={
                         strings.prep.ingredients.unit.placeholder[theme.lang]
                       }
-                      // value={names[lang]}
-                      // onChange={(event) =>
-                      //   handleChangeNames(lang, event.target.value)
-                      // }
+                      value={ingredient.unit}
+                      onChange={(event) =>
+                        handleIngredientUnitChange(
+                          ingredients.indexOf(ingredient),
+                          event.target.value
+                        )
+                      }
                     />
                   </div>
                   <div className="createRecipe-cuantity-container">
@@ -893,6 +1028,27 @@ function Createingredient() {
               </div>
             ))}
           </div>
+
+          {/* Create recipe */}
+          <>
+            <div
+              className="btn createRecipe-btn"
+              onClick={() => {
+                createRecipe(true);
+              }}
+            >
+              {strings.Opc.submit.publish[theme.lang]}
+            </div>
+            <p
+              className="createCat-title-container"
+              onClick={() => {
+                createRecipe(false);
+              }}
+            >
+              {strings.Opc.submit.saveDraft[theme.lang]}
+            </p>
+            <p className="createRecipe-error">{error}</p>
+          </>
         </div>
       </div>
     </div>

@@ -584,8 +584,8 @@ body {
   margin-bottom: 10px;
 }
 .add-ingredient-btn {
-  padding: 5px 20px;
-  min-width: 40%;
+  padding: 2px 20px;
+  min-width: 35%;
   align-self: center;
 }
 .createRecipe-instructions-num {
@@ -613,6 +613,19 @@ body {
 .create-tag-btn {
   max-width: 40%;
   padding: 2px;
+}
+.createRecipe-btn {
+  margin: 0 0 -10px 0;
+  width: 50%;
+  padding: 6px 10px;
+  align-self: center;
+}
+.createRecipe-error {
+  color: var(--errors);
+  margin: -20px 0 0 0;
+  align-self: center;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 /* Default */
