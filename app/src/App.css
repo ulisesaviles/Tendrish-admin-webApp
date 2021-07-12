@@ -443,7 +443,7 @@ body {
   z-index: 1;
 }
 .createRecipe-opc-container {
-  width: 35%;
+  min-width: 35%;
   z-index: 0;
 }
 .createRecipe-selected-image {
@@ -626,6 +626,85 @@ body {
   align-self: center;
   font-size: 14px;
   font-weight: 500;
+}
+.accompaniment-selected {
+  display: flex;
+  justify-content: space-between;
+  max-width: 90px;
+  padding: 1px 15px;
+  margin: 5px 0;
+}
+.accompaniment-selected:hover {
+  transform: translateY(0);
+}
+.remove-accompaniment {
+  transition: var(--animation-short);
+}
+.remove-accompaniment:hover {
+  transform: scale(1.2);
+}
+.selectedAccompaniments {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 100%;
+}
+.accompaniments-suggestions-container {
+  max-height: 250px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 15px 0;
+}
+.accompaniments-suggestion-container {
+  width: 40%;
+  height: 160px;
+}
+.accompaniments-suggestion-img {
+  width: 100%;
+  height: auto;
+}
+.accompaniments-suggestion-img-super-container {
+  width: 100%;
+  overflow: hidden;
+  height: 65%;
+  display: flex;
+  align-items: center;
+  border-top-right-radius: var(--div-border-radius);
+  border-top-left-radius: var(--div-border-radius);
+}
+.accompaniments-suggestion-img-container {
+  display: flex;
+  width: calc(80vw * 0.35 * 0.4);
+  overflow: hidden;
+}
+.accompaniments-suggestion-container {
+  box-shadow: var(--shadow);
+  border-radius: var(--div-border-radius);
+  margin: 0;
+}
+.accompaniments-suggestion-text-container {
+  padding: 2px 10px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.accompaniments-suggestion-select {
+  padding: 1px 20px;
+  border-radius: var(--div-border-radius);
+  box-shadow: var(--shadow);
+}
+.accompaniments-suggestion-select:hover {
+  background-image: var(--gradient);
+  font-weight: 600;
+  cursor: pointer;
+  color: rgb(255, 255, 255);
 }
 
 /* Default */

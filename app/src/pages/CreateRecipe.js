@@ -12,6 +12,7 @@ import {
   MdAdd,
   MdRemove,
   MdRemoveCircle,
+  MdClose,
 } from "react-icons/md";
 
 // Style
@@ -32,6 +33,16 @@ function Createingredient() {
     ingredients: [],
     tags: [],
     creators: [],
+    accompaniments: [
+      {
+        img: "",
+        name: {
+          es: "",
+          en: "",
+        },
+        id: "",
+      },
+    ],
   });
 
   // General
@@ -71,6 +82,18 @@ function Createingredient() {
   const [newTag, setNewTag] = useState({});
   const [createTagWasClicked, setCreateTagWasClicked] = useState(false);
   const [error, setError] = useState(null);
+  const [accompaniments, setAccompaniments] = useState([]);
+  const [accompanimentInput, setAccompanimentInput] = useState("");
+  const [accompanimentsSuggestions, setAccompanimentsSuggestions] = useState([
+    {
+      img: "",
+      name: {
+        es: "",
+        en: "",
+      },
+      id: "",
+    },
+  ]);
 
   // Functions
   const addIngredient = () => {
@@ -127,13 +150,14 @@ function Createingredient() {
         prep: {
           servings,
           time,
-          ingredients, // Quitarle el name
+          ingredients,
           instructions,
         },
         opc: {
           notes,
           tags: selectedTagsIds,
           creator: defaultValues.creators[selectedCreatorIndex].id,
+          accompaniments: formatAccompaniments([...accompaniments]),
         },
       };
       console.log({ method: "createRecipe", recipe, publish });
@@ -201,6 +225,16 @@ function Createingredient() {
     setDisplayCreateTag(false);
     setNewTag({ ...multiLangObj });
     setSelectedCreatorIndex(0);
+    setAccompanimentInput("");
+    setAccompaniments([]);
+    setAccompanimentsSuggestions([...defaultValues.accompaniments]);
+  };
+
+  const formatAccompaniments = (accompaniments) => {
+    for (let i = 0; i < accompaniments.length; i++) {
+      accompaniments[i] = accompaniments[i].id;
+    }
+    return accompaniments;
   };
 
   const getSuggestions = (ingredientIndex) => {
@@ -228,6 +262,33 @@ function Createingredient() {
       setIngredients(tempIngredients);
     }
     return suggestions;
+  };
+
+  const handleAccompanimentsChange = (type, index) => {
+    let tempAccompaniments = [...accompaniments];
+    if (type === "remove") {
+      tempAccompaniments.splice(index, 1);
+    } else {
+      if (!accompaniments.includes(accompanimentsSuggestions[index])) {
+        tempAccompaniments.push(accompanimentsSuggestions[index]);
+      }
+    }
+    setAccompaniments(tempAccompaniments);
+  };
+
+  const handleAccompanimentsInputChange = (str) => {
+    setAccompanimentInput(str);
+    let tempSuggestions = [];
+    for (let i = 0; i < defaultValues.accompaniments.length; i++) {
+      if (
+        defaultValues.accompaniments[i].name[theme.lang]
+          .substring(0, str.length)
+          .toLowerCase() === str.toLowerCase()
+      ) {
+        tempSuggestions.push(defaultValues.accompaniments[i]);
+      }
+    }
+    setAccompanimentsSuggestions(tempSuggestions);
   };
 
   const handleClickTag = (id) => {
@@ -337,6 +398,7 @@ function Createingredient() {
     });
     if (response.status === 200) {
       setDefaultValues(response.data);
+      setAccompanimentsSuggestions(response.data.accompaniments);
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }
@@ -1027,6 +1089,65 @@ function Createingredient() {
                 <p className="ingredient-lang">{creator.name}</p>
               </div>
             ))}
+          </div>
+
+          {/* Accompaniments */}
+          <div className="input-section">
+            <h3 className="input-name">
+              {strings.Opc.accompaniments.title[theme.lang]}
+            </h3>
+            <input
+              className="input"
+              placeholder={strings.Opc.accompaniments.placeholder[theme.lang]}
+              value={accompanimentInput}
+              onChange={(event) =>
+                handleAccompanimentsInputChange(event.target.value)
+              }
+            />
+            <div className="selectedAccompaniments">
+              {accompaniments.map((accompaniment) => (
+                <div
+                  className="btn accompaniment-selected"
+                  onClick={() =>
+                    handleAccompanimentsChange(
+                      "remove",
+                      accompaniments.indexOf(accompaniment)
+                    )
+                  }
+                >
+                  {accompaniment.name[theme.lang]}{" "}
+                  <MdClose className="remove-accompaniment" />
+                </div>
+              ))}
+            </div>
+            <div className="accompaniments-suggestions-container">
+              {accompanimentsSuggestions.map((suggestion) => (
+                <div className="accompaniments-suggestion-container">
+                  <div className="accompaniments-suggestion-img-super-container">
+                    <div className="accompaniments-suggestion-img-container">
+                      <img
+                        src={suggestion.img}
+                        className="accompaniments-suggestion-img"
+                      />
+                    </div>
+                  </div>
+                  <div className="accompaniments-suggestion-text-container">
+                    {suggestion.name[theme.lang]}
+                    <div
+                      className="accompaniments-suggestion-select"
+                      onClick={() =>
+                        handleAccompanimentsChange(
+                          "add",
+                          accompanimentsSuggestions.indexOf(suggestion)
+                        )
+                      }
+                    >
+                      {strings.Opc.accompaniments.select[theme.lang]}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Create recipe */}

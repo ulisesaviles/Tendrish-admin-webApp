@@ -490,6 +490,20 @@ export const createRecipe = {
       es: "Asignar creador (opcional)",
       en: "Asign creator (optional)",
     },
+    accompaniments: {
+      title: {
+        es: "Acompañamientos",
+        en: "Accompaniments",
+      },
+      placeholder: {
+        es: "Ingresa el nombre de algún acompañamiento",
+        en: "Enter the name of an accompaniment",
+      },
+      select: {
+        es: "Seleccionar",
+        en: "Select",
+      },
+    },
     submit: {
       publish: {
         es: "Publicar receta",
