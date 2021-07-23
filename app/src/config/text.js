@@ -410,7 +410,7 @@ export const createRecipe = {
     },
     ingredients: {
       title: {
-        es: "Ingerdientes",
+        es: "Ingredientes",
         en: "Ingredients",
       },
       placeholder: {
