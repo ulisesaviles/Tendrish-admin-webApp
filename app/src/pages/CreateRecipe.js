@@ -68,7 +68,7 @@ function Createingredient() {
       numerator: 1,
       denominator: 1,
     },
-    unit: "",
+    unit: {},
   };
   const [ingredients, setIngredients] = useState([defaultIngredient]);
   const [ingredientsInputs, setIngredientsInputs] = useState([""]);
@@ -438,9 +438,9 @@ function Createingredient() {
     }
   };
 
-  const handleIngredientUnitChange = (ingredientIndex, unit) => {
+  const handleIngredientUnitChange = (ingredientIndex, unit, lang) => {
     let tempIngredients = [...ingredients];
-    tempIngredients[ingredientIndex].unit = unit;
+    tempIngredients[ingredientIndex].unit[lang] = unit;
     setIngredients(tempIngredients);
   };
 
@@ -835,23 +835,35 @@ function Createingredient() {
                       </div>
                     ) : null}
                   </div>
-                  <div className="input-container">
+                  {/* Unit section */}
+                  <div style={{ width: "100%" }}>
                     <p className="input-lang">{`${
                       strings.prep.ingredients.unit.title[theme.lang]
                     }: `}</p>
-                    <input
-                      className="input"
-                      placeholder={
-                        strings.prep.ingredients.unit.placeholder[theme.lang]
-                      }
-                      value={ingredient.unit}
-                      onChange={(event) =>
-                        handleIngredientUnitChange(
-                          ingredients.indexOf(ingredient),
-                          event.target.value
-                        )
-                      }
-                    />
+                    <div className="createReicpe-unit-langs-container">
+                      {usedLangs.map((lang) => (
+                        <div
+                          className="input-container"
+                          key={usedLangs.indexOf(lang)}
+                        >
+                          <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
+                          <input
+                            className="input"
+                            placeholder={
+                              strings.prep.ingredients.unit.placeholder[lang]
+                            }
+                            value={ingredient.unit[lang]}
+                            onChange={(event) =>
+                              handleIngredientUnitChange(
+                                ingredients.indexOf(ingredient),
+                                event.target.value,
+                                lang
+                              )
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <div className="createRecipe-cuantity-container">
                     <p className="input-lang">{`${

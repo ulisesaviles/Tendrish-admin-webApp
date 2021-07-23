@@ -588,6 +588,10 @@ body {
   min-width: 35%;
   align-self: center;
 }
+.createReicpe-unit-langs-container {
+  width: 100%;
+  margin: 5px 0 0 20px;
+}
 .createRecipe-instructions-num {
   margin: 0 10px 0 0;
 }
