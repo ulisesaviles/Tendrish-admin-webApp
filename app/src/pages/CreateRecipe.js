@@ -397,6 +397,7 @@ function Createingredient() {
       },
     });
     if (response.status === 200) {
+      console.log(response.data);
       setDefaultValues(response.data);
       setAccompanimentsSuggestions(response.data.accompaniments);
     } else {
