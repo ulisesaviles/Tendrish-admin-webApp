@@ -21,7 +21,7 @@ function Createingredient() {
   let tempNames = {};
   tempNames[langs.default] = "";
   const [names, setNames] = useState(tempNames);
-  const [measuredBy, setMeasuredBy] = useState("pieces");
+  const [measuredBy, setMeasuredBy] = useState("piece");
   const initialNutriValues = {
     calories: "0",
     totalFat: "0",
