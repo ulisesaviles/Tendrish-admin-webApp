@@ -18,10 +18,10 @@ function Createingredient() {
   // Constants
   const theme = getTheme();
   const [usedLangs, setUsedLangs] = useState([langs.default]);
-  const [error, setError] = useState(null);
   let tempNames = {};
   tempNames[langs.default] = "";
   const [names, setNames] = useState(tempNames);
+  const [measuredBy, setMeasuredBy] = useState("pieces");
   const initialNutriValues = {
     calories: "0",
     totalFat: "0",
@@ -38,6 +38,7 @@ function Createingredient() {
     vitaminD: "0",
   };
   const [nutriValues, setNutriValues] = useState(initialNutriValues);
+  const [error, setError] = useState(null);
 
   // Functions
   const cleanNameInputs = () => {
@@ -69,6 +70,7 @@ function Createingredient() {
           method: "createIngredient",
           names,
           nutriValues,
+          measuredBy,
         },
       });
       if (response.status === 200) {
@@ -123,8 +125,10 @@ function Createingredient() {
   return (
     <div className="tab-container">
       <div className="content-container">
+        {/* General */}
         <div className="subsection ingredient-general-container">
           <h1 className="section-title">{strings.general.title[theme.lang]}</h1>
+          {/* Langs */}
           <div className="input-section">
             <h3 className="input-name">{strings.general.langs[theme.lang]}</h3>
             {langs.available.map((lang) => (
@@ -143,6 +147,7 @@ function Createingredient() {
               </div>
             ))}
           </div>
+          {/* Name */}
           <div className="input-section">
             <h3 className="input-name">
               {strings.general.name.title[theme.lang]}
@@ -163,7 +168,29 @@ function Createingredient() {
               ))}
             </div>
           </div>
+          {/* Measured by */}
+          <div className="input-section">
+            <h3 className="input-name">
+              {strings.general.measuredBy.title[theme.lang]}
+            </h3>
+            {strings.general.measuredBy.options.map((option) => (
+              <div
+                className="ingredient-lang-container"
+                onClick={() => {
+                  setMeasuredBy(option.key);
+                }}
+              >
+                {measuredBy === option.key ? (
+                  <MdCheckBox className="ingredient-lang-checkbox" />
+                ) : (
+                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                )}
+                <p className="ingredient-lang">{option[theme.lang]}</p>
+              </div>
+            ))}
+          </div>
         </div>
+        {/* Nutrivalues */}
         <div className="subsection ingredient-nutrivalue-container">
           <h1 className="section-title">
             {strings.nutritionalInfoTitle[theme.lang]}

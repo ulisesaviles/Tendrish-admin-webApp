@@ -148,6 +148,29 @@ export const createIngredient = {
         en: "Enter the ingredient's name",
       },
     },
+    measuredBy: {
+      title: {
+        es: "Medido por",
+        en: "Measured by",
+      },
+      options: [
+        {
+          key: "mass",
+          es: "Masa",
+          en: "Mass",
+        },
+        {
+          key: "volume",
+          es: "Volumen",
+          en: "Volume",
+        },
+        {
+          key: "piece",
+          es: "Pieza",
+          en: "Piece",
+        },
+      ],
+    },
   },
   nutritionalInfo: [
     {
