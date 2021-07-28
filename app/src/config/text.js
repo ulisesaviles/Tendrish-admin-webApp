@@ -592,3 +592,111 @@ export const createRecipe = {
     },
   },
 };
+
+export const viewRecipe = {
+  search: {
+    title: {
+      es: "Buscador de recetas",
+      en: "Recipe finder",
+    },
+    placeholder: {
+      es: "Ingresa el nombre de alguna receta",
+      en: "Enter the name of a recipe",
+    },
+    visibility: {
+      shown: {
+        es: "Disponible",
+        en: "Displayed",
+      },
+      hidden: {
+        es: "Oculta",
+        en: "Hidden",
+      },
+    },
+    viewBtn: {
+      en: "View",
+      es: "Ver",
+    },
+    states: {
+      undone: {
+        es: "Presiona el botón de búsqueda",
+        en: "Press the search button",
+      },
+      empty: {
+        es: "Ninguna receta coincide con su búsqueda",
+        en: "No recipe matches your search",
+      },
+    },
+  },
+  recipe: {
+    title: {
+      es: "Receta",
+      en: "Recipe",
+    },
+    options: {
+      visibility: {
+        shown: {
+          es: "Disponible",
+          en: "Displayed",
+        },
+        hidden: {
+          es: "Oculta",
+          en: "Hidden",
+        },
+      },
+      editBtn: {
+        es: "Editar receta",
+        en: "Edit recipe",
+      },
+      deleteRecipe: {
+        es: "Eliminar receta",
+        en: "Delete recipe",
+      },
+      isInFreeTrial: {
+        true: {
+          es: "Gratis",
+          en: "Free",
+        },
+        false: {
+          es: "Premium",
+          en: "Premium",
+        },
+      },
+    },
+    recipe: {
+      ingredients: {
+        title: {
+          es: "Ingredientes",
+          en: "Ingredients",
+        },
+        servings: {
+          es: "Porciones",
+          en: "Servings",
+        },
+      },
+      instructions: {
+        es: "Instrucciones",
+        en: "Instructions",
+      },
+      accompaniments: {
+        title: {
+          es: "Acompañamientos",
+          en: "Accompaniments",
+        },
+        viewBtn: {
+          es: "Ver",
+          en: "View",
+        },
+      },
+      nutriFacts: {},
+      like: {
+        es: "Me gusta",
+        en: "Like",
+      },
+      dislike: {
+        en: "Dislike",
+        es: "No me gusta",
+      },
+    },
+  },
+};
