@@ -453,6 +453,49 @@ export const createRecipe = {
           es: "Ingresa la unidad de la cantidad del ingrediente",
           en: "Enter the unit of the ingredient's quantity",
         },
+        suggestions: {
+          mass: [
+            {
+              key: "kg",
+              es: "Kilogramos",
+              en: "Kilograms",
+            },
+            {
+              key: "gr",
+              es: "Gramos",
+              en: "Grams",
+            },
+          ],
+          volume: [
+            {
+              key: "teaspoon",
+              es: "Cucharaditas",
+              en: "Teaspoons",
+            },
+            {
+              key: "tablespoon",
+              es: "Cucharadas",
+              en: "Tablespoons",
+            },
+            {
+              key: "cup",
+              es: "Tazas",
+              en: "Cups",
+            },
+            {
+              key: "L",
+              es: "Litros",
+              en: "Cucharadas",
+            },
+          ],
+          piece: [
+            {
+              key: "piece",
+              es: "Piezas",
+              en: "Pieces",
+            },
+          ],
+        },
       },
       btn: {
         es: "Agregar ingrediente",

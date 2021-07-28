@@ -68,7 +68,8 @@ function Createingredient() {
       numerator: 1,
       denominator: 1,
     },
-    unit: {},
+    unit: "",
+    measuredBy: "",
   };
   const [ingredients, setIngredients] = useState([defaultIngredient]);
   const [ingredientsInputs, setIngredientsInputs] = useState([""]);
@@ -242,6 +243,7 @@ function Createingredient() {
     let suggestions = [];
     let tempIngredients = [...ingredients];
     let id = null;
+    let measuredBy = null;
     for (let i = 0; i < defaultValues.ingredients.length; i++) {
       if (
         defaultValues.ingredients[i].name[theme.lang]
@@ -255,9 +257,18 @@ function Createingredient() {
         ingredientName.toLowerCase()
       ) {
         id = defaultValues.ingredients[i].id;
+        measuredBy = defaultValues.ingredients[i].measuredBy;
       }
     }
-    tempIngredients[ingredientIndex].id = id;
+    tempIngredients[ingredientIndex] = {
+      ...tempIngredients[ingredientIndex],
+      id,
+      measuredBy,
+      unit:
+        measuredBy !== null
+          ? strings.prep.ingredients.unit.suggestions[measuredBy][0].key
+          : null,
+    };
     if (JSON.stringify(tempIngredients) !== JSON.stringify(ingredients)) {
       setIngredients(tempIngredients);
     }
@@ -307,26 +318,25 @@ function Createingredient() {
     setDescription(tempDescription);
   };
 
-  const handleIngredientQuantityChange = (index, isNumerator, changeType) => {
+  const handleIngredientQuantityChange = (index, isNumerator, newValue) => {
     let tempIngredients = [...ingredients];
-    tempIngredients[index].cuantity[
-      isNumerator ? "numerator" : "denominator"
-    ] +=
-      changeType === "sum"
-        ? 1
-        : tempIngredients[index].cuantity[
-            isNumerator ? "numerator" : "denominator"
-          ] === 1
-        ? 0
-        : -1;
+    console.log(newValue);
+    if (!isNaN(newValue) && parseInt(newValue) >= 1) {
+      tempIngredients[index].cuantity[
+        isNumerator ? "numerator" : "denominator"
+      ] = parseInt(newValue);
+    }
+    if (newValue === "") {
+      tempIngredients[index].cuantity[
+        isNumerator ? "numerator" : "denominator"
+      ] = newValue;
+    }
     setIngredients(tempIngredients);
   };
 
-  const handleIngredientsChange = (changeType, index, value) => {
+  const handleIngredientsChange = (index, value) => {
     let tempIngredientInputs = [...ingredientsInputs];
-    if (changeType === "name") {
-      tempIngredientInputs[index] = value;
-    }
+    tempIngredientInputs[index] = value;
     setIngredientsInputs(tempIngredientInputs);
   };
 
@@ -439,9 +449,9 @@ function Createingredient() {
     }
   };
 
-  const handleIngredientUnitChange = (ingredientIndex, unit, lang) => {
+  const handleIngredientUnitChange = (ingredientIndex, unit) => {
     let tempIngredients = [...ingredients];
-    tempIngredients[ingredientIndex].unit[lang] = unit;
+    tempIngredients[ingredientIndex].unit = unit;
     setIngredients(tempIngredients);
   };
 
@@ -479,6 +489,12 @@ function Createingredient() {
       // Check ingredients
       for (let i = 0; i < ingredients.length; i++) {
         if (ingredients[i].id == null) {
+          return false;
+        }
+        if (isNaN(ingredients[i].cuantity.denominator)) {
+          return false;
+        }
+        if (isNaN(ingredients[i].cuantity.numerator)) {
           return false;
         }
       }
@@ -783,6 +799,7 @@ function Createingredient() {
                 className="createRecipe-ingredient-container"
                 key={ingredients.indexOf(ingredient)}
               >
+                {/* Bullets */}
                 <div>
                   <h1 className="createRecipe-ingredient-bullet">•</h1>
                   <MdRemoveCircle
@@ -794,6 +811,7 @@ function Createingredient() {
                   {ingredients.length > 1 ? null : null}
                 </div>
                 <div className="createRecipe-ingredient-inputs-container">
+                  {/* Ingredient name */}
                   <div className="createRecipe-ingredient-input-container">
                     <input
                       className={`input${
@@ -805,7 +823,6 @@ function Createingredient() {
                       value={ingredientsInputs[ingredients.indexOf(ingredient)]}
                       onChange={(event) =>
                         handleIngredientsChange(
-                          "name",
                           ingredients.indexOf(ingredient),
                           event.target.value
                         )
@@ -836,36 +853,44 @@ function Createingredient() {
                       </div>
                     ) : null}
                   </div>
+
                   {/* Unit section */}
-                  <div style={{ width: "100%" }}>
+                  <div style={{ width: "100%", marginBottom: 10 }}>
                     <p className="input-lang">{`${
                       strings.prep.ingredients.unit.title[theme.lang]
                     }: `}</p>
-                    <div className="createReicpe-unit-langs-container">
-                      {usedLangs.map((lang) => (
-                        <div
-                          className="input-container"
-                          key={usedLangs.indexOf(lang)}
-                        >
-                          <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
-                          <input
-                            className="input"
-                            placeholder={
-                              strings.prep.ingredients.unit.placeholder[lang]
-                            }
-                            value={ingredient.unit[lang]}
-                            onChange={(event) =>
-                              handleIngredientUnitChange(
-                                ingredients.indexOf(ingredient),
-                                event.target.value,
-                                lang
-                              )
-                            }
-                          />
-                        </div>
-                      ))}
+                    <div style={{ marginLeft: 15 }}>
+                      {ingredient.id != null
+                        ? strings.prep.ingredients.unit.suggestions[
+                            ingredient.measuredBy
+                          ].map((suggestion) => (
+                            <div
+                              className="ingredient-lang-container"
+                              onClick={() => {
+                                handleIngredientUnitChange(
+                                  ingredients.indexOf(ingredient),
+                                  suggestion.key
+                                );
+                              }}
+                              key={strings.prep.ingredients.unit.suggestions[
+                                ingredient.measuredBy
+                              ].indexOf(suggestion)}
+                            >
+                              {suggestion.key === ingredient.unit ? (
+                                <MdCheckBox className="ingredient-lang-checkbox" />
+                              ) : (
+                                <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                              )}
+                              <p className="ingredient-lang">
+                                {suggestion[theme.lang]}
+                              </p>
+                            </div>
+                          ))
+                        : null}
                     </div>
                   </div>
+
+                  {/* Cuantity */}
                   <div className="createRecipe-cuantity-container">
                     <p className="input-lang">{`${
                       strings.prep.ingredients.quantity[theme.lang]
@@ -878,20 +903,30 @@ function Createingredient() {
                             handleIngredientQuantityChange(
                               ingredients.indexOf(ingredient),
                               true,
-                              "subs"
+                              ingredient.cuantity.numerator - 1
                             )
                           }
                         >
                           <MdRemove />
                         </div>
-                        {ingredient.cuantity.numerator}
+                        <input
+                          className="createRecipe-cuantity-input"
+                          value={ingredient.cuantity.numerator}
+                          onChange={(event) =>
+                            handleIngredientQuantityChange(
+                              ingredients.indexOf(ingredient),
+                              true,
+                              event.target.value
+                            )
+                          }
+                        />
                         <div
                           className="createRecepy-add-btn btn createRecepy-add-btn-mini"
                           onClick={() =>
                             handleIngredientQuantityChange(
                               ingredients.indexOf(ingredient),
                               true,
-                              "sum"
+                              ingredient.cuantity.numerator + 1
                             )
                           }
                         >
@@ -906,20 +941,30 @@ function Createingredient() {
                             handleIngredientQuantityChange(
                               ingredients.indexOf(ingredient),
                               false,
-                              "subs"
+                              ingredient.cuantity.numerator - 1
                             )
                           }
                         >
                           <MdRemove />
                         </div>
-                        {ingredient.cuantity.denominator}
+                        <input
+                          className="createRecipe-cuantity-input"
+                          value={ingredient.cuantity.denominator}
+                          onChange={(event) =>
+                            handleIngredientQuantityChange(
+                              ingredients.indexOf(ingredient),
+                              false,
+                              event.target.value
+                            )
+                          }
+                        />
                         <div
                           className="createRecepy-add-btn btn createRecepy-add-btn-mini"
                           onClick={() =>
                             handleIngredientQuantityChange(
                               ingredients.indexOf(ingredient),
                               false,
-                              "sum"
+                              ingredient.cuantity.numerator + 1
                             )
                           }
                         >

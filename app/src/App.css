@@ -577,6 +577,13 @@ body {
 .createRecepy-quantity-input-container-mini {
   width: 30%;
 }
+.createRecipe-cuantity-input {
+  border: 0;
+  background-color: rgba(0, 0, 0, 0);
+  color: var(--primary-font-color);
+  text-align: center;
+  max-width: 40px;
+}
 .createRecipe-cuantity-container {
   display: flex;
   flex-direction: row;
