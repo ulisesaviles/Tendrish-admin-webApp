@@ -698,5 +698,13 @@ export const viewRecipe = {
         es: "No me gusta",
       },
     },
+    deleteConfirmation: {
+      es: (recipeName) => `Eliminarás la receta "${recipeName}"`,
+      en: (recipeName) => `You will delete the recipe "${recipeName}"`,
+    },
+    empty: {
+      es: "Selecciona una receta",
+      en: "Select a recipe",
+    },
   },
 };
