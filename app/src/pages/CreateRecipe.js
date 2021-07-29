@@ -1184,6 +1184,7 @@ function Createingredient() {
                   <div className="accompaniments-suggestion-img-super-container">
                     <div className="accompaniments-suggestion-img-container">
                       <img
+                        alt="accompaniments-suggestion-img"
                         src={suggestion.img}
                         className="accompaniments-suggestion-img"
                       />
