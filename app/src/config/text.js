@@ -485,7 +485,7 @@ export const createRecipe = {
             {
               key: "L",
               es: "Litros",
-              en: "Cucharadas",
+              en: "Liters",
             },
           ],
           piece: [
@@ -696,6 +696,42 @@ export const viewRecipe = {
       dislike: {
         en: "Dislike",
         es: "No me gusta",
+      },
+      units: {
+        mass: {
+          kg: {
+            es: "kg",
+            en: "kg",
+          },
+          gr: {
+            es: "gr",
+            en: "gr",
+          },
+        },
+        volume: {
+          teaspoon: {
+            es: "cucharaditas",
+            en: "teaspoons",
+          },
+          tablespoon: {
+            es: "cucharadas",
+            en: "tablespoons",
+          },
+          cup: {
+            es: "tazas",
+            en: "cups",
+          },
+          L: {
+            es: "L",
+            en: "L",
+          },
+        },
+        piece: {
+          piece: {
+            es: "pzs",
+            en: "pcs",
+          },
+        },
       },
     },
     deleteConfirmation: {

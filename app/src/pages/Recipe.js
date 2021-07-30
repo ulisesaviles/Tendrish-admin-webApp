@@ -22,6 +22,7 @@ function Createingredient() {
   const [searchHidden, setSearchHidden] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [currentRecipeIndex, setCurrentRecipeIndex] = useState(null);
+  const [queriedIndexes, setQueriedIndexes] = useState([]);
   // Recipe
   const [currentRecipe, setCurrentRecipe] = useState(null);
 
@@ -30,18 +31,156 @@ function Createingredient() {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
-  const deleteRecipe = () => {
-    if (window.confirm(strings.recipe.deleteConfirmation[theme.lang]("Sample")))
-      console.log("Delete");
-    else console.log("Cancelled");
+  const changeRecipeVisibility = (visibility) => {
+    setCurrentRecipe({ ...currentRecipe, published: visibility });
+    let admin = JSON.parse(localStorage.getItem("user"));
+    axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "changeRecipeVisibility",
+        admin: {
+          email: admin.id,
+          password: admin.personalInfo.password,
+        },
+        recipeId: currentRecipe.general.name.en.toLowerCase(),
+        published: visibility,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        let temp = searchResults;
+        temp[currentRecipeIndex] = {
+          ...temp[currentRecipeIndex],
+          published: visibility,
+        };
+      } else {
+        setCurrentRecipe({
+          ...currentRecipe,
+          published: searchResults[currentRecipeIndex].published,
+        });
+      }
+    });
   };
 
-  const handleRecipeClick = (index) => {
+  const changeRecipeCost = (isFree) => {
+    setCurrentRecipe({ ...currentRecipe, free: isFree });
+    let admin = JSON.parse(localStorage.getItem("user"));
+    axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "changeRecipeCost",
+        admin: {
+          email: admin.id,
+          password: admin.personalInfo.password,
+        },
+        recipeId: currentRecipe.general.name.en.toLowerCase(),
+        free: isFree,
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        console.log(
+          `The server succesfully changed recipe's free to ${isFree}`
+        );
+        let temp = searchResults;
+        temp[currentRecipeIndex] = {
+          ...temp[currentRecipeIndex],
+          free: isFree,
+        };
+      } else {
+        setCurrentRecipe({
+          ...currentRecipe,
+          free: searchResults[currentRecipeIndex].free,
+        });
+      }
+    });
+  };
+
+  const deleteRecipe = async () => {
+    if (
+      window.confirm(
+        strings.recipe.deleteConfirmation[theme.lang](
+          currentRecipe.general.name[theme.lang]
+        )
+      )
+    ) {
+      let admin = JSON.parse(localStorage.getItem("user"));
+      await axios({
+        method: "post",
+        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+        data: {
+          method: "deleteRecipe",
+          admin: {
+            email: admin.id,
+            password: admin.personalInfo.password,
+          },
+          recipeId: currentRecipe.general.name.en.toLowerCase(),
+        },
+      });
+      setValuesToDefault();
+    } else console.log("Cancelled");
+  };
+
+  const getFullRecipe = async (recipe) => {
+    // Get ingredients
+    recipe.prep.ingredients = await getRecipeIngredients(
+      recipe.prep.ingredients
+    );
+    // Get accompaniments
+    recipe.opc.accompaniments = await getRecipeAccompaniments(
+      recipe.opc.accompaniments
+    );
+    return recipe;
+  };
+
+  const getRecipeAccompaniments = async (accompanimentsList) => {
+    for (let i = 0; i < accompanimentsList.length; i++) {
+      accompanimentsList[i] = (
+        await axios({
+          method: "post",
+          url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+          data: {
+            method: "getRecipeById",
+            recipeId: accompanimentsList[i],
+          },
+        })
+      ).data;
+    }
+    return accompanimentsList;
+  };
+
+  const getRecipeIngredients = async (ingredientsList) => {
+    for (let i = 0; i < ingredientsList.length; i++) {
+      ingredientsList[i].name = (
+        await axios({
+          method: "post",
+          url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+          data: {
+            method: "getIngredientName",
+            ingredientId: ingredientsList[i].id,
+          },
+        })
+      ).data;
+    }
+    return ingredientsList;
+  };
+
+  const handleRecipeClick = async (index) => {
     setCurrentRecipeIndex(index);
-    setCurrentRecipe(searchResults[index]);
+    if (!queriedIndexes.includes(index)) {
+      setQueriedIndexes([...queriedIndexes, index]);
+      let recipe = await getFullRecipe(searchResults[index]);
+      let temp = searchResults;
+      temp[index] = recipe;
+      setSearchResults(temp);
+      setCurrentRecipe(recipe);
+    } else {
+      setCurrentRecipe(searchResults[index]);
+    }
   };
 
   const search = async () => {
+    setValuesToDefault();
     const response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -61,6 +200,13 @@ function Createingredient() {
     });
     setCurrentRecipe(null);
     if (response.status === 200) setSearchResults(response.data);
+  };
+
+  const setValuesToDefault = () => {
+    setCurrentRecipe(null);
+    setCurrentRecipeIndex(null);
+    setSearchResults(null);
+    setQueriedIndexes([]);
   };
 
   // Render
@@ -172,9 +318,118 @@ function Createingredient() {
               <p>{strings.recipe.empty[theme.lang]}</p>
             ) : (
               <>
+                {/* Recipe */}
                 <div className="recipe-recipeSection-recipe-container">
-                  {JSON.stringify(currentRecipe)}
+                  {/* Img */}
+                  <div className="recipe-recipeSection-recipe-img-container">
+                    <img
+                      src={currentRecipe.general.img}
+                      alt="recipe-recipeSection-recipe-img"
+                      className="recipe-recipeSection-recipe-img"
+                    />
+                  </div>
+                  {/* Content  */}
+                  <div className="recipe-recipeSection-recipe-content-container">
+                    {/* Details */}
+                    <div className="recipe-recipeSection-recipe-details-container">
+                      <p className="recipe-recipeSection-recipe-category">
+                        {capitilize(
+                          currentRecipe[`search-category-${theme.lang}`]
+                        )}
+                      </p>
+                      <p className="recipe-recipeSection-recipe-name">
+                        {capitilize(currentRecipe.general.name[theme.lang])}
+                      </p>
+                      <p className="recipe-recipeSection-recipe-description">
+                        {capitilize(
+                          currentRecipe.general.description[theme.lang]
+                        )}
+                      </p>
+                    </div>
+                    <div className="recipe-recipeSection-recipe-separator" />
+                    {/* Ingredients */}
+                    <>
+                      <p className="recipe-recipeSection-recipe-category">
+                        {strings.recipe.recipe.ingredients.title[theme.lang]}
+                      </p>
+                      {currentRecipe.prep.ingredients.map((ingredient) => (
+                        <div className="recipe-recipeSection-recipe-ingredient-container">
+                          <p className="recipe-recipeSection-recipe-ingredient-bullet">
+                            •
+                          </p>
+                          <p className="recipe-recipeSection-recipe-ingredient-cuantity">
+                            {ingredient.cuantity.denominator === 1
+                              ? ingredient.cuantity.numerator
+                              : `${ingredient.cuantity.numerator}/${ingredient.cuantity.denominator}`}
+                            {
+                              strings.recipe.recipe.units[
+                                ingredient.measuredBy
+                              ][ingredient.unit][theme.lang]
+                            }
+                          </p>
+                          <p style={{ margin: 0 }}>
+                            {ingredient.name[theme.lang]}
+                          </p>
+                        </div>
+                      ))}
+                    </>
+                    <div className="recipe-recipeSection-recipe-separator" />
+                    {/* Instructions */}
+                    <>
+                      <p className="recipe-recipeSection-recipe-category">
+                        {strings.recipe.recipe.instructions[theme.lang]}
+                      </p>
+                      {currentRecipe.prep.instructions.map((instruction) => (
+                        <div className="recipe-recipeSection-recipe-ingredient-container">
+                          <p className="recipe-recipeSection-recipe-ingredient-bullet">
+                            {currentRecipe.prep.instructions.indexOf(
+                              instruction
+                            ) + 1}
+                          </p>
+                          <p className="recipe-recipeSection-recipe-instruction">
+                            {instruction[theme.lang]}
+                          </p>
+                        </div>
+                      ))}
+                    </>
+                    <div className="recipe-recipeSection-recipe-separator" />
+                    {/* Accompaniments */}
+                    <>
+                      {currentRecipe.opc.accompaniments.length > 0 ? (
+                        <>
+                          <p className="recipe-recipeSection-recipe-category">
+                            {
+                              strings.recipe.recipe.accompaniments.title[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                          <div className="recipe-recipeSection-recipe-accompaniments-container">
+                            {currentRecipe.opc.accompaniments.map(
+                              (accompaniment) => (
+                                <div className="recipe-recipeSection-recipe-accompaniment-container">
+                                  <img
+                                    alt="recipe-recipeSection-recipe-accompaniment-img"
+                                    className="recipe-recipeSection-recipe-accompaniment-img"
+                                    src={accompaniment.general.img}
+                                  />
+                                  <p className="recipe-recipeSection-recipe-accompaniment-name">
+                                    {accompaniment.general.name[theme.lang]}
+                                  </p>
+                                  <p className="recipe-recipeSection-recipe-accompaniment-view">
+                                    {strings.search.viewBtn[theme.lang]}
+                                  </p>
+                                </div>
+                              )
+                            )}
+                          </div>
+                          <div className="recipe-recipeSection-recipe-separator" />
+                        </>
+                      ) : null}
+                    </>
+                  </div>
                 </div>
+                {/* Options */}
                 <div className="recipe-recipeSection-options-container">
                   {/* Visibility toggle */}
                   <div className="toggle recipe-search-visibility-toggle">
@@ -182,9 +437,7 @@ function Createingredient() {
                       className={`toggle-item${
                         !currentRecipe.published ? " toggle-item-selected" : ""
                       }`}
-                      onClick={() =>
-                        setCurrentRecipe({ ...currentRecipe, published: false })
-                      }
+                      onClick={() => changeRecipeVisibility(false)}
                     >
                       <p style={{ margin: 0 }}>
                         {strings.recipe.options.visibility.hidden[theme.lang]}
@@ -194,9 +447,7 @@ function Createingredient() {
                       className={`toggle-item${
                         currentRecipe.published ? " toggle-item-selected" : ""
                       }`}
-                      onClick={() =>
-                        setCurrentRecipe({ ...currentRecipe, published: true })
-                      }
+                      onClick={() => changeRecipeVisibility(true)}
                     >
                       <p style={{ margin: 0 }}>
                         {strings.recipe.options.visibility.shown[theme.lang]}
@@ -209,9 +460,7 @@ function Createingredient() {
                       className={`toggle-item${
                         currentRecipe.free ? " toggle-item-selected" : ""
                       }`}
-                      onClick={() =>
-                        setCurrentRecipe({ ...currentRecipe, free: true })
-                      }
+                      onClick={() => changeRecipeCost(true)}
                     >
                       <p style={{ margin: 0 }}>
                         {strings.recipe.options.isInFreeTrial.true[theme.lang]}
@@ -221,9 +470,7 @@ function Createingredient() {
                       className={`toggle-item${
                         !currentRecipe.free ? " toggle-item-selected" : ""
                       }`}
-                      onClick={() =>
-                        setCurrentRecipe({ ...currentRecipe, free: false })
-                      }
+                      onClick={() => changeRecipeCost(false)}
                     >
                       <p style={{ margin: 0 }}>
                         {strings.recipe.options.isInFreeTrial.false[theme.lang]}
