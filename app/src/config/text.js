@@ -874,6 +874,10 @@ export const viewRecipe = {
           },
         },
       },
+      notes: {
+        es: "Notas",
+        en: "Notes",
+      },
     },
     deleteConfirmation: {
       es: (recipeName) => `Eliminarás la receta "${recipeName}"`,

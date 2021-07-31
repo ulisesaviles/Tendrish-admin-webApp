@@ -646,6 +646,7 @@ body {
   max-width: 90px;
   padding: 1px 15px;
   margin: 5px 0;
+  text-align: center;
 }
 .accompaniment-selected:hover {
   transform: translateY(0);
@@ -951,7 +952,7 @@ body {
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin: 0 5px 0 5px;
+  margin: 5px 5px 5px 5px;
 }
 .recipe-recipeSection-recipe-accompaniment-img {
   height: 70px;
@@ -972,9 +973,11 @@ body {
 .recipe-recipeSection-recipe-accompaniments-container {
   overflow-x: scroll;
   padding: 15px 10px;
-  margin-bottom: -10px;
+  margin: -10px 0 -20px 0;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .recipe-recipeSection-recipe-nutrivalues-container {
   width: 90%;
@@ -1004,7 +1007,12 @@ body {
 .dailyvalue {
   text-align: center;
   font-size: 12px;
-  margin: 5px 0 20px 0;
+  margin: 5px 0 0 0;
+}
+.recipe-recipeSection-recipe-notes {
+  text-align: center;
+  margin: 0 0 20px 0;
+  width: 90%;
 }
 
 /* Default */
