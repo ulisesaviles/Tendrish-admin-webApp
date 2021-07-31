@@ -27,7 +27,6 @@ function Createingredient() {
   // Global
   const theme = getTheme();
   const [firstLoad, setFirstLoad] = useState(true);
-  const [queryCounter, setQueryCounter] = useState(0);
   const [defaultValues, setDefaultValues] = useState({
     categories: [],
     ingredients: [],
@@ -431,7 +430,7 @@ function Createingredient() {
     let recipeToEdit = localStorage.getItem("recipeToEdit");
     if (recipeToEdit !== null) {
       setRecipeToEdit(JSON.parse(recipeToEdit));
-      loadRecipeToInputs(JSON.parse(recipeToEdit));
+      loadRecipeToInputs(JSON.parse(recipeToEdit), response.data);
       localStorage.removeItem("recipeToEdit");
     }
   };
@@ -535,7 +534,7 @@ function Createingredient() {
     }
   };
 
-  const loadRecipeToInputs = (recipe) => {
+  const loadRecipeToInputs = (recipe, defaultValues) => {
     // usedLangs
     setUsedLangs(recipe.general.langs);
 
