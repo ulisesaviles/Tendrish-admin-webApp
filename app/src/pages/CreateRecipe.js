@@ -45,6 +45,7 @@ function Createingredient() {
     ],
   });
   const admin = JSON.parse(localStorage.getItem("user"));
+  const [recipeToEdit, setRecipeToEdit] = useState(null);
 
   // General
   const [usedLangs, setUsedLangs] = useState([langs.default]);
@@ -140,7 +141,12 @@ function Createingredient() {
   const createRecipe = async (publish) => {
     if (inputsAreValid()) {
       setError(null);
-      const imgUrl = (await uploadImgs())[0];
+      let imgUrl;
+      if (recipeToEdit === null) {
+        imgUrl = (await uploadImgs())[0];
+      } else {
+        imgUrl = recipeToEdit.general.img;
+      }
       let recipe = {
         general: {
           langs: usedLangs,
@@ -163,6 +169,20 @@ function Createingredient() {
         },
       };
       console.log({ method: "createRecipe", recipe, publish });
+      if (name[langs.default].toLowerCase() !== recipeToEdit.id) {
+        await axios({
+          method: "post",
+          url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+          data: {
+            method: "deleteRecipe",
+            admin: {
+              email: admin.id,
+              password: admin.personalInfo.password,
+            },
+            recipeId: recipeToEdit.id,
+          },
+        });
+      }
       const response = await axios({
         method: "post",
         url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -170,8 +190,8 @@ function Createingredient() {
       });
       if (response.status === 200) {
         alert("Agregado exitosamente");
-        clearInputs();
       }
+      clearInputs();
     } else {
       setError(strings.Opc.submit.error.inputs[theme.lang]);
     }
@@ -393,11 +413,6 @@ function Createingredient() {
   };
 
   const handleSetupQuery = async () => {
-    setQueryCounter(queryCounter + 1);
-    if (queryCounter > 3) {
-      alert("Llevas 3 perro.");
-      return;
-    }
     let response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -408,9 +423,16 @@ function Createingredient() {
     });
     if (response.status === 200) {
       setDefaultValues(response.data);
+      console.log(response.data);
       setAccompanimentsSuggestions(response.data.accompaniments);
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
+    }
+    let recipeToEdit = localStorage.getItem("recipeToEdit");
+    if (recipeToEdit !== null) {
+      setRecipeToEdit(JSON.parse(recipeToEdit));
+      loadRecipeToInputs(JSON.parse(recipeToEdit));
+      localStorage.removeItem("recipeToEdit");
     }
   };
 
@@ -511,6 +533,82 @@ function Createingredient() {
       setSelectedImage(null);
       setSelectedImageObj(null);
     }
+  };
+
+  const loadRecipeToInputs = (recipe) => {
+    // usedLangs
+    setUsedLangs(recipe.general.langs);
+
+    // Img
+    setSelectedImage(recipe.general.img);
+
+    // Category
+    for (let i = 0; i < defaultValues.categories.length; i++) {
+      if (defaultValues.categories[i].id === recipe.general.category) {
+        setSelectedCategoryIndex(i);
+        break;
+      }
+    }
+
+    // Servings
+    setServings(recipe.prep.servings);
+
+    // Time
+    setTime(recipe.prep.time);
+
+    // Selected tags
+    let tempTags = [];
+    for (let i = 0; i < defaultValues.tags.length; i++) {
+      for (let j = 0; j < recipe.opc.tags.length; j++) {
+        if (defaultValues.tags[i].id === recipe.opc.tags[j]) {
+          tempTags.push(recipe.opc.tags[j]);
+        }
+      }
+    }
+    setSelectedTagsIds(tempTags);
+
+    // Selected creator
+    for (let i = 0; i < defaultValues.creators.length; i++) {
+      if (defaultValues.creators[i].id === recipe.opc.creator) {
+        setSelectedCreatorIndex(i);
+        break;
+      }
+    }
+
+    // Ingredients
+    let tempIngredients = [];
+    let tempIngredientInputs = [];
+    for (let i = 0; i < recipe.prep.ingredients.length; i++) {
+      tempIngredients.push(recipe.prep.ingredients[i]);
+      tempIngredientInputs.push(recipe.prep.ingredients[i].id);
+    }
+    setIngredients(tempIngredients);
+    setIngredientsInputs(tempIngredientInputs);
+
+    // Lang dependent inputs
+    let tempName = {};
+    let tempDescription = {};
+    let tempNotes = {};
+    let tempInstructions = [];
+    for (
+      let langIndex = 0;
+      langIndex < recipe.general.langs.length;
+      langIndex++
+    ) {
+      const lang = recipe.general.langs[langIndex];
+      tempName[lang] = recipe.general.name[lang];
+      tempDescription[lang] = recipe.general.description[lang];
+      tempNotes[lang] =
+        recipe.opc.notes[lang] != null ? recipe.opc.notes[lang] : "";
+      for (let j = 0; j < recipe.prep.instructions.length; j++) {
+        if (tempInstructions[j] === undefined) tempInstructions[j] = {};
+        tempInstructions[j][lang] = recipe.prep.instructions[j][lang];
+      }
+    }
+    setName(tempName);
+    setDescription(tempDescription);
+    setNotes(tempNotes);
+    setInstructions(tempInstructions);
   };
 
   const removeIngredient = (index) => {

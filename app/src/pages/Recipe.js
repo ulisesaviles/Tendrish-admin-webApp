@@ -14,10 +14,14 @@ import { getTheme } from "../config/theme";
 // Http
 import axios from "axios";
 
+// Navigation
+import { useHistory } from "react-router-dom";
+
 function Createingredient() {
   // Constants
   const theme = getTheme();
   const admin = JSON.parse(localStorage.getItem("user"));
+  let history = useHistory();
   // Search
   const [searchResults, setSearchResults] = useState(null);
   const [searchHidden, setSearchHidden] = useState(false);
@@ -112,7 +116,6 @@ function Createingredient() {
         )
       )
     ) {
-      let admin = JSON.parse(localStorage.getItem("user"));
       await axios({
         method: "post",
         url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -127,6 +130,21 @@ function Createingredient() {
       });
       setValuesToDefault();
     } else console.log("Cancelled");
+  };
+
+  const editRecipe = () => {
+    // Save recipe in storage
+    localStorage.setItem(
+      "recipeToEdit",
+      JSON.stringify({
+        ...currentRecipe,
+        id: currentRecipe.general.name.en.toLowerCase(),
+      })
+    );
+    // Navigate to editRecipe
+    history.replace(
+      `?tab=CreateRecipe&lang=${theme.lang}&colorScheme=${theme.colorScheme}`
+    );
   };
 
   const getFullRecipe = async (recipe) => {
@@ -657,7 +675,10 @@ function Createingredient() {
                     ) : null}
                   </>
                   {/* Edit btn */}
-                  <div className="btn recipe-recipeSection-options-editRecipeBtn">
+                  <div
+                    className="btn recipe-recipeSection-options-editRecipeBtn"
+                    onClick={editRecipe}
+                  >
                     {strings.recipe.options.editBtn[theme.lang]}
                   </div>
                   {/* Delete btn */}
