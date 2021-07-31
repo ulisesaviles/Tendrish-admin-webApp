@@ -44,6 +44,7 @@ function Createingredient() {
       },
     ],
   });
+  const admin = JSON.parse(localStorage.getItem("user"));
 
   // General
   const [usedLangs, setUsedLangs] = useState([langs.default]);
@@ -397,7 +398,6 @@ function Createingredient() {
       alert("Llevas 3 perro.");
       return;
     }
-    console.log("I will make a query");
     let response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -407,7 +407,6 @@ function Createingredient() {
       },
     });
     if (response.status === 200) {
-      console.log(response.data);
       setDefaultValues(response.data);
       setAccompanimentsSuggestions(response.data.accompaniments);
     } else {
@@ -557,8 +556,8 @@ function Createingredient() {
         {/* General */}
         <div className="subsection createRecipe-general-container">
           <h1 className="section-title">{strings.general.title[theme.lang]}</h1>
+          {/* Langs */}
           <div className="input-section">
-            {/* Langs */}
             <h3 className="input-name">{strings.general.langs[theme.lang]}</h3>
             {langs.available.map((lang) => (
               <div
@@ -1126,88 +1125,103 @@ function Createingredient() {
           </div>
 
           {/* Creator */}
-          <div className="input-section">
-            <h3 className="input-name">{strings.Opc.creator[theme.lang]}</h3>
-            {defaultValues.creators.map((creator) => (
-              <div
-                key={defaultValues.creators.indexOf(creator)}
-                className="ingredient-lang-container"
-                onClick={() => {
-                  setSelectedCreatorIndex(
-                    defaultValues.creators.indexOf(creator)
-                  );
-                }}
-              >
-                {defaultValues.creators.indexOf(creator) ===
-                selectedCreatorIndex ? (
-                  <MdCheckBox className="ingredient-lang-checkbox" />
-                ) : (
-                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                )}
-                <p className="ingredient-lang">{creator.name}</p>
+          <>
+            {["Developer", "Super admin"].includes(admin.personalInfo.rol) ? (
+              <div className="input-section">
+                <h3 className="input-name">
+                  {strings.Opc.creator[theme.lang]}
+                </h3>
+                {defaultValues.creators.map((creator) => (
+                  <div
+                    key={defaultValues.creators.indexOf(creator)}
+                    className="ingredient-lang-container"
+                    onClick={() => {
+                      setSelectedCreatorIndex(
+                        defaultValues.creators.indexOf(creator)
+                      );
+                    }}
+                  >
+                    {defaultValues.creators.indexOf(creator) ===
+                    selectedCreatorIndex ? (
+                      <MdCheckBox className="ingredient-lang-checkbox" />
+                    ) : (
+                      <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                    )}
+                    <p className="ingredient-lang">{creator.name}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            ) : null}
+          </>
 
           {/* Accompaniments */}
-          <div className="input-section">
-            <h3 className="input-name">
-              {strings.Opc.accompaniments.title[theme.lang]}
-            </h3>
-            <input
-              className="input"
-              placeholder={strings.Opc.accompaniments.placeholder[theme.lang]}
-              value={accompanimentInput}
-              onChange={(event) =>
-                handleAccompanimentsInputChange(event.target.value)
-              }
-            />
-            <div className="selectedAccompaniments">
-              {accompaniments.map((accompaniment) => (
-                <div
-                  className="btn accompaniment-selected"
-                  onClick={() =>
-                    handleAccompanimentsChange(
-                      "remove",
-                      accompaniments.indexOf(accompaniment)
-                    )
-                  }
-                >
-                  {accompaniment.name[theme.lang]}{" "}
-                  <MdClose className="remove-accompaniment" />
-                </div>
-              ))}
-            </div>
-            <div className="accompaniments-suggestions-container">
-              {accompanimentsSuggestions.map((suggestion) => (
-                <div className="accompaniments-suggestion-container">
-                  <div className="accompaniments-suggestion-img-super-container">
-                    <div className="accompaniments-suggestion-img-container">
-                      <img
-                        alt="accompaniments-suggestion-img"
-                        src={suggestion.img}
-                        className="accompaniments-suggestion-img"
-                      />
-                    </div>
+          <>
+            {defaultValues.categories.length > 0 ? (
+              defaultValues.categories[selectedCategoryIndex].id ===
+              "accompaniments" ? null : (
+                <div className="input-section">
+                  <h3 className="input-name">
+                    {strings.Opc.accompaniments.title[theme.lang]}
+                  </h3>
+                  <input
+                    className="input"
+                    placeholder={
+                      strings.Opc.accompaniments.placeholder[theme.lang]
+                    }
+                    value={accompanimentInput}
+                    onChange={(event) =>
+                      handleAccompanimentsInputChange(event.target.value)
+                    }
+                  />
+                  <div className="selectedAccompaniments">
+                    {accompaniments.map((accompaniment) => (
+                      <div
+                        className="btn accompaniment-selected"
+                        onClick={() =>
+                          handleAccompanimentsChange(
+                            "remove",
+                            accompaniments.indexOf(accompaniment)
+                          )
+                        }
+                      >
+                        {accompaniment.name[theme.lang]}{" "}
+                        <MdClose className="remove-accompaniment" />
+                      </div>
+                    ))}
                   </div>
-                  <div className="accompaniments-suggestion-text-container">
-                    {suggestion.name[theme.lang]}
-                    <div
-                      className="accompaniments-suggestion-select"
-                      onClick={() =>
-                        handleAccompanimentsChange(
-                          "add",
-                          accompanimentsSuggestions.indexOf(suggestion)
-                        )
-                      }
-                    >
-                      {strings.Opc.accompaniments.select[theme.lang]}
-                    </div>
+                  <div className="accompaniments-suggestions-container">
+                    {accompanimentsSuggestions.map((suggestion) => (
+                      <div className="accompaniments-suggestion-container">
+                        <div className="accompaniments-suggestion-img-super-container">
+                          <div className="accompaniments-suggestion-img-container">
+                            <img
+                              alt="accompaniments-suggestion-img"
+                              src={suggestion.img}
+                              className="accompaniments-suggestion-img"
+                            />
+                          </div>
+                        </div>
+                        <div className="accompaniments-suggestion-text-container">
+                          {suggestion.name[theme.lang]}
+                          <div
+                            className="accompaniments-suggestion-select"
+                            onClick={() =>
+                              handleAccompanimentsChange(
+                                "add",
+                                accompanimentsSuggestions.indexOf(suggestion)
+                              )
+                            }
+                          >
+                            {strings.Opc.accompaniments.select[theme.lang]}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              )
+            ) : null}
+          </>
 
           {/* Create recipe */}
           <>
