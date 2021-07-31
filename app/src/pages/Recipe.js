@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 // Local imports
-import { viewRecipe as strings } from "../config/text";
+import { langs, viewRecipe as strings } from "../config/text";
 
 // Icons
 import { MdSearch } from "react-icons/md";
@@ -17,6 +17,7 @@ import axios from "axios";
 function Createingredient() {
   // Constants
   const theme = getTheme();
+  const admin = JSON.parse(localStorage.getItem("user"));
   // Search
   const [searchResults, setSearchResults] = useState(null);
   const [searchHidden, setSearchHidden] = useState(false);
@@ -96,11 +97,18 @@ function Createingredient() {
     });
   };
 
+  const correctLang = (multiLangObj) => {
+    if (multiLangObj[theme.lang] === undefined) {
+      return multiLangObj[langs.default];
+    }
+    return multiLangObj[theme.lang];
+  };
+
   const deleteRecipe = async () => {
     if (
       window.confirm(
         strings.recipe.deleteConfirmation[theme.lang](
-          currentRecipe.general.name[theme.lang]
+          correctLang(currentRecipe.general.name)
         )
       )
     ) {
@@ -297,10 +305,14 @@ function Createingredient() {
                     </div>
                     <div className="recipe-search-recipe-txt-container">
                       <p className="recipe-search-recipe-name">
-                        {capitilize(recipe.general.name[theme.lang])}
+                        {capitilize(correctLang(recipe.general.name))}
                       </p>
                       <p className="recipe-search-recipe-category">
-                        {capitilize(recipe[`search-category-${theme.lang}`])}
+                        {capitilize(
+                          recipe[`search-category-${theme.lang}`] !== undefined
+                            ? recipe[`search-category-${theme.lang}`]
+                            : recipe[`search-category-${langs.default}`]
+                        )}
                       </p>
                       <div className="recipe-search-recipe-view-container">
                         <div
@@ -351,15 +363,18 @@ function Createingredient() {
                     <div className="recipe-recipeSection-recipe-details-container">
                       <p className="recipe-recipeSection-recipe-category">
                         {capitilize(
-                          currentRecipe[`search-category-${theme.lang}`]
+                          currentRecipe[`search-category-${theme.lang}`] !==
+                            undefined
+                            ? currentRecipe[`search-category-${theme.lang}`]
+                            : currentRecipe[`search-category-${langs.default}`]
                         )}
                       </p>
                       <p className="recipe-recipeSection-recipe-name">
-                        {capitilize(currentRecipe.general.name[theme.lang])}
+                        {capitilize(correctLang(currentRecipe.general.name))}
                       </p>
                       <p className="recipe-recipeSection-recipe-description">
                         {capitilize(
-                          currentRecipe.general.description[theme.lang]
+                          correctLang(currentRecipe.general.description)
                         )}
                       </p>
                     </div>
@@ -385,7 +400,7 @@ function Createingredient() {
                             }
                           </p>
                           <p style={{ margin: 0 }}>
-                            {ingredient.name[theme.lang]}
+                            {correctLang(ingredient.name)}
                           </p>
                         </div>
                       ))}
@@ -404,7 +419,7 @@ function Createingredient() {
                             ) + 1}
                           </p>
                           <p className="recipe-recipeSection-recipe-instruction">
-                            {instruction[theme.lang]}
+                            {correctLang(instruction)}
                           </p>
                         </div>
                       ))}
@@ -431,7 +446,7 @@ function Createingredient() {
                                     src={accompaniment.general.img}
                                   />
                                   <p className="recipe-recipeSection-recipe-accompaniment-name">
-                                    {accompaniment.general.name[theme.lang]}
+                                    {correctLang(accompaniment.general.name)}
                                   </p>
                                   <p className="recipe-recipeSection-recipe-accompaniment-view">
                                     {strings.search.viewBtn[theme.lang]}
@@ -545,67 +560,119 @@ function Createingredient() {
                         }
                       </p>
                     </>
+                    {/* Notes */}
+                    <>
+                      {currentRecipe.opc.notes[theme.lang] != null ? (
+                        <>
+                          <div className="recipe-recipeSection-recipe-separator" />
+                          <p className="recipe-recipeSection-recipe-category">
+                            {strings.recipe.recipe.notes[theme.lang]}
+                          </p>
+                          <p className="recipe-recipeSection-recipe-notes">
+                            {currentRecipe.opc.notes[theme.lang]}
+                          </p>
+                        </>
+                      ) : null}
+                    </>
                   </div>
                 </div>
                 {/* Options */}
                 <div className="recipe-recipeSection-options-container">
                   {/* Visibility toggle */}
-                  <div className="toggle recipe-search-visibility-toggle">
-                    <div
-                      className={`toggle-item${
-                        !currentRecipe.published ? " toggle-item-selected" : ""
-                      }`}
-                      onClick={() => changeRecipeVisibility(false)}
-                    >
-                      <p style={{ margin: 0 }}>
-                        {strings.recipe.options.visibility.hidden[theme.lang]}
-                      </p>
-                    </div>
-                    <div
-                      className={`toggle-item${
-                        currentRecipe.published ? " toggle-item-selected" : ""
-                      }`}
-                      onClick={() => changeRecipeVisibility(true)}
-                    >
-                      <p style={{ margin: 0 }}>
-                        {strings.recipe.options.visibility.shown[theme.lang]}
-                      </p>
-                    </div>
-                  </div>
+                  <>
+                    {["Developer", "Super admin"].includes(
+                      admin.personalInfo.rol
+                    ) ? (
+                      <div className="toggle recipe-search-visibility-toggle">
+                        <div
+                          className={`toggle-item${
+                            !currentRecipe.published
+                              ? " toggle-item-selected"
+                              : ""
+                          }`}
+                          onClick={() => changeRecipeVisibility(false)}
+                        >
+                          <p style={{ margin: 0 }}>
+                            {
+                              strings.recipe.options.visibility.hidden[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                        </div>
+                        <div
+                          className={`toggle-item${
+                            currentRecipe.published
+                              ? " toggle-item-selected"
+                              : ""
+                          }`}
+                          onClick={() => changeRecipeVisibility(true)}
+                        >
+                          <p style={{ margin: 0 }}>
+                            {
+                              strings.recipe.options.visibility.shown[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                        </div>
+                      </div>
+                    ) : null}
+                  </>
                   {/* Free toggle */}
-                  <div className="toggle recipe-search-visibility-toggle">
-                    <div
-                      className={`toggle-item${
-                        currentRecipe.free ? " toggle-item-selected" : ""
-                      }`}
-                      onClick={() => changeRecipeCost(true)}
-                    >
-                      <p style={{ margin: 0 }}>
-                        {strings.recipe.options.isInFreeTrial.true[theme.lang]}
-                      </p>
-                    </div>
-                    <div
-                      className={`toggle-item${
-                        !currentRecipe.free ? " toggle-item-selected" : ""
-                      }`}
-                      onClick={() => changeRecipeCost(false)}
-                    >
-                      <p style={{ margin: 0 }}>
-                        {strings.recipe.options.isInFreeTrial.false[theme.lang]}
-                      </p>
-                    </div>
-                  </div>
+                  <>
+                    {["Developer", "Super admin"].includes(
+                      admin.personalInfo.rol
+                    ) ? (
+                      <div className="toggle recipe-search-visibility-toggle">
+                        <div
+                          className={`toggle-item${
+                            currentRecipe.free ? " toggle-item-selected" : ""
+                          }`}
+                          onClick={() => changeRecipeCost(true)}
+                        >
+                          <p style={{ margin: 0 }}>
+                            {
+                              strings.recipe.options.isInFreeTrial.true[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                        </div>
+                        <div
+                          className={`toggle-item${
+                            !currentRecipe.free ? " toggle-item-selected" : ""
+                          }`}
+                          onClick={() => changeRecipeCost(false)}
+                        >
+                          <p style={{ margin: 0 }}>
+                            {
+                              strings.recipe.options.isInFreeTrial.false[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                        </div>
+                      </div>
+                    ) : null}
+                  </>
                   {/* Edit btn */}
                   <div className="btn recipe-recipeSection-options-editRecipeBtn">
                     {strings.recipe.options.editBtn[theme.lang]}
                   </div>
                   {/* Delete btn */}
-                  <div
-                    className="recipe-recipeSection-options-deleteRecipeBtn"
-                    onClick={deleteRecipe}
-                  >
-                    {strings.recipe.options.deleteRecipe[theme.lang]}
-                  </div>
+                  <>
+                    {["Developer", "Super admin"].includes(
+                      admin.personalInfo.rol
+                    ) ? (
+                      <div
+                        className="recipe-recipeSection-options-deleteRecipeBtn"
+                        onClick={deleteRecipe}
+                      >
+                        {strings.recipe.options.deleteRecipe[theme.lang]}
+                      </div>
+                    ) : null}
+                  </>
                 </div>
               </>
             )}
