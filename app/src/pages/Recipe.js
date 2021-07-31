@@ -130,7 +130,24 @@ function Createingredient() {
     recipe.opc.accompaniments = await getRecipeAccompaniments(
       recipe.opc.accompaniments
     );
+    // Get nutrivalues
+    recipe.nutrivalues = await getNutrivalues(
+      recipe.general.name.en.toLowerCase()
+    );
     return recipe;
+  };
+
+  const getNutrivalues = async (recipeId) => {
+    return (
+      await axios({
+        method: "post",
+        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+        data: {
+          method: "getRecipeNutrifacts",
+          recipeId,
+        },
+      })
+    ).data;
   };
 
   const getRecipeAccompaniments = async (accompanimentsList) => {
@@ -426,6 +443,107 @@ function Createingredient() {
                           <div className="recipe-recipeSection-recipe-separator" />
                         </>
                       ) : null}
+                    </>
+                    {/* Nutrifacts */}
+                    <>
+                      <p className="recipe-recipeSection-recipe-category">
+                        {strings.recipe.recipe.nutrivalues.title[theme.lang]}
+                      </p>
+                      <div className="recipe-recipeSection-recipe-nutrivalues-container">
+                        {/* Calories */}
+                        <div className="recipe-recipeSection-recipe-nutrivalues-row-container">
+                          <p
+                            className={
+                              strings.recipe.recipe.nutritionalInfo[0].className
+                            }
+                          >
+                            {
+                              strings.recipe.recipe.nutritionalInfo[0].name[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                          <p
+                            className={
+                              strings.recipe.recipe.nutritionalInfo[0].className
+                            }
+                          >
+                            {currentRecipe.nutrivalues[
+                              strings.recipe.recipe.nutritionalInfo[0].key
+                            ] %
+                              1 !==
+                            0
+                              ? currentRecipe.nutrivalues[
+                                  strings.recipe.recipe.nutritionalInfo[0].key
+                                ].toFixed(2)
+                              : currentRecipe.nutrivalues[
+                                  strings.recipe.recipe.nutritionalInfo[0].key
+                                ]}
+                          </p>
+                        </div>
+                        {/* Other nutrivalues */}
+                        {strings.recipe.recipe.nutritionalInfo.map(
+                          (nutrifact) => {
+                            if (
+                              strings.recipe.recipe.nutritionalInfo.indexOf(
+                                nutrifact
+                              ) !== 0
+                            )
+                              return (
+                                <div className="recipe-recipeSection-recipe-nutrivalues-row-container">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                    }}
+                                  >
+                                    <p className={nutrifact.className}>
+                                      {nutrifact.name[theme.lang]}
+                                    </p>
+                                    <p style={{ margin: 0, fontSize: 14 }}>
+                                      {currentRecipe.nutrivalues[
+                                        nutrifact.key
+                                      ] %
+                                        1 !==
+                                      0
+                                        ? currentRecipe.nutrivalues[
+                                            nutrifact.key
+                                          ].toFixed(2)
+                                        : currentRecipe.nutrivalues[
+                                            nutrifact.key
+                                          ]}
+                                      {nutrifact.unit}
+                                    </p>
+                                  </div>
+                                  <div>
+                                    {nutrifact.dailyValue !== null ? (
+                                      <p
+                                        style={{ margin: 0 }}
+                                        className="nutrifact"
+                                      >
+                                        {Math.round(
+                                          (currentRecipe.nutrivalues[
+                                            nutrifact.key
+                                          ] *
+                                            100) /
+                                            nutrifact.dailyValue
+                                        )}{" "}
+                                        %
+                                      </p>
+                                    ) : null}
+                                  </div>
+                                </div>
+                              );
+                          }
+                        )}
+                      </div>
+                      <p className="dailyvalue">
+                        {
+                          strings.recipe.recipe.nutrivalues.dailyValue[
+                            theme.lang
+                          ]
+                        }
+                      </p>
                     </>
                   </div>
                 </div>

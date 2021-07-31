@@ -688,7 +688,148 @@ export const viewRecipe = {
           en: "View",
         },
       },
-      nutriFacts: {},
+      nutrivalues: {
+        title: {
+          es: "Información Nutricional",
+          en: "Nutrition Facts",
+        },
+        dailyValue: {
+          es: "(Basado en una dieta diaria de 2,000 calorías)",
+          en: "(Based on a 2,000 calorie daily diet)",
+        },
+      },
+      nutritionalInfo: [
+        {
+          key: "calories",
+          name: {
+            es: "Calorías",
+            en: "Calories",
+          },
+          unit: "",
+          className: "calories",
+          dailyValue: null,
+        },
+        {
+          key: "totalFat",
+          name: {
+            es: "Grasa total",
+            en: "Total fat",
+          },
+          unit: "gr",
+          className: "nutrifact",
+          dailyValue: 65,
+        },
+        {
+          key: "saturatedFat",
+          name: {
+            es: "Grasa saturada",
+            en: "Saturated fat",
+          },
+          unit: "gr",
+          className: "subnutrifact",
+          dailyValue: 20,
+        },
+        {
+          key: "cholesterol",
+          name: {
+            es: "Colesterol",
+            en: "Cholesterol",
+          },
+          unit: "mg",
+          className: "nutrifact",
+          dailyValue: 300,
+        },
+        {
+          key: "sodium",
+          name: {
+            es: "Sodio",
+            en: "Sodium",
+          },
+          unit: "mg",
+          className: "nutrifact",
+          dailyValue: 2400,
+        },
+        {
+          key: "carbohydrates",
+          name: {
+            es: "Carbohidratos",
+            en: "Carbohydrates",
+          },
+          unit: "mg",
+          className: "nutrifact",
+          dailyValue: 300,
+        },
+        {
+          key: "dietaryFiber",
+          name: {
+            es: "Fibra dietética",
+            en: "Dietary fiber",
+          },
+          unit: "gr",
+          className: "subnutrifact",
+          dailyValue: 25,
+        },
+        {
+          key: "sugar",
+          name: {
+            es: "Azúcar",
+            en: "Sugar",
+          },
+          unit: "gr",
+          className: "subnutrifact",
+          dailyValue: null,
+        },
+        {
+          key: "protein",
+          name: {
+            es: "Proteína",
+            en: "Protein",
+          },
+          unit: "gr",
+          className: "nutrifact",
+          dailyValue: null,
+        },
+        // {
+        //   key: "calcium",
+        //   name: {
+        //     es: "Calcio",
+        //     en: "Calcium",
+        //   },
+        //   unit: "mg",
+        //   className: "mineral",
+        //   dailyValue: 1300,
+        // },
+        // {
+        //   key: "iron",
+        //   name: {
+        //     es: "Hierro",
+        //     en: "Iron",
+        //   },
+        //   unit: "mg",
+        //   className: "mineral",
+        //   dailyValue: 18,
+        // },
+        // {
+        //   key: "potassium",
+        //   name: {
+        //     es: "Potasio",
+        //     en: "Potassium",
+        //   },
+        //   unit: "mg",
+        //   className: "mineral",
+        //   dailyValue: 4700,
+        // },
+        // {
+        //   key: "vitaminD",
+        //   name: {
+        //     es: "Vitamina D",
+        //     en: "Vitamin D",
+        //   },
+        //   unit: "mcg",
+        //   className: "mineral",
+        //   dailyValue: 20,
+        // },
+      ],
       like: {
         es: "Me gusta",
         en: "Like",
