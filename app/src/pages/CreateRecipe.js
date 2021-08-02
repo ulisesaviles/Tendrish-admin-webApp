@@ -439,8 +439,9 @@ function Createingredient() {
     }
     let recipeToEdit = localStorage.getItem("recipeToEdit");
     if (recipeToEdit !== null) {
+      console.log("Detected a recipe to edit");
       setRecipeToEdit(JSON.parse(recipeToEdit));
-      loadRecipeToInputs(JSON.parse(recipeToEdit), response.data);
+      await loadRecipeToInputs(JSON.parse(recipeToEdit), response.data);
       localStorage.removeItem("recipeToEdit");
     }
   };
@@ -544,7 +545,7 @@ function Createingredient() {
     }
   };
 
-  const loadRecipeToInputs = (recipe, defaultValues) => {
+  const loadRecipeToInputs = async (recipe, defaultValues) => {
     // usedLangs
     setUsedLangs(recipe.general.langs);
 
@@ -575,6 +576,24 @@ function Createingredient() {
       }
     }
     setSelectedTagsIds(tempTags);
+
+    // Accompaniments
+    let tempAccompaniments = [];
+    for (let i = 0; i < defaultValues.accompaniments.length; i++) {
+      for (let j = 0; j < recipe.opc.accompaniments.length; j++) {
+        if (
+          defaultValues.accompaniments[i].id ===
+          recipe.opc.accompaniments[j].general.name.en.toLowerCase()
+        ) {
+          tempAccompaniments.push({
+            id: recipe.opc.accompaniments[j].general.name.en.toLowerCase(),
+            img: recipe.opc.accompaniments[j].general.img,
+            name: recipe.opc.accompaniments[j].general.name,
+          });
+        }
+      }
+    }
+    setAccompaniments(tempAccompaniments);
 
     // Selected creator
     for (let i = 0; i < defaultValues.creators.length; i++) {
