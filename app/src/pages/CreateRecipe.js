@@ -107,6 +107,13 @@ function Createingredient() {
     setInstructions([...instructions, {}]);
   };
 
+  const correctLang = (multiLangObj) => {
+    if (multiLangObj[theme.lang] === undefined) {
+      return multiLangObj[langs.default];
+    }
+    return multiLangObj[theme.lang];
+  };
+
   const createCategory = async () => {
     if (
       newCategory.es === undefined ||
@@ -1284,7 +1291,7 @@ function Createingredient() {
                           )
                         }
                       >
-                        {accompaniment.name[theme.lang]}{" "}
+                        {correctLang(accompaniment.name)}{" "}
                         <MdClose className="remove-accompaniment" />
                       </div>
                     ))}
@@ -1302,7 +1309,7 @@ function Createingredient() {
                           </div>
                         </div>
                         <div className="accompaniments-suggestion-text-container">
-                          {suggestion.name[theme.lang]}
+                          {correctLang(suggestion.name)}
                           <div
                             className="accompaniments-suggestion-select"
                             onClick={() =>
