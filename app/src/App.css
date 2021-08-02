@@ -960,15 +960,8 @@ body {
   border-radius: var(--div-border-radius) var(--div-border-radius) 0 0;
 }
 .recipe-recipeSection-recipe-accompaniment-name {
-  margin: 0 0 0 10px;
-  align-self: baseline;
-}
-.recipe-recipeSection-recipe-accompaniment-view {
-  margin: 0;
-  padding: 0 15px;
-  border-radius: var(--div-border-radius);
-  box-shadow: var(--shadow);
-  font-size: 14px;
+  margin: 0 10px;
+  text-align: center;
 }
 .recipe-recipeSection-recipe-accompaniments-container {
   overflow-x: scroll;

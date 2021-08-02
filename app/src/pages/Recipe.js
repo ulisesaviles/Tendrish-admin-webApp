@@ -466,9 +466,6 @@ function Createingredient() {
                                   <p className="recipe-recipeSection-recipe-accompaniment-name">
                                     {correctLang(accompaniment.general.name)}
                                   </p>
-                                  <p className="recipe-recipeSection-recipe-accompaniment-view">
-                                    {strings.search.viewBtn[theme.lang]}
-                                  </p>
                                 </div>
                               )
                             )}
