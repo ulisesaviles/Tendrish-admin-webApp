@@ -5,7 +5,12 @@ import { useState } from "react";
 import { createIngredient as strings, langs } from "../config/text";
 
 // Icons
-import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
+import {
+  MdCheckBoxOutlineBlank,
+  MdCheckBox,
+  MdAdd,
+  MdRemove,
+} from "react-icons/md";
 
 // Style
 import "../App.css";
@@ -39,14 +44,27 @@ function Createingredient() {
   };
   const [nutriValues, setNutriValues] = useState(initialNutriValues);
   const [error, setError] = useState(null);
+  const [cuantity, setCuantity] = useState(
+    measuredBy === "mass" || measuredBy === "volume" ? 100 : 1
+  );
 
   // Functions
+  const nutrivaluesPerUnit = () => {
+    let res = {};
+    for (let i = 0; i < strings.nutritionalInfo.length; i++) {
+      const key = strings.nutritionalInfo[i].key;
+      res[key] = parseFloat(parseInt(nutriValues[key]) / cuantity).toFixed(4);
+    }
+    return res;
+  };
+
   const cleanNameInputs = () => {
     let tempNames = { ...names };
     for (let i = 0; i < usedLangs.length; i++) {
       tempNames[usedLangs[i]] = "";
     }
     setNames(tempNames);
+    setCuantity(measuredBy === "mass" || measuredBy === "volume" ? 100 : 1);
   };
 
   const handleChangeNames = (lang, value) => {
@@ -69,7 +87,7 @@ function Createingredient() {
         data: {
           method: "createIngredient",
           names,
-          nutriValues,
+          nutriValues: nutrivaluesPerUnit(),
           measuredBy,
         },
       });
@@ -80,6 +98,17 @@ function Createingredient() {
       } else {
         alert("Error al crear ingredient");
       }
+    }
+  };
+
+  const handleCuantityChange = (type) => {
+    if (type === "substraction") {
+      if (cuantity > 1) {
+        console.log(type);
+        setCuantity(parseInt(cuantity) - 1);
+      }
+    } else {
+      setCuantity(parseInt(cuantity) + 1);
     }
   };
 
@@ -96,6 +125,11 @@ function Createingredient() {
         names[lang] = "";
       }
     }
+  };
+
+  const handleMeasureChange = (key) => {
+    setMeasuredBy(key);
+    setCuantity(key === "mass" || key === "volume" ? 100 : 1);
   };
 
   const namesAreValid = () => {
@@ -176,9 +210,7 @@ function Createingredient() {
             {strings.general.measuredBy.options.map((option) => (
               <div
                 className="ingredient-lang-container"
-                onClick={() => {
-                  setMeasuredBy(option.key);
-                }}
+                onClick={() => handleMeasureChange(option.key)}
               >
                 {measuredBy === option.key ? (
                   <MdCheckBox className="ingredient-lang-checkbox" />
@@ -195,6 +227,39 @@ function Createingredient() {
           <h1 className="section-title">
             {strings.nutritionalInfoTitle[theme.lang]}
           </h1>
+          {/* Cuantity */}
+          <>
+            <p className="createRecipe-timeType">
+              {strings.quantity.title[theme.lang]}
+            </p>
+            <div
+              className="createRecepy-quantity-input-container"
+              style={{ marginBottom: 20 }}
+            >
+              <div
+                className="createRecepy-add-btn btn"
+                onClick={() => handleCuantityChange("substraction")}
+              >
+                <MdRemove />
+              </div>
+              <input
+                className="createRecipe-cuantity-input"
+                value={cuantity}
+                style={{ fontSize: 18 }}
+                onChange={(event) => setCuantity(event.target.value)}
+              />
+              <div
+                className="createRecepy-add-btn btn"
+                onClick={() => handleCuantityChange("sum")}
+              >
+                <MdAdd />
+              </div>
+            </div>
+            <p className="createRecipe-timeType" style={{ marginTop: -20 }}>
+              {strings.quantity.unit[measuredBy][theme.lang]}
+            </p>
+          </>
+          {/* Nutrivalues inputs */}
           {strings.nutritionalInfo.map((nutriFact) => (
             <div>
               <h3 className="input-name">{nutriFact.name[theme.lang]}</h3>
@@ -209,7 +274,9 @@ function Createingredient() {
               />
             </div>
           ))}
+          {/* Error display */}
           <p className="ingredient-error">{error}</p>
+          {/* Create btn */}
           <div
             className="btn create-ingredient-btn"
             onClick={handleCreateIngredient}

@@ -168,7 +168,10 @@ function Createingredient() {
         },
       };
       console.log({ method: "createRecipe", recipe, publish });
-      if (name[langs.default].toLowerCase() !== recipeToEdit.id) {
+      if (
+        recipeToEdit !== null &&
+        name[langs.default].toLowerCase() !== recipeToEdit.id
+      ) {
         await axios({
           method: "post",
           url: "https://us-central1-tendrishh.cloudfunctions.net/server",

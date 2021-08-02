@@ -329,6 +329,26 @@ export const createIngredient = {
     es: "Asegúrate de haber ingresado toda la información correctamente",
     en: "Make sure you have entered all the information correctly",
   },
+  quantity: {
+    title: {
+      es: "Contenido nutricional para cada:",
+      en: "Nutritional content for each:",
+    },
+    unit: {
+      mass: {
+        es: "Gramos",
+        en: "Grams",
+      },
+      volume: {
+        es: "Militros",
+        en: "Milliliters",
+      },
+      piece: {
+        es: "Piezas",
+        en: "Pieces",
+      },
+    },
+  },
 };
 
 export const langs = {
