@@ -564,6 +564,7 @@ function Createingredient() {
                                   </div>
                                 </div>
                               );
+                            else return null;
                           }
                         )}
                       </div>
