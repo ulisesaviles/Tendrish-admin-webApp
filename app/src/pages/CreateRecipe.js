@@ -175,6 +175,7 @@ function Createingredient() {
         },
       };
       console.log({ method: "createRecipe", recipe, publish });
+      console.log(JSON.stringify(recipe));
       if (
         recipeToEdit !== null &&
         name[langs.default].toLowerCase() !== recipeToEdit.id
@@ -350,7 +351,6 @@ function Createingredient() {
 
   const handleIngredientQuantityChange = (index, isNumerator, newValue) => {
     let tempIngredients = [...ingredients];
-    console.log(newValue);
     if (!isNaN(newValue) && parseInt(newValue) >= 1) {
       tempIngredients[index].cuantity[
         isNumerator ? "numerator" : "denominator"
@@ -1066,7 +1066,7 @@ function Createingredient() {
                             handleIngredientQuantityChange(
                               ingredients.indexOf(ingredient),
                               false,
-                              ingredient.cuantity.numerator - 1
+                              ingredient.cuantity.denominator - 1
                             )
                           }
                         >
@@ -1089,7 +1089,7 @@ function Createingredient() {
                             handleIngredientQuantityChange(
                               ingredients.indexOf(ingredient),
                               false,
-                              ingredient.cuantity.numerator + 1
+                              ingredient.cuantity.denominator + 1
                             )
                           }
                         >
