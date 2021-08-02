@@ -607,7 +607,16 @@ function Createingredient() {
     let tempIngredients = [];
     let tempIngredientInputs = [];
     for (let i = 0; i < recipe.prep.ingredients.length; i++) {
-      tempIngredients.push(recipe.prep.ingredients[i]);
+      tempIngredients.push({
+        ...recipe.prep.ingredients[i],
+        cuantity: {
+          ...recipe.prep.ingredients[i].cuantity,
+          denominator: parseInt(
+            recipe.prep.ingredients[i].cuantity.denominator /
+              recipe.prep.servings
+          ),
+        },
+      });
       tempIngredientInputs.push(recipe.prep.ingredients[i].id);
     }
     setIngredients(tempIngredients);
