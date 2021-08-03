@@ -909,3 +909,170 @@ export const viewRecipe = {
     },
   },
 };
+
+export const profiles = {
+  title: {
+    es: "Perfiles administradores",
+    en: "Admin profiles",
+  },
+  addBtn: {
+    es: "Crear perfil",
+    en: "Create profile",
+  },
+  headers: [
+    { key: "name", es: "Nombre", en: "Name" },
+    { key: "recipesCreated", es: "Número de recetas", en: "Number of recipes" },
+    {
+      key: "likesRatio",
+      es: "Proporción de likes/dislikes",
+      en: "Likes/dislikes ratio",
+    },
+    { key: "appointments", es: "Número de citas", en: "Appointments" },
+    { key: "date", es: "Fecha de ingreso", en: "Date of admission" },
+  ],
+  editBtn: { es: "Editar perfil", en: "Edit profile" },
+  popups: {
+    edit: {
+      title: {
+        es: "Editar perfil",
+        en: "Edit profile",
+      },
+      email: {
+        title: {
+          es: "Correo electrónico",
+          en: "Email",
+        },
+      },
+      name: {
+        title: {
+          es: "Nombre",
+          en: "Name",
+        },
+        placeHolder: {
+          es: "Ingresa el nuevo nombre del administrador",
+          en: "Enter the admin's new name",
+        },
+      },
+      password: {
+        title: {
+          es: "Contraseña",
+          en: "Password",
+        },
+        placeHolder: {
+          es: "Ingresa la nueva contraseña del administrador",
+          en: "Enter the admin's new password",
+        },
+        show: {
+          es: "Mostrar contraseña",
+          en: "Show password",
+        },
+        hide: {
+          es: "Ocultar contraseña",
+          en: "Hide password",
+        },
+      },
+      rol: {
+        title: {
+          es: "Rol",
+          en: "Rol",
+        },
+        options: ["Admin", "Super admin"],
+      },
+      availabilityRange: {
+        title: {
+          es: "Rango de disponibilidad",
+          en: "Availability range",
+        },
+        from: {
+          es: "De",
+          en: "From",
+        },
+        to: {
+          es: "a",
+          en: "to",
+        },
+        and: {
+          es: "y",
+          en: "and",
+        },
+      },
+      submit: {
+        es: "Guardar cambios",
+        en: "Save changes",
+      },
+    },
+    add: {
+      title: {
+        es: "Crear perfil",
+        en: "Create profile",
+      },
+      email: {
+        title: {
+          es: "Correo electrónico",
+          en: "Email",
+        },
+        placeHolder: {
+          es: "Ingresa el correo del nuevo administrador",
+          en: "Enter the new admin's email",
+        },
+      },
+      name: {
+        title: {
+          es: "Nombre",
+          en: "Name",
+        },
+        placeHolder: {
+          es: "Ingresa el nombre del nuevo administrador",
+          en: "Enter the new admin's name",
+        },
+      },
+      password: {
+        title: {
+          es: "Contraseña",
+          en: "Password",
+        },
+        placeHolder: {
+          es: "Ingresa la contraseña del nuevo administrador",
+          en: "Enter the new admin's password",
+        },
+        show: {
+          es: "Mostrar contraseña",
+          en: "Show password",
+        },
+        hide: {
+          es: "Ocultar contraseña",
+          en: "Hide password",
+        },
+      },
+      rol: {
+        title: {
+          es: "Rol",
+          en: "Rol",
+        },
+        options: ["Admin", "Super admin"],
+      },
+      availabilityRange: {
+        title: {
+          es: "Rango de disponibilidad",
+          en: "Availability range",
+        },
+        from: {
+          es: "De",
+          en: "From",
+        },
+        to: {
+          es: "a",
+          en: "to",
+        },
+        and: {
+          es: "y",
+          en: "and",
+        },
+      },
+      submit: {
+        es: "Crear administrador",
+        en: "Create admin",
+      },
+    },
+  },
+};

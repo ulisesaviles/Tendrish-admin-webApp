@@ -18,6 +18,7 @@
   );
   --div-border-radius: 20px;
   --nav-item-border-radius: 10px;
+  --popUp-background: rgba(255, 255, 255, 0.8);
   /* Fonts */
   --primary-font-color: rgb(148, 32, 84);
   --secondary-font-color: rgb(190, 130, 55);
@@ -49,6 +50,7 @@
   --scroll: rgb(25, 25, 25);
   --scroll-hover: rgb(30, 30, 30);
   --scroll-background: var(--container-background);
+  --popUp-background: rgba(0, 0, 0, 0.8);
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
@@ -816,7 +818,6 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  /* justify-content: space-between; */
   justify-content: center;
   padding: 10px 20px;
   height: calc(90vh - 92px);
@@ -1006,6 +1007,139 @@ body {
   text-align: center;
   margin: 0 0 20px 0;
   width: 90%;
+}
+
+/* Profiles */
+.profiles-content-container {
+  display: flex;
+  flex-direction: column;
+  width: calc((82vw) * 0.95 - 60px);
+  height: calc(90vh - 40px);
+  padding: 20px 30px;
+}
+.profiles-header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.profiles-header {
+  margin: 0;
+  color: var(--secondary);
+  font-size: 30px;
+  font-weight: 600;
+}
+.profiles-addProfile-btn {
+  font-size: 18px;
+  padding: 3px 30px;
+}
+.profiles-headers-container {
+  display: flex;
+  flex-direction: row;
+  width: calc(82vw * 0.95 - 200px);
+  justify-content: space-evenly;
+}
+.profiles-row-container {
+  display: flex;
+  flex-direction: row;
+  width: calc(82vw * 0.95 - 170px);
+  justify-content: space-evenly;
+  position: relative;
+  left: -10px;
+}
+.profiles-headers {
+  margin: 0;
+  color: var(--secondary);
+  font-size: 15px;
+  width: 200px;
+  text-align: center;
+  font-weight: 600;
+}
+.profiles-row-text {
+  width: 200px;
+  margin: 15px 0;
+  text-align: center;
+}
+.profiles-row-index {
+  color: var(--secondary);
+  width: 10px;
+  align-self: baseline;
+  margin: 15px 0;
+}
+.profiles-editBtn {
+  width: 130px;
+  padding: 3px 0;
+  height: min-content;
+}
+.profiles-superRow-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid var(--separators-color);
+}
+.profiles-propup-background {
+  position: absolute;
+  width: calc(82vw * 0.95);
+  height: 90vh;
+  border-radius: var(--div-border-radius);
+  background-color: var(--popUp-background);
+  right: calc(81vw * 0.025);
+  bottom: calc(10vh * 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+.profiles-propup-container {
+  width: calc(50% - 60px);
+  height: calc(70% - 60px);
+  background-color: var(--container-background);
+  border-radius: var(--div-border-radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 30px;
+  z-index: 2;
+}
+.profiles-popup-closeBtn {
+  position: absolute;
+  right: calc(25% + 15px);
+  top: calc(15% + 15px);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  z-index: 2;
+}
+.profiles-popup-title {
+  color: var(--secondary);
+  margin: 0;
+  font-weight: 600;
+}
+.profiles-popup-input {
+  text-align: center;
+  width: 90%;
+  margin: 0;
+}
+.profiles-popup-input-name {
+  margin: 20px 0 5px 0;
+  color: var(--secondary);
+  font-weight: 500;
+}
+.profiles-popup-email {
+  margin: 0;
+}
+.profiles-showPassword {
+  margin: 2px 0 0 0;
+  color: var(--secondary);
+  cursor: pointer;
+}
+.profiles-toggle-item {
+  white-space: nowrap;
 }
 
 /* Default */
