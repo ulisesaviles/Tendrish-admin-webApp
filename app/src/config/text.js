@@ -911,6 +911,10 @@ export const viewRecipe = {
 };
 
 export const profiles = {
+  loading: {
+    es: "Cargando...",
+    en: "Loading...",
+  },
   title: {
     es: "Perfiles administradores",
     en: "Admin profiles",
@@ -983,6 +987,10 @@ export const profiles = {
           es: "Rango de disponibilidad",
           en: "Availability range",
         },
+        days: {
+          es: "Selecciona los días que uncluirá este rango",
+          en: "Select the days that this range includes",
+        },
         from: {
           es: "De",
           en: "From",
@@ -991,9 +999,9 @@ export const profiles = {
           es: "a",
           en: "to",
         },
-        and: {
-          es: "y",
-          en: "and",
+        add: {
+          es: "Agregar rango",
+          en: "Add range",
         },
       },
       submit: {
@@ -1056,6 +1064,10 @@ export const profiles = {
           es: "Rango de disponibilidad",
           en: "Availability range",
         },
+        days: {
+          es: "Selecciona los días que uncluirá este rango",
+          en: "Select the days that this range includes",
+        },
         from: {
           es: "De",
           en: "From",
@@ -1064,9 +1076,9 @@ export const profiles = {
           es: "a",
           en: "to",
         },
-        and: {
-          es: "y",
-          en: "and",
+        add: {
+          es: "Agregar rango",
+          en: "Add range",
         },
       },
       submit: {
@@ -1074,5 +1086,14 @@ export const profiles = {
         en: "Create admin",
       },
     },
+    weekDays: [
+      { key: "mon", es: "Lunes", en: "Monday" },
+      { key: "tue", es: "Martes", en: "Tuesday" },
+      { key: "wed", es: "Miércoles", en: "Wednesday" },
+      { key: "thu", es: "Jueves", en: "Thursday" },
+      { key: "fri", es: "Viernes", en: "Friday" },
+      { key: "sat", es: "Sábado", en: "Saturday" },
+      { key: "sun", es: "Domingo", en: "Sunday" },
+    ],
   },
 };
