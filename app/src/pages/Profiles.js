@@ -39,76 +39,12 @@ function Profiles() {
       {
         from: 9,
         to: 14,
-        days: ["mon", "tue"],
+        days: [],
       },
     ],
     rol: "Admin",
   });
-  const [admins, setAdmins] = useState([
-    // {
-    //   name: "Ulises Aviles",
-    //   recipesCreated: 354,
-    //   likesRatio: 34.2,
-    //   appointments: 29,
-    //   date: "2 - 10 - 2021",
-    //   email: "avilesulises1@gmail.com",
-    //   disponibilityRanges: [
-    //     {
-    //       from: 9,
-    //       to: 14,
-    //       days: ["mon", "tue"],
-    //     },
-    //     {
-    //       from: 15,
-    //       to: 17,
-    //       days: ["sun", "sat"],
-    //     },
-    //   ],
-    //   rol: "Super admin",
-    // },
-    // {
-    //   name: "Daniela Navarro",
-    //   recipesCreated: 354,
-    //   likesRatio: 34.2,
-    //   appointments: 29,
-    //   date: "2 - 10 - 2021",
-    //   email: "daniela@gmail.com",
-    //   disponibilityRanges: [
-    //     {
-    //       from: 9,
-    //       to: 14,
-    //       days: ["mon", "tue"],
-    //     },
-    //     {
-    //       from: 15,
-    //       to: 17,
-    //       days: ["sun", "sat"],
-    //     },
-    //   ],
-    //   rol: "Admin",
-    // },
-    // {
-    //   name: "Natalia Maldonado",
-    //   recipesCreated: 354,
-    //   likesRatio: 34.2,
-    //   appointments: 29,
-    //   date: "2 - 10 - 2021",
-    //   email: "Natalia@gmail.com",
-    //   disponibilityRanges: [
-    //     {
-    //       from: 9,
-    //       to: 14,
-    //       days: ["mon", "tue"],
-    //     },
-    //     {
-    //       from: 15,
-    //       to: 17,
-    //       days: ["sun", "sat"],
-    //     },
-    //   ],
-    //   rol: "Admin",
-    // },
-  ]);
+  const [admins, setAdmins] = useState([]);
 
   // Functions
   const createAdmin = async () => {
