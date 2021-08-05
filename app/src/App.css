@@ -99,6 +99,7 @@ body {
   min-width: 82vw;
   justify-content: center;
   align-items: center;
+  overflow-y: scroll;
 }
 .content-container {
   background-color: var(--container-background);
@@ -1201,6 +1202,102 @@ body {
   justify-content: center;
   align-items: center;
   height: 70%;
+}
+
+/* Stats */
+.stats-container {
+  width: 95%;
+  height: 90vh;
+}
+.stats-header {
+  width: calc(100% - 0px);
+  background-color: var(--container-background);
+  box-shadow: var(--shadow);
+  border-radius: var(--div-border-radius);
+  padding: 35px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.stats-header-item-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.stats-header-separator {
+  width: 2px;
+  height: 85px;
+  background-color: var(--separators-color);
+}
+.stats-header-item-name {
+  color: var(--secondary);
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0;
+  text-align: center;
+}
+.stats-header-item {
+  margin: -10px;
+  font-size: 60px;
+  font-weight: 400;
+}
+.stats-content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.stats-content-subcontainer {
+  width: 48%;
+}
+.stats-content-section-container {
+  background-color: var(--container-background);
+  box-shadow: var(--shadow);
+  border-radius: var(--div-border-radius);
+  padding: 10px 20px;
+  margin: 30px 0;
+}
+.stats-section-title {
+  font-weight: 500;
+  color: var(--secondary);
+  margin: 0 0 10px 0;
+}
+.stats-newUsers-header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.stats-newUsers-graph-container {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.stats-row-index {
+  margin: 0 10px 0 0;
+  font-weight: 700;
+  color: var(--secondary);
+}
+.stats-row-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.stats-row-leftSection-container {
+  display: flex;
+  flex-direction: row;
+}
+.stats-row-text {
+  margin: 0;
+}
+.stats-row-separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--separators-color);
+  margin: 15px 0;
 }
 
 /* Default */

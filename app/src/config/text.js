@@ -1097,3 +1097,75 @@ export const profiles = {
     ],
   },
 };
+
+export const stats = {
+  header: {
+    globalUsers: {
+      es: "Usuarios globales",
+      en: "Global users",
+    },
+    usersWPayPlan: {
+      es: "Usuarios con plan de pago vigente",
+      en: "Users with active payment plan",
+    },
+    activeUsers: {
+      es: "Usuarios activos esta semana",
+      en: "Active users this week",
+    },
+    recipesCreated: {
+      es: "Recetas creadas",
+      en: "Created recipes",
+    },
+  },
+  newUsers: {
+    es: "Nuevos usuarios",
+    en: "New users",
+    toggle: [
+      {
+        key: "week",
+        es: "Semana",
+        en: "Week",
+      },
+      {
+        key: "month",
+        es: "Mes",
+        en: "Month",
+      },
+      {
+        key: "year",
+        es: "Año",
+        en: "Year",
+      },
+    ],
+  },
+  favoriteRecipes: {
+    es: "Recetas favoritas de los usuarios",
+    en: "User's favorite recipes",
+  },
+  usersPerGender: {
+    es: "Usuarios por género",
+    en: "Users per gender",
+    genders: {
+      male: {
+        es: "Hombres",
+        en: "Men",
+      },
+      female: {
+        es: "Mujeres",
+        en: "Wemen",
+      },
+      undefined: {
+        es: "Indefinido",
+        en: "Undefined",
+      },
+    },
+  },
+  usersPerCountry: {
+    es: "Usuarios por país",
+    en: "Users per country",
+  },
+  usersPerAgeRange: {
+    es: "Usuarios por rango de edades",
+    en: "Users per age range",
+  },
+};
