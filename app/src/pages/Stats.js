@@ -22,10 +22,10 @@ function Stats() {
   // Response
   const [stats, setStats] = useState({
     header: [
-      { key: "globalUsers", num: 1000 },
-      { key: "usersWPayPlan", num: 1000 },
-      { key: "activeUsers", num: 1000 },
-      { key: "recipesCreated", num: 1000 },
+      { key: "globalUsers", num: null },
+      { key: "usersWPayPlan", num: null },
+      { key: "activeUsers", num: null },
+      { key: "recipesCreated", num: null },
     ],
     newUsers: [
       {
@@ -43,39 +43,11 @@ function Stats() {
         ],
       },
     ],
-    favoriteRecipes: [
-      {
-        name: {
-          es: "Galletas de avena",
-          en: "Cookies",
-        },
-        likes: 2680,
-      },
-    ],
-    usersPerGender: [
-      {
-        key: "female",
-        users: 11000,
-      },
-    ],
-    usersPerCountry: [
-      {
-        country: {
-          key: "mexico",
-          name: {
-            es: "México",
-            en: "Mexico",
-          },
-        },
-        users: 0,
-      },
-    ],
-    usersPerBirthYear: {
-      2001: 1,
-      2002: 2,
-      2015: 3,
-    },
-    usersPerAgeRange: [{ range: "0 - 9", users: 0 }],
+    favoriteRecipes: [],
+    usersPerGender: [],
+    usersPerCountry: [],
+    usersPerBirthYear: {},
+    usersPerAgeRange: [],
   });
 
   // Functions
