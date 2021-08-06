@@ -8,6 +8,9 @@ import { stats as strings, langs } from "../config/text";
 import "../App.css";
 import { getTheme } from "../config/theme";
 
+// Chart.js
+import { Line } from "react-chartjs-2";
+
 // Http
 import axios from "axios";
 
@@ -27,28 +30,40 @@ function Stats() {
       { key: "activeUsers", num: null },
       { key: "recipesCreated", num: null },
     ],
-    newUsers: [
-      {
-        key: "2021",
-        users: [
-          {
-            key: "jan",
-            users: [
-              {
-                key: "1",
-                users: 0,
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    newUsers: {
+      // 0: {
+      //   0: 1,
+      //   1: 1,
+      // },
+      // 1: {
+      //   0: 1,
+      //   1: 1,
+      // },
+    },
     favoriteRecipes: [],
     usersPerGender: [],
     usersPerCountry: [],
     usersPerBirthYear: {},
     usersPerAgeRange: [],
   });
+  const [graphData, setGraphData] = useState({
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        fill: false,
+        borderColor: "rgb(236, 162, 69)",
+        tension: 0.4,
+      },
+    ],
+  });
+  const graphOptions = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+  };
 
   // Functions
   const correctLang = (multiLangObj) => {
@@ -56,6 +71,13 @@ function Stats() {
       return multiLangObj[langs.default];
     }
     return multiLangObj[theme.lang];
+  };
+
+  const daysInMonth = (monthIndex) => {
+    if ([0, 2, 4, 6, 7, 9, 11].includes(monthIndex)) return 31;
+    if ([3, 5, 8, 10].includes(monthIndex)) return 31;
+    if (monthIndex === 1)
+      return new Date(Date.now()).getFullYear % 4 === 0 ? 29 : 28;
   };
 
   const formatNum = (num) => {
@@ -77,6 +99,35 @@ function Stats() {
     return num;
   };
 
+  const handleGraphData = (type, data = stats.newUsers) => {
+    let res;
+    if (type === "week") {
+      res = getUsersByDays(data, 7);
+    }
+    if (type === "month") {
+      res = getUsersByDays(data, daysInMonth(new Date(Date.now()).getMonth()));
+    }
+    if (type === "year") {
+      res = getYearlyUsers(data);
+    }
+    setGraphData({
+      labels: res.keys,
+      datasets: [
+        {
+          data: res.data,
+          ...graphData.datasets,
+        },
+      ],
+    });
+  };
+
+  const handleToggle = (type) => {
+    if (stats.newUsers !== {}) {
+      setToggleValue(type);
+      handleGraphData(type);
+    }
+  };
+
   const getStats = async () => {
     let response = await axios({
       method: "post",
@@ -91,13 +142,76 @@ function Stats() {
         ...response.data,
         usersPerAgeRange: usersPerAgeRange(response.data.usersPerBirthYear),
       });
-      console.log({
-        ...response.data,
-        usersPerAgeRange: usersPerAgeRange(response.data.usersPerBirthYear),
-      });
+      handleGraphData(toggleValue, response.data.newUsers);
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }
+  };
+
+  const getUsersByDays = (data, limit) => {
+    let res = [];
+    let keys = [];
+    let day = new Date(Date.now()).getDate() - 1;
+    let month = new Date(Date.now()).getMonth();
+    while (res.length < limit) {
+      if (data[month] === undefined) {
+        // Theres no data this month
+        while (day > 0) {
+          // Fill empty days with zeros
+          res.unshift(0);
+          keys.unshift(day + 1);
+          if (res.length >= limit) break;
+          day--;
+        }
+        month--;
+      } else {
+        // Theres data
+        if (day < 0) {
+          // Reset days
+          month--;
+          day = daysInMonth(month) - 1;
+        }
+        if (data[month][day] === undefined) {
+          // No data that day
+          res.unshift(0);
+        } else {
+          // Theres data that day
+          res.unshift(data[month][day]);
+        }
+        keys.unshift(day + 1);
+        day--;
+      }
+    }
+    return {
+      keys,
+      data: res,
+    };
+  };
+
+  const getYearlyUsers = (data) => {
+    let month = new Date(Date.now()).getMonth();
+    let res = [];
+    let keys = [];
+    let tempKeys;
+    while (month >= 0) {
+      if (data[month] === undefined) {
+        keys.unshift(strings.newUsers.months[month][theme.lang]);
+        res.unshift(0);
+      } else {
+        keys.unshift(strings.newUsers.months[month][theme.lang]);
+        tempKeys = Object.keys(data[month]);
+        res.unshift(0);
+        for (let dayIndex = 0; dayIndex < tempKeys.length; dayIndex++) {
+          const day = tempKeys[dayIndex];
+          res[0] += data[month][day];
+        }
+      }
+      month--;
+    }
+    return {
+      keys,
+      data: res,
+    };
   };
 
   const usersPerAgeRange = (usersPerBirthYear) => {
@@ -173,14 +287,16 @@ function Stats() {
                       className={`toggle-item ${
                         item.key === toggleValue ? "toggle-item-selected" : null
                       }`}
-                      onClick={() => setToggleValue(item.key)}
+                      onClick={() => handleToggle(item.key)}
                     >
                       {item[theme.lang]}
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="stats-newUsers-graph-container">(Graph)</div>
+              <div className="stats-newUsers-graph-container">
+                <Line data={graphData} options={graphOptions} />
+              </div>
             </div>
             {/* Favorite recipes */}
             <div className="stats-content-section-container">
