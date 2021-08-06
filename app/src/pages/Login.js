@@ -32,6 +32,7 @@ const Login = () => {
   const [keepSignedIn, setKeepSignedIn] = useState(false);
   const history = useHistory();
   const [error, setError] = useState(null);
+  const superAdmins = ["Developer", "CEO", "Super admin"];
 
   // Functions
   const handleSignIn = async () => {
@@ -52,7 +53,13 @@ const Login = () => {
           personalInfo: response.data.personalInfo,
         };
         localStorage.setItem("user", JSON.stringify(storedUser));
-        history.push("?tab=Stats");
+        history.push(
+          `?tab=${
+            superAdmins.includes(storedUser.personalInfo.rol)
+              ? "Stats"
+              : "Agenda"
+          }`
+        );
       } else {
         setSubmited(false);
         console.log(`${response.status}: ${response.data.error}`);

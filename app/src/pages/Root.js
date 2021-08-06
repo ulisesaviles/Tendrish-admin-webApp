@@ -31,6 +31,14 @@ const Root = ({ location }) => {
     tab: url.get("tab"),
   };
   theme = SetTheme(theme);
+  const allowedTabs = [
+    "edituser",
+    "agenda",
+    "recipe",
+    "createrecipe",
+    "createingredient",
+  ];
+  const superAdmins = ["Developer", "CEO", "Super admin"];
 
   // Functions
   const renderCurrentTab = (tab) => {
@@ -70,7 +78,6 @@ const Root = ({ location }) => {
   // Logic
   // Get current tab from url
   useEffect(() => {
-    console.log("reload");
     if (theme.tab === null || user === null) {
       history.replace("?tab=Login");
     }
@@ -82,7 +89,6 @@ const Root = ({ location }) => {
   }
   // Get user
   if (user === null) {
-    console.log("User is null");
     getUser();
   }
 
@@ -101,26 +107,33 @@ const Root = ({ location }) => {
           <img src={logo} alt="Logo" className="nav-logo" />
           <div className="nav-items">
             {tabs.map((tab) => (
-              <Link
-                className={
-                  theme.tab === tab.key
-                    ? "nav-item nav-item-selected"
-                    : "nav-item"
-                }
-                to={`?tab=${tab.key}&lang=${theme.lang}&colorScheme=${theme.colorScheme}`}
-              >
-                <div
-                  className={
-                    theme.tab === tab.key ? "" : "nav-item-icon-container"
-                  }
-                >
-                  {tab.icon}
-                </div>
-                {tab.name[theme.lang]}
-              </Link>
+              <>
+                {(user !== null &&
+                  superAdmins.includes(user.personalInfo.rol)) ||
+                allowedTabs.includes(tab.key.toLowerCase()) ? (
+                  <Link
+                    className={
+                      theme.tab === tab.key
+                        ? "nav-item nav-item-selected"
+                        : "nav-item"
+                    }
+                    to={`?tab=${tab.key}&lang=${theme.lang}&colorScheme=${theme.colorScheme}`}
+                  >
+                    <div
+                      className={
+                        theme.tab === tab.key ? "" : "nav-item-icon-container"
+                      }
+                    >
+                      {tab.icon}
+                    </div>
+                    {tab.name[theme.lang]}
+                  </Link>
+                ) : null}
+              </>
             ))}
           </div>
           <div className="toggles-container">
+            {/* Lang toggle */}
             <div className="toggle-container">
               <p className="toggle-name">Idioma</p>
               <div className="toggle">
@@ -146,6 +159,7 @@ const Root = ({ location }) => {
                 </Link>
               </div>
             </div>
+            {/* Color toggle */}
             <div className="toggle-container">
               <p className="toggle-name">Color</p>
               <div className="toggle">
