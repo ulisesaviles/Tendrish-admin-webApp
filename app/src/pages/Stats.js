@@ -30,16 +30,7 @@ function Stats() {
       { key: "activeUsers", num: null },
       { key: "recipesCreated", num: null },
     ],
-    newUsers: {
-      // 0: {
-      //   0: 1,
-      //   1: 1,
-      // },
-      // 1: {
-      //   0: 1,
-      //   1: 1,
-      // },
-    },
+    newUsers: {},
     favoriteRecipes: [],
     usersPerGender: [],
     usersPerCountry: [],
@@ -281,6 +272,7 @@ function Stats() {
                 <p className="stats-section-title">
                   {strings.newUsers[theme.lang]}
                 </p>
+                {/* Toggle */}
                 <div className="toggle">
                   {strings.newUsers.toggle.map((item) => (
                     <div
@@ -295,6 +287,7 @@ function Stats() {
                 </div>
               </div>
               <div className="stats-newUsers-graph-container">
+                {/* Graph */}
                 <Line data={graphData} options={graphOptions} />
               </div>
             </div>
