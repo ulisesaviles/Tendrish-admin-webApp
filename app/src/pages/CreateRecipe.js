@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 
 // Local imports
-import { createRecipe as strings, langs } from "../config/text";
+import { adminTypes, createRecipe as strings, langs } from "../config/text";
 
 // Icons
 import {
@@ -1261,7 +1261,7 @@ function Createingredient() {
 
           {/* Creator */}
           <>
-            {["Developer", "Super admin"].includes(admin.personalInfo.rol) ? (
+            {adminTypes.super.includes(admin.personalInfo.rol) ? (
               <div className="input-section">
                 <h3 className="input-name">
                   {strings.Opc.creator[theme.lang]}
