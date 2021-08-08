@@ -170,7 +170,9 @@ function Createingredient() {
         opc: {
           notes,
           tags: selectedTagsIds,
-          creator: defaultValues.creators[selectedCreatorIndex].id,
+          creator: adminTypes.super.includes(admin.personalInfo.rol)
+            ? defaultValues.creators[selectedCreatorIndex].id
+            : admin.id,
           accompaniments: formatAccompaniments([...accompaniments]),
         },
       };
@@ -277,14 +279,14 @@ function Createingredient() {
     let measuredBy = null;
     for (let i = 0; i < defaultValues.ingredients.length; i++) {
       if (
-        defaultValues.ingredients[i].name[theme.lang]
+        correctLang(defaultValues.ingredients[i].name)
           .substring(0, ingredientName.length)
           .toLowerCase() === ingredientName.toLowerCase()
       ) {
-        suggestions.push(defaultValues.ingredients[i].name[theme.lang]);
+        suggestions.push(correctLang(defaultValues.ingredients[i].name));
       }
       if (
-        defaultValues.ingredients[i].name[theme.lang].toLowerCase() ===
+        correctLang(defaultValues.ingredients[i].name).toLowerCase() ===
         ingredientName.toLowerCase()
       ) {
         id = defaultValues.ingredients[i].id;
