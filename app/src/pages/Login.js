@@ -32,7 +32,6 @@ const Login = () => {
   const [keepSignedIn, setKeepSignedIn] = useState(false);
   const history = useHistory();
   const [error, setError] = useState(null);
-  const superAdmins = ["Developer", "CEO", "Super admin"];
 
   // Functions
   const handleSignIn = async () => {
