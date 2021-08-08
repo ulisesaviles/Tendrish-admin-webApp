@@ -101,6 +101,9 @@ body {
   align-items: center;
   overflow-y: scroll;
 }
+.tab-container::-webkit-scrollbar {
+  width: 0;
+}
 .content-container {
   background-color: var(--container-background);
   border-radius: var(--div-border-radius);
