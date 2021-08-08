@@ -982,6 +982,20 @@ export const profiles = {
         },
         options: ["CEO", "Super admin", "Developer", "Admin", "Marketing"],
       },
+      locked: {
+        title: {
+          es: "Bloquear / desbloquear perfil",
+          en: "Lock / unlock profile",
+        },
+        true: {
+          es: "Bloqueado",
+          en: "Locked",
+        },
+        false: {
+          es: "Desbloqueado",
+          en: "Unlocked",
+        },
+      },
       availabilityRange: {
         title: {
           es: "Rango de disponibilidad",
@@ -1057,7 +1071,7 @@ export const profiles = {
           es: "Rol",
           en: "Rol",
         },
-        options: ["Admin", "Super admin"],
+        options: ["CEO", "Super admin", "Developer", "Admin", "Marketing"],
       },
       availabilityRange: {
         title: {

@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 // Local imports
-import { profiles as strings } from "../config/text";
+import { adminTypes, profiles as strings } from "../config/text";
 
 // Style
 import "../App.css";
@@ -43,6 +43,7 @@ function Profiles() {
       },
     ],
     rol: "Admin",
+    locked: false,
   });
   const [admins, setAdmins] = useState([]);
 
@@ -77,6 +78,7 @@ function Profiles() {
     });
     if (response.status === 200) {
       setAdmins(response.data);
+      console.log(response.data);
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }
@@ -176,235 +178,278 @@ function Profiles() {
   return (
     <div className="tab-container">
       {/* Popup */}
-      {popupIsDisplayed ? (
-        <div className="profiles-propup-background">
-          <div className="profiles-propup-container">
-            {/* Close */}
-            <div
-              className="btn profiles-popup-closeBtn"
-              onClick={() => handlePopup(false)}
-            >
-              <MdClose />
-            </div>
-            {/* Title */}
-            <h2 className="profiles-popup-title">
-              {strings.popups[popupType].title[theme.lang]}
-            </h2>
-            {/* Email */}
-            <>
-              <h4 className="profiles-popup-input-name">
-                {strings.popups[popupType].email.title[theme.lang]}
-              </h4>
-              {popupType === "add" ? (
+      <>
+        {popupIsDisplayed ? (
+          <div className="profiles-propup-background">
+            <div className="profiles-propup-container">
+              {/* Close */}
+              <div
+                className="btn profiles-popup-closeBtn"
+                onClick={() => handlePopup(false)}
+              >
+                <MdClose />
+              </div>
+              {/* Title */}
+              <h2 className="profiles-popup-title">
+                {strings.popups[popupType].title[theme.lang]}
+              </h2>
+              {/* Email */}
+              <>
+                <h4 className="profiles-popup-input-name">
+                  {strings.popups[popupType].email.title[theme.lang]}
+                </h4>
+                {popupType === "add" ? (
+                  <input
+                    className="input profiles-popup-input"
+                    placeholder={
+                      strings.popups.add.email.placeHolder[theme.lang]
+                    }
+                    value={newAdmin.email}
+                    onChange={(event) =>
+                      setNewAdmin({ ...newAdmin, email: event.target.value })
+                    }
+                  />
+                ) : (
+                  <p className="profiles-popup-email">
+                    {admins[adminToEditIndex].email}
+                  </p>
+                )}
+              </>
+              {/* Password */}
+              <>
+                <h4 className="profiles-popup-input-name">
+                  {strings.popups[popupType].password.title[theme.lang]}
+                </h4>
                 <input
                   className="input profiles-popup-input"
-                  placeholder={strings.popups.add.email.placeHolder[theme.lang]}
-                  value={newAdmin.email}
+                  placeholder={
+                    strings.popups[popupType].password.placeHolder[theme.lang]
+                  }
+                  value={newAdmin.password.value}
+                  type={newAdmin.password.hidden ? "password" : "text"}
                   onChange={(event) =>
-                    setNewAdmin({ ...newAdmin, email: event.target.value })
+                    setNewAdmin({
+                      ...newAdmin,
+                      password: {
+                        ...newAdmin.password,
+                        value: event.target.value,
+                      },
+                    })
                   }
                 />
-              ) : (
-                <p className="profiles-popup-email">
-                  {admins[adminToEditIndex].email}
+                <p
+                  className="profiles-showPassword"
+                  onClick={() =>
+                    setNewAdmin({
+                      ...newAdmin,
+                      password: {
+                        ...newAdmin.password,
+                        hidden: !newAdmin.password.hidden,
+                      },
+                    })
+                  }
+                >
+                  {
+                    strings.popups[popupType].password[
+                      !newAdmin.password.hidden ? "hide" : "show"
+                    ][theme.lang]
+                  }
                 </p>
-              )}
-            </>
-            {/* Password */}
-            <>
-              <h4 className="profiles-popup-input-name">
-                {strings.popups[popupType].password.title[theme.lang]}
-              </h4>
-              <input
-                className="input profiles-popup-input"
-                placeholder={
-                  strings.popups[popupType].password.placeHolder[theme.lang]
-                }
-                value={newAdmin.password.value}
-                type={newAdmin.password.hidden ? "password" : "text"}
-                onChange={(event) =>
-                  setNewAdmin({
-                    ...newAdmin,
-                    password: {
-                      ...newAdmin.password,
-                      value: event.target.value,
-                    },
-                  })
-                }
-              />
-              <p
-                className="profiles-showPassword"
-                onClick={() =>
-                  setNewAdmin({
-                    ...newAdmin,
-                    password: {
-                      ...newAdmin.password,
-                      hidden: !newAdmin.password.hidden,
-                    },
-                  })
-                }
-              >
-                {
-                  strings.popups[popupType].password[
-                    !newAdmin.password.hidden ? "hide" : "show"
-                  ][theme.lang]
-                }
-              </p>
-            </>
-            {/* Name */}
-            <>
-              <h4 className="profiles-popup-input-name">
-                {strings.popups[popupType].name.title[theme.lang]}
-              </h4>
-              <input
-                className="input profiles-popup-input"
-                placeholder={
-                  strings.popups[popupType].name.placeHolder[theme.lang]
-                }
-                value={newAdmin.name}
-                onChange={(event) =>
-                  setNewAdmin({ ...newAdmin, name: event.target.value })
-                }
-              />
-            </>
-            {/* Rol */}
-            <>
-              <h4 className="profiles-popup-input-name">
-                {strings.popups[popupType].rol.title[theme.lang]}
-              </h4>
-              <div className="toggle recipe-search-visibility-toggle">
-                {strings.popups[popupType].rol.options.map((option) => (
-                  <p
-                    onClick={() => setNewAdmin({ ...newAdmin, rol: option })}
-                    className={`toggle-item profiles-toggle-item ${
-                      option === newAdmin.rol ? " toggle-item-selected" : null
-                    }`}
-                  >
-                    {option}
-                  </p>
-                ))}
-              </div>
-            </>
-            {/* Availability range */}
-            <>
-              <h4 className="profiles-popup-input-name">
-                {strings.popups[popupType].availabilityRange.title[theme.lang]}
-              </h4>
-              {newAdmin.disponibilityRanges.map((range) => (
-                <div className="profiles-popup-ranges-supercontainer">
-                  {/* Index */}
-                  <div className="profiles-popup-range-bullets-container">
-                    <h1 className="profiles-popup-range-index">
-                      {newAdmin.disponibilityRanges.indexOf(range) + 1}
-                    </h1>
-                    <MdRemoveCircle
-                      className="deleteIcon"
-                      onClick={() =>
-                        removeRange(newAdmin.disponibilityRanges.indexOf(range))
-                      }
-                    />
-                  </div>
-                  <div className="profiles-popup-ranges-container">
-                    {/* Instructions */}
-                    <p className="profiles-popup-ranges-instruction">
-                      {
-                        strings.popups[popupType].availabilityRange.days[
-                          theme.lang
-                        ]
-                      }
+              </>
+              {/* Name */}
+              <>
+                <h4 className="profiles-popup-input-name">
+                  {strings.popups[popupType].name.title[theme.lang]}
+                </h4>
+                <input
+                  className="input profiles-popup-input"
+                  placeholder={
+                    strings.popups[popupType].name.placeHolder[theme.lang]
+                  }
+                  value={newAdmin.name}
+                  onChange={(event) =>
+                    setNewAdmin({ ...newAdmin, name: event.target.value })
+                  }
+                />
+              </>
+              {/* Rol */}
+              <>
+                <h4 className="profiles-popup-input-name">
+                  {strings.popups[popupType].rol.title[theme.lang]}
+                </h4>
+                <div className="toggle recipe-search-visibility-toggle">
+                  {strings.popups[popupType].rol.options.map((option) => (
+                    <p
+                      onClick={() => setNewAdmin({ ...newAdmin, rol: option })}
+                      className={`toggle-item profiles-toggle-item ${
+                        option === newAdmin.rol ? " toggle-item-selected" : null
+                      }`}
+                    >
+                      {option}
                     </p>
-                    {/* Days */}
-                    <div className="profiles-popup-days-container">
-                      {strings.popups.weekDays.map((day) => (
-                        <div className="profiles-popup-day-container">
-                          {range.days.includes(day.key) ? (
-                            <MdCheckBox
-                              className="profiles-popup-day-checkbox"
-                              onClick={() =>
-                                handleAvailabilityDays(
-                                  newAdmin.disponibilityRanges.indexOf(range),
-                                  day.key
-                                )
-                              }
-                            />
-                          ) : (
-                            <MdCheckBoxOutlineBlank
-                              className="profiles-popup-day-checkbox"
-                              onClick={() =>
-                                handleAvailabilityDays(
-                                  newAdmin.disponibilityRanges.indexOf(range),
-                                  day.key
-                                )
-                              }
-                            />
-                          )}
-                          <p className="profiles-popup-day">
-                            {day[theme.lang]}
-                          </p>
-                        </div>
-                      ))}
+                  ))}
+                </div>
+              </>
+              {/* Availability range */}
+              <>
+                <h4 className="profiles-popup-input-name">
+                  {
+                    strings.popups[popupType].availabilityRange.title[
+                      theme.lang
+                    ]
+                  }
+                </h4>
+                {newAdmin.disponibilityRanges.map((range) => (
+                  <div className="profiles-popup-ranges-supercontainer">
+                    {/* Index */}
+                    <div className="profiles-popup-range-bullets-container">
+                      <h1 className="profiles-popup-range-index">
+                        {newAdmin.disponibilityRanges.indexOf(range) + 1}
+                      </h1>
+                      <MdRemoveCircle
+                        className="deleteIcon"
+                        onClick={() =>
+                          removeRange(
+                            newAdmin.disponibilityRanges.indexOf(range)
+                          )
+                        }
+                      />
                     </div>
-                    {/* Hours */}
-                    <div className="profiles-popup-hours-container">
-                      {/* From */}
-                      <p style={{ margin: 0 }}>
+                    <div className="profiles-popup-ranges-container">
+                      {/* Instructions */}
+                      <p className="profiles-popup-ranges-instruction">
                         {
-                          strings.popups[popupType].availabilityRange.from[
+                          strings.popups[popupType].availabilityRange.days[
                             theme.lang
                           ]
                         }
                       </p>
-                      <input
-                        className="input hour-input"
-                        value={range.from}
-                        onChange={(e) =>
-                          handleHourChange(
-                            newAdmin.disponibilityRanges.indexOf(range),
-                            e.target.value,
-                            "from"
-                          )
-                        }
-                      />
-                      {/* To */}
-                      <p style={{ margin: 0 }}>
-                        {
-                          strings.popups[popupType].availabilityRange.to[
-                            theme.lang
-                          ]
-                        }
-                      </p>
-                      <input
-                        className="input hour-input"
-                        value={range.to}
-                        onChange={(e) =>
-                          handleHourChange(
-                            newAdmin.disponibilityRanges.indexOf(range),
-                            e.target.value,
-                            "to"
-                          )
-                        }
-                      />
+                      {/* Days */}
+                      <div className="profiles-popup-days-container">
+                        {strings.popups.weekDays.map((day) => (
+                          <div className="profiles-popup-day-container">
+                            {range.days.includes(day.key) ? (
+                              <MdCheckBox
+                                className="profiles-popup-day-checkbox"
+                                onClick={() =>
+                                  handleAvailabilityDays(
+                                    newAdmin.disponibilityRanges.indexOf(range),
+                                    day.key
+                                  )
+                                }
+                              />
+                            ) : (
+                              <MdCheckBoxOutlineBlank
+                                className="profiles-popup-day-checkbox"
+                                onClick={() =>
+                                  handleAvailabilityDays(
+                                    newAdmin.disponibilityRanges.indexOf(range),
+                                    day.key
+                                  )
+                                }
+                              />
+                            )}
+                            <p className="profiles-popup-day">
+                              {day[theme.lang]}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Hours */}
+                      <div className="profiles-popup-hours-container">
+                        {/* From */}
+                        <p style={{ margin: 0 }}>
+                          {
+                            strings.popups[popupType].availabilityRange.from[
+                              theme.lang
+                            ]
+                          }
+                        </p>
+                        <input
+                          className="input hour-input"
+                          value={range.from}
+                          onChange={(e) =>
+                            handleHourChange(
+                              newAdmin.disponibilityRanges.indexOf(range),
+                              e.target.value,
+                              "from"
+                            )
+                          }
+                        />
+                        {/* To */}
+                        <p style={{ margin: 0 }}>
+                          {
+                            strings.popups[popupType].availabilityRange.to[
+                              theme.lang
+                            ]
+                          }
+                        </p>
+                        <input
+                          className="input hour-input"
+                          value={range.to}
+                          onChange={(e) =>
+                            handleHourChange(
+                              newAdmin.disponibilityRanges.indexOf(range),
+                              e.target.value,
+                              "to"
+                            )
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-              {/* Add range */}
-              <p
-                className="btn profiles-popup-range-addBtn"
-                onClick={handleAddRange}
-              >
-                {strings.popups[popupType].availabilityRange.add[theme.lang]}
-              </p>
-            </>
-            {/* Submit */}
-            <>
-              <p className="btn profiles-popup-submit" onClick={createAdmin}>
-                {strings.popups[popupType].submit[theme.lang]}
-              </p>
-            </>
+                ))}
+                {/* Add range */}
+                <p
+                  className="btn profiles-popup-range-addBtn"
+                  onClick={handleAddRange}
+                >
+                  {strings.popups[popupType].availabilityRange.add[theme.lang]}
+                </p>
+              </>
+              {/* Locked */}
+              <>
+                {popupType === "edit" &&
+                adminTypes.super.includes(admin.personalInfo.rol) ? (
+                  <>
+                    <h4 className="profiles-popup-input-name">
+                      {strings.popups[popupType].locked.title[theme.lang]}
+                    </h4>
+                    <div className="toggle recipe-search-visibility-toggle">
+                      <p
+                        onClick={() =>
+                          setNewAdmin({ ...newAdmin, locked: false })
+                        }
+                        className={`toggle-item profiles-toggle-item ${
+                          !newAdmin.locked ? " toggle-item-selected" : null
+                        }`}
+                      >
+                        {strings.popups.edit.locked.false[theme.lang]}
+                      </p>
+                      <p
+                        onClick={() =>
+                          setNewAdmin({ ...newAdmin, locked: true })
+                        }
+                        className={`toggle-item profiles-toggle-item ${
+                          newAdmin.locked ? " toggle-item-selected" : true
+                        }`}
+                      >
+                        {strings.popups.edit.locked.true[theme.lang]}
+                      </p>
+                    </div>
+                  </>
+                ) : null}
+              </>
+              {/* Submit */}
+              <>
+                <p className="btn profiles-popup-submit" onClick={createAdmin}>
+                  {strings.popups[popupType].submit[theme.lang]}
+                </p>
+              </>
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </>
       <div className="content-container profiles-content-container">
         {/* Header */}
         <header className="profiles-header-container">
