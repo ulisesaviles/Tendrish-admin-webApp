@@ -596,8 +596,8 @@ export const createRecipe = {
         en: "Publish recipe",
       },
       saveDraft: {
-        es: "Guardar borrador",
-        en: "Save draft",
+        es: "Guardar",
+        en: "Save",
       },
       error: {
         network: {
@@ -1166,7 +1166,7 @@ export const stats = {
       },
       female: {
         es: "Mujeres",
-        en: "Wemen",
+        en: "Women",
       },
       undefined: {
         es: "Indefinido",
