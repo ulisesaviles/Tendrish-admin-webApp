@@ -980,7 +980,7 @@ export const profiles = {
           es: "Rol",
           en: "Rol",
         },
-        options: ["Admin", "Super admin"],
+        options: ["CEO", "Super admin", "Developer", "Admin", "Marketing"],
       },
       availabilityRange: {
         title: {
