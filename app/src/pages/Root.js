@@ -104,8 +104,6 @@ const Root = ({ location }) => {
                 allowedTabs[user.personalInfo.rol.toLowerCase()].includes(
                   tab.key
                 ) ? (
-                  //   adminTypes.super.includes(user.personalInfo.rol)) ||
-                  // allowedTabs.includes(tab.key.toLowerCase())
                   <Link
                     className={
                       theme.tab === tab.key
