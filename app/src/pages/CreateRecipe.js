@@ -1362,22 +1362,27 @@ function Createingredient() {
 
           {/* Create recipe */}
           <>
+            {}
             <div
               className="btn createRecipe-btn"
               onClick={() => {
-                createRecipe(true);
+                createRecipe(adminTypes.super.includes(admin.personalInfo.rol));
               }}
             >
-              {strings.Opc.submit.publish[theme.lang]}
+              {adminTypes.super.includes(admin.personalInfo.rol)
+                ? strings.Opc.submit.publish[theme.lang]
+                : strings.Opc.submit.saveDraft[theme.lang]}
             </div>
-            <p
-              className="createCat-title-container"
-              onClick={() => {
-                createRecipe(false);
-              }}
-            >
-              {strings.Opc.submit.saveDraft[theme.lang]}
-            </p>
+            {adminTypes.super.includes(admin.personalInfo.rol) ? (
+              <p
+                className="createCat-title-container"
+                onClick={() => {
+                  createRecipe(false);
+                }}
+              >
+                {strings.Opc.submit.saveDraft[theme.lang]}
+              </p>
+            ) : null}
             <p className="createRecipe-error">{error}</p>
           </>
         </div>
