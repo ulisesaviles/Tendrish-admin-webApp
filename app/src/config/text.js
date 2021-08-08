@@ -1183,3 +1183,53 @@ export const stats = {
     en: "Users per age range",
   },
 };
+
+export const adminTypes = {
+  super: ["CEO", "Developer", "Super admin"],
+  normal: ["Admin", "Marketing"],
+  all: ["CEO", "Developer", "Super admin", "Admin", "Marketing"],
+  canCreateRecipes: ["CEO", "Super admin", "Admin"],
+};
+
+export const allowedTabs = {
+  ceo: [
+    "Agenda",
+    "CreateAd",
+    "CreateEvent",
+    "CreateIngredient",
+    "CreateRecipe",
+    "EditUser",
+    "Profiles",
+    "Recipe",
+    "Stats",
+  ],
+  developer: [
+    "Agenda",
+    "CreateAd",
+    "CreateEvent",
+    "CreateIngredient",
+    "CreateRecipe",
+    "EditUser",
+    "Profiles",
+    "Recipe",
+    "Stats",
+  ],
+  "super admin": [
+    "Agenda",
+    "CreateIngredient",
+    "CreateRecipe",
+    "EditUser",
+    "Profiles",
+    "Recipe",
+  ],
+  marketing: ["CreateAd", "CreateEvent", "Stats"],
+  admin: ["Agenda", "CreateIngredient", "CreateRecipe", "EditUser", "Recipe"],
+};
+
+export const defaultTab = {
+  CEO: "Stats",
+  Developer: "Stats",
+  Marketing: "Stats",
+  "Super admin": "Agenda",
+  Admin: "Agenda",
+};
