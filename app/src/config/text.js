@@ -1216,6 +1216,8 @@ export const allowedTabs = {
   ],
   "super admin": [
     "Agenda",
+    "CreateAd",
+    "CreateEvent",
     "CreateIngredient",
     "CreateRecipe",
     "EditUser",
