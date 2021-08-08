@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 // Local imports
-import { langs, viewRecipe as strings } from "../config/text";
+import { adminTypes, langs, viewRecipe as strings } from "../config/text";
 
 // Icons
 import { MdSearch } from "react-icons/md";
@@ -596,9 +596,7 @@ function Createingredient() {
                 <div className="recipe-recipeSection-options-container">
                   {/* Visibility toggle */}
                   <>
-                    {["Developer", "Super admin"].includes(
-                      admin.personalInfo.rol
-                    ) ? (
+                    {adminTypes.super.includes(admin.personalInfo.rol) ? (
                       <div className="toggle recipe-search-visibility-toggle">
                         <div
                           className={`toggle-item${
@@ -637,9 +635,7 @@ function Createingredient() {
                   </>
                   {/* Free toggle */}
                   <>
-                    {["Developer", "Super admin"].includes(
-                      admin.personalInfo.rol
-                    ) ? (
+                    {adminTypes.super.includes(admin.personalInfo.rol) ? (
                       <div className="toggle recipe-search-visibility-toggle">
                         <div
                           className={`toggle-item${
@@ -681,9 +677,7 @@ function Createingredient() {
                   </div>
                   {/* Delete btn */}
                   <>
-                    {["Developer", "Super admin"].includes(
-                      admin.personalInfo.rol
-                    ) ? (
+                    {adminTypes.super.includes(admin.personalInfo.rol) ? (
                       <div
                         className="recipe-recipeSection-options-deleteRecipeBtn"
                         onClick={deleteRecipe}
