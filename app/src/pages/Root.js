@@ -16,7 +16,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 // Local imports
 import lightLogo from "../assets/logos/light.jpg";
 import darkLogo from "../assets/logos/dark.jpg";
-import { tabs } from "../config/text";
+import { adminTypes, allowedTabs, tabs } from "../config/text";
 import { SetTheme } from "../config/theme";
 
 const Root = ({ location }) => {
@@ -31,14 +31,6 @@ const Root = ({ location }) => {
     tab: url.get("tab"),
   };
   theme = SetTheme(theme);
-  const allowedTabs = [
-    "edituser",
-    "agenda",
-    "recipe",
-    "createrecipe",
-    "createingredient",
-  ];
-  const superAdmins = ["Developer", "CEO", "Super admin"];
 
   // Functions
   const renderCurrentTab = (tab) => {
@@ -108,9 +100,12 @@ const Root = ({ location }) => {
           <div className="nav-items">
             {tabs.map((tab) => (
               <>
-                {(user !== null &&
-                  superAdmins.includes(user.personalInfo.rol)) ||
-                allowedTabs.includes(tab.key.toLowerCase()) ? (
+                {user !== null &&
+                allowedTabs[user.personalInfo.rol.toLowerCase()].includes(
+                  tab.key
+                ) ? (
+                  //   adminTypes.super.includes(user.personalInfo.rol)) ||
+                  // allowedTabs.includes(tab.key.toLowerCase())
                   <Link
                     className={
                       theme.tab === tab.key
