@@ -5,7 +5,7 @@ import { useState } from "react";
 import lightLogo from "../assets/logos/light.jpg";
 import darkLogo from "../assets/logos/dark.jpg";
 import { getTheme } from "../config/theme";
-import { login as strings } from "../config/text";
+import { defaultTab, login as strings } from "../config/text";
 
 // Animations
 import { JackInTheBox } from "react-awesome-reveal";
@@ -53,13 +53,7 @@ const Login = () => {
           personalInfo: response.data.personalInfo,
         };
         localStorage.setItem("user", JSON.stringify(storedUser));
-        history.push(
-          `?tab=${
-            superAdmins.includes(storedUser.personalInfo.rol)
-              ? "Stats"
-              : "Agenda"
-          }`
-        );
+        history.push(`?tab=${defaultTab[storedUser.personalInfo.rol]}`);
       } else {
         setSubmited(false);
         console.log(`${response.status}: ${response.data.error}`);
