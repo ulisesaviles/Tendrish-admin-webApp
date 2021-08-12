@@ -1249,3 +1249,75 @@ export const defaultTab = {
   "Super admin": "Agenda",
   Admin: "Agenda",
 };
+
+export const agenda = {
+  months: [
+    { es: "Enero", en: "January" },
+    { es: "Febrero", en: "February" },
+    { es: "Marzo", en: "March" },
+    { es: "Abril", en: "April" },
+    { es: "Mayo", en: "May" },
+    { es: "Junio", en: "June" },
+    { es: "Julio", en: "July" },
+    { es: "Agosto", en: "August" },
+    { es: "Septiembre", en: "September" },
+    { es: "Octubre", en: "October" },
+    { es: "Noviembre", en: "November" },
+    { es: "Diciembre", en: "December" },
+  ],
+  days: [
+    { es: "Lunes", en: "Monday" },
+    { es: "Martes", en: "Tuesday" },
+    { es: "Miércoles", en: "Wednesday" },
+    { es: "Jueves", en: "Thursday" },
+    { es: "Viernes", en: "Friday" },
+    { es: "Sábado", en: "Saturday" },
+    { es: "Domingo", en: "Sunday" },
+  ],
+  monthsSection: {
+    title: {
+      es: "Meses",
+      en: "Months",
+    },
+  },
+  daysSection: {
+    title: {
+      es: "Días",
+      en: "Days",
+    },
+  },
+  appointment: {
+    title: {
+      es: "Cita",
+      en: "Appointment",
+    },
+    user: {
+      es: "Usuario",
+      en: "User",
+    },
+    appointment: {
+      es: "Cita",
+      en: "Appointment",
+    },
+    phone: {
+      es: "Número telefónico",
+      en: "Phone number",
+    },
+    appointmentNum: {
+      es: "Número de cita",
+      en: "Appointment number",
+    },
+    link: {
+      es: "Link de Zoom",
+      en: "Zoom link",
+    },
+    viewAppointmentHistory: {
+      es: "Ver historial de citas",
+      en: "View appointment history",
+    },
+  },
+  factorDate: {
+    es: (day, date, month, year) => `${day} ${date} de ${month} de ${year}`,
+    en: (day, date, month, year) => `${day}, ${month} ${date} of ${year}`,
+  },
+};
