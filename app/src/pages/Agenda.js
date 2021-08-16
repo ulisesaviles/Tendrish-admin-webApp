@@ -25,6 +25,7 @@ function Createingredient() {
   // Global
   const theme = getTheme();
   const [firstLoad, setFirstLoad] = useState(true);
+  const admin = JSON.parse(localStorage.getItem("user"));
   const [defaultValues, setDefaultValues] = useState({
     categories: [],
     ingredients: [],
@@ -41,6 +42,7 @@ function Createingredient() {
       },
     ],
   });
+  // MonthsSection
   const getTodaysDate = () => {
     let todaysDate = {
       date: new Date(Date.now()).getDate(), // starts at 1
@@ -69,7 +71,6 @@ function Createingredient() {
       year: 2021,
     },
   ]);
-  const [selectedDay, setSelectedDay] = useState(todaysDate);
   const [week, setWeek] = useState([
     {
       day: {
@@ -82,7 +83,10 @@ function Createingredient() {
       isSelected: true,
     },
   ]);
-  const admin = JSON.parse(localStorage.getItem("user"));
+  // DaysSection
+  const [selectedDay, setSelectedDay] = useState(todaysDate);
+  const [appointments, setAppointments] = useState(null);
+  const [schedule, setShecule] = useState(null);
 
   // Functions
   const dayAfter = () => {
@@ -144,6 +148,7 @@ function Createingredient() {
   };
 
   const handleDateChange = (date, month, year) => {
+    if (date == " ") return;
     let weekDayIndex = new Date(`${month + 1}-${date}-${year}`).getDay();
     setSelectedDay({
       date,
@@ -409,6 +414,31 @@ function Createingredient() {
               )}
             </p>
           </div>
+          {/* Actual appointments */}
+          {appointments === null ? (
+            <div className="agenda-daysSection-loading-container">
+              <p className="agenda-daysSection-loading">
+                {strings.daysSection.loading[theme.lang]}
+              </p>
+            </div>
+          ) : (
+            <>
+              {schedule === null ? (
+                <div className="agenda-daysSection-loading-container">
+                  <p className="agenda-daysSection-loading">
+                    {strings.daysSection.noSchedule[theme.lang](
+                      selectedDay.day[theme.lang],
+                      selectedDay.date,
+                      strings.months[selectedDay.month][theme.lang],
+                      selectedDay.year
+                    )}
+                  </p>
+                </div>
+              ) : (
+                <>{/* Here is where the content goes */}</>
+              )}
+            </>
+          )}
         </div>
 
         {/* Appointment */}
