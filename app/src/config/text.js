@@ -1285,6 +1285,16 @@ export const agenda = {
       es: "Días",
       en: "Days",
     },
+    loading: {
+      es: "Cargando...",
+      en: "Loading...",
+    },
+    noSchedule: {
+      es: (day, date, month, year) =>
+        `No tienes horas laborales el ${day} ${date} de ${month} de ${year}`,
+      en: (day, date, month, year) =>
+        `You don't have working hours on ${day}, ${month} ${date} of ${year}`,
+    },
   },
   appointment: {
     title: {
