@@ -49,6 +49,12 @@ function Profiles() {
 
   // Functions
   const createAdmin = async () => {
+    const currentTime = Date.now();
+    const time = {
+      timeStamp: currentTime,
+      offset: new Date().getTimezoneOffset(),
+      timeObj: `${new Date(currentTime)}`,
+    };
     let response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -56,6 +62,7 @@ function Profiles() {
         method: popupType === "add" ? "createAdmin" : "editAdmin",
         newAdmin: { ...newAdmin, password: newAdmin.password.value },
         admin,
+        time,
       },
     });
     if (response.status === 200) {
@@ -68,12 +75,20 @@ function Profiles() {
   };
 
   const getAdmins = async () => {
+    const currentTime = Date.now();
+    const time = {
+      timeStamp: currentTime,
+      offset: new Date().getTimezoneOffset(),
+      timeObj: `${new Date(currentTime)}`,
+    };
+    console.log(time);
     let response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
       data: {
         method: "getAdmins",
         admin,
+        time,
       },
     });
     if (response.status === 200) {
@@ -358,43 +373,47 @@ function Profiles() {
                       {/* Hours */}
                       <div className="profiles-popup-hours-container">
                         {/* From */}
-                        <p style={{ margin: 0 }}>
-                          {
-                            strings.popups[popupType].availabilityRange.from[
-                              theme.lang
-                            ]
-                          }
-                        </p>
-                        <input
-                          className="input hour-input"
-                          value={range.from}
-                          onChange={(e) =>
-                            handleHourChange(
-                              newAdmin.disponibilityRanges.indexOf(range),
-                              e.target.value,
-                              "from"
-                            )
-                          }
-                        />
+                        <>
+                          <p style={{ margin: 0 }}>
+                            {
+                              strings.popups[popupType].availabilityRange.from[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                          <input
+                            className="input hour-input"
+                            value={range.from}
+                            onChange={(e) =>
+                              handleHourChange(
+                                newAdmin.disponibilityRanges.indexOf(range),
+                                e.target.value,
+                                "from"
+                              )
+                            }
+                          />
+                        </>
                         {/* To */}
-                        <p style={{ margin: 0 }}>
-                          {
-                            strings.popups[popupType].availabilityRange.to[
-                              theme.lang
-                            ]
-                          }
-                        </p>
-                        <input
-                          className="input hour-input"
-                          value={range.to}
-                          onChange={(e) =>
-                            handleHourChange(
-                              newAdmin.disponibilityRanges.indexOf(range),
-                              e.target.value,
-                              "to"
-                            )
-                          }
-                        />
+                        <>
+                          <p style={{ margin: 0 }}>
+                            {
+                              strings.popups[popupType].availabilityRange.to[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                          <input
+                            className="input hour-input"
+                            value={range.to}
+                            onChange={(e) =>
+                              handleHourChange(
+                                newAdmin.disponibilityRanges.indexOf(range),
+                                e.target.value,
+                                "to"
+                              )
+                            }
+                          />
+                        </>
                       </div>
                     </div>
                   </div>
