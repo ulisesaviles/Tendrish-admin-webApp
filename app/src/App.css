@@ -1415,6 +1415,7 @@ body {
   flex-direction: column;
   align-items: center;
   transition: var(--animation-short);
+  cursor: pointer;
 }
 .agenda-daysSection-header-item-container:hover {
   transform: scale(1.1);
@@ -1450,6 +1451,21 @@ body {
 }
 .agenda-daysSection-header-arrow:hover {
   transform: scale(1.2);
+}
+@media only screen and (max-width: 1400px) {
+  .agenda-monthsSection-day {
+    font-size: 10px;
+  }
+}
+.agenda-daysSection-loading-container {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.agenda-daysSection-loading {
+  max-width: 70%;
 }
 
 /* Default */
