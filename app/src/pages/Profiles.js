@@ -49,12 +49,7 @@ function Profiles() {
 
   // Functions
   const createAdmin = async () => {
-    const currentTime = Date.now();
-    const time = {
-      timeStamp: currentTime,
-      offset: new Date().getTimezoneOffset(),
-      timeObj: `${new Date(currentTime)}`,
-    };
+    const requestOffset = new Date().getTimezoneOffset();
     let response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -62,7 +57,7 @@ function Profiles() {
         method: popupType === "add" ? "createAdmin" : "editAdmin",
         newAdmin: { ...newAdmin, password: newAdmin.password.value },
         admin,
-        time,
+        requestOffset,
       },
     });
     if (response.status === 200) {
@@ -75,20 +70,14 @@ function Profiles() {
   };
 
   const getAdmins = async () => {
-    const currentTime = Date.now();
-    const time = {
-      timeStamp: currentTime,
-      offset: new Date().getTimezoneOffset(),
-      timeObj: `${new Date(currentTime)}`,
-    };
-    console.log(time);
+    const requestOffset = new Date().getTimezoneOffset();
     let response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
       data: {
         method: "getAdmins",
         admin,
-        time,
+        requestOffset,
       },
     });
     if (response.status === 200) {

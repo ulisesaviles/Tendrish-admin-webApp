@@ -1393,8 +1393,7 @@ body {
   display: flex;
   align-items: center;
   flex-direction: column;
-  border-bottom: 1px solid var(--separators-color);
-  padding-bottom: 15px;
+  padding-bottom: 8px;
 }
 .agenda-daysSection-header-week-container {
   width: 100%;
@@ -1466,6 +1465,22 @@ body {
 }
 .agenda-daysSection-loading {
   max-width: 70%;
+}
+.agenda-daysSection-dropdown {
+  color: white;
+  background-image: var(--gradient);
+  border: 0;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 5px 20px;
+}
+.agenda-daysSection-dropdown::-ms-expand {
+  display: none;
+}
+.agenda-daysSection-dropdown-option {
+  background-color: var(--container-background);
+  color: var(--primary-font-color);
+  border: 0;
 }
 
 /* Default */

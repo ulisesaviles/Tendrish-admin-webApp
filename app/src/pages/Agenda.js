@@ -4,6 +4,7 @@ import { useState } from "react";
 // Local imports
 import {
   agenda as strings,
+  adminTypes,
   //langs
 } from "../config/text";
 
@@ -18,7 +19,7 @@ import "../App.css";
 import { getTheme } from "../config/theme";
 
 // Http
-// import axios from "axios";
+import axios from "axios";
 
 function Createingredient() {
   // Constants
@@ -26,22 +27,6 @@ function Createingredient() {
   const theme = getTheme();
   const [firstLoad, setFirstLoad] = useState(true);
   const admin = JSON.parse(localStorage.getItem("user"));
-  const [defaultValues, setDefaultValues] = useState({
-    categories: [],
-    ingredients: [],
-    tags: [],
-    creators: [],
-    accompaniments: [
-      {
-        img: "",
-        name: {
-          es: "",
-          en: "",
-        },
-        id: "",
-      },
-    ],
-  });
   // MonthsSection
   const getTodaysDate = () => {
     let todaysDate = {
@@ -86,7 +71,9 @@ function Createingredient() {
   // DaysSection
   const [selectedDay, setSelectedDay] = useState(todaysDate);
   const [appointments, setAppointments] = useState(null);
-  const [schedule, setShecule] = useState(null);
+  const [schedule, setSchedule] = useState(null);
+  const [admins, setAdmins] = useState(null);
+  const [selectedUSerId, setSelectedUserId] = useState(admin.id);
 
   // Functions
   const dayAfter = () => {
@@ -147,40 +134,83 @@ function Createingredient() {
     return res;
   };
 
-  const handleDateChange = (date, month, year) => {
-    if (date == " ") return;
+  const getSchedule = async (thirdUserId, selectedDay_) => {
+    const requestOffset = new Date().getTimezoneOffset();
+    const tempDate = selectedDay_ === undefined ? selectedDay : selectedDay_;
+    let response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "agendasQuery",
+        admin: {
+          id: "avilesulises1@gmail.com",
+          password: "123456tendrish",
+        },
+        thirdUserId,
+        date: { ...tempDate, month: tempDate.month + 1 },
+        requestOffset,
+      },
+    });
+    if (response.status === 200) {
+      setSchedule(response.data.schedule);
+      console.log(response.data);
+    } else {
+      alert("Error de la base de datos, vuelve a intentarlo más tarde.");
+    }
+  };
+
+  const handleDateChange = async (date, month, year) => {
+    if (date === " ") return;
     let weekDayIndex = new Date(`${month + 1}-${date}-${year}`).getDay();
-    setSelectedDay({
+    const tempSelectedDay = {
       date,
       month: month,
       year: year,
       day: strings.days[weekDayIndex - 1 < 0 ? 6 : weekDayIndex - 1],
-    });
+    };
+    setSelectedDay(tempSelectedDay);
     putWeek(date, month, year);
-    // Make query. It should return the availabilityRange filled with the appointments
+    await getSchedule(selectedUSerId, tempSelectedDay);
   };
 
   const handleSetup = async () => {
     putMonths();
     putWeek(selectedDay.date, selectedDay.month, selectedDay.year);
+    if (adminTypes.super.includes(admin.personalInfo.rol)) {
+      await handleAdminsQuery();
+    }
+    setAppointments(["hola"]);
   };
 
-  const handleSetupQuery = async () => {
-    // let response = await axios({
-    //   method: "post",
-    //   url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-    //   data: {
-    //     method: "createRecipeSetup",
-    //     rol: "Developer",
-    //   },
-    // });
-    // if (response.status === 200) {
-    //   setDefaultValues(response.data);
-    //   console.log(response.data);
-    //   setAccompanimentsSuggestions(response.data.accompaniments);
-    // } else {
-    //   alert("Error de la base de datos, vuelve a intentarlo más tarde.");
-    // }
+  const handleAdminsQuery = async () => {
+    const requestOffset = new Date().getTimezoneOffset();
+    let response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "agendasQuery",
+        admin: {
+          id: "avilesulises1@gmail.com",
+          password: "123456tendrish",
+        },
+        date: { ...selectedDay, month: selectedDay.month + 1 },
+        requestOffset,
+      },
+    });
+    if (response.status === 200) {
+      setAdmins(response.data.admins);
+      // Get current admin schedule
+      setSchedule(response.data.schedule);
+      console.log(response.data);
+    } else {
+      alert("Error de la base de datos, vuelve a intentarlo más tarde.");
+    }
+  };
+
+  const handleUserChange = async (event) => {
+    const userId = event.target.value;
+    setSelectedUserId(userId);
+    await getSchedule(userId);
   };
 
   const putMonths = () => {
@@ -295,8 +325,8 @@ function Createingredient() {
           <h1 className="section-title">
             {strings.monthsSection.title[theme.lang]}
           </h1>
+          {/* Map months */}
           <div className="agenda-monthsSection-months-container">
-            {/* Map months */}
             {months.map((month) => {
               const monthIsSelected = month.monthIndex === selectedDay.month;
               return (
@@ -329,10 +359,10 @@ function Createingredient() {
                     {month.days.map((date) => {
                       const dayIsSelected =
                         month.monthIndex === selectedDay.month &&
-                        date == selectedDay.date;
+                        date === selectedDay.date;
                       const isToday =
                         month.monthIndex === todaysDate.month &&
-                        date == todaysDate.date;
+                        date === todaysDate.date;
                       return (
                         <p
                           className={`agenda-monthsSection-day ${
@@ -435,7 +465,26 @@ function Createingredient() {
                   </p>
                 </div>
               ) : (
-                <>{/* Here is where the content goes */}</>
+                <>
+                  {/* Content */}
+                  {adminTypes.super.includes(admin.personalInfo.rol) ? (
+                    <select
+                      className="agenda-daysSection-dropdown"
+                      onChange={handleUserChange}
+                    >
+                      {admins.map((tempAdmin) => (
+                        <option
+                          className="agenda-daysSection-dropdown-option"
+                          selected={tempAdmin.id === admin.id}
+                          value={tempAdmin.id}
+                        >{`${tempAdmin.rol}: ${tempAdmin.name}`}</option>
+                      ))}
+                    </select>
+                  ) : null}
+                  <div>
+                    <p>{`${selectedUSerId}: ${JSON.stringify(schedule)}`}</p>
+                  </div>
+                </>
               )}
             </>
           )}
