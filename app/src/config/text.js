@@ -1325,6 +1325,10 @@ export const agenda = {
       es: "Ver historial de citas",
       en: "View appointment history",
     },
+    empty: {
+      es: "Selecciona una cita",
+      en: "Select an appointment",
+    },
   },
   factorDate: {
     es: (day, date, month, year) => `${day} ${date} de ${month} de ${year}`,
