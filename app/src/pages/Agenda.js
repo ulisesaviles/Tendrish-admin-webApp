@@ -2,11 +2,7 @@
 import { useState } from "react";
 
 // Local imports
-import {
-  agenda as strings,
-  adminTypes,
-  //langs
-} from "../config/text";
+import { agenda as strings, adminTypes } from "../config/text";
 
 // Icons
 import {
@@ -73,9 +69,33 @@ function Createingredient() {
   const [appointments, setAppointments] = useState(null);
   const [schedule, setSchedule] = useState(null);
   const [admins, setAdmins] = useState(null);
-  const [selectedUSerId, setSelectedUserId] = useState(admin.id);
+  const [selectedUserId, setSelectedUserId] = useState(admin.id);
+  const [agenda, setAgenda] = useState(null);
+  // Appointments
+  const [currentAppointment, setCurrentAppointment] = useState(null);
 
   // Functions
+  const appointmentsForHour = async (hour, appointments) => {
+    const keys = Object.keys(appointments);
+    let res = [];
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const start = {
+        hour: parseInt(key.split("_")[0].split(":")[0]),
+        minute: parseInt(key.split("_")[0].split(":")[1]),
+      };
+      const end = {
+        hour: parseInt(key.split("_")[1].split(":")[0]),
+        minute: parseInt(key.split("_")[1].split(":")[1]),
+      };
+      const userData = await getUserData(appointments[key].userId);
+      if (start.hour === hour) {
+        res.push({ ...appointments[key], userData, start, end });
+      }
+    }
+    return res;
+  };
+
   const dayAfter = () => {
     let temp = {
       date:
@@ -136,6 +156,7 @@ function Createingredient() {
 
   const getSchedule = async (thirdUserId, selectedDay_) => {
     const requestOffset = new Date().getTimezoneOffset();
+    setAppointments(null);
     const tempDate = selectedDay_ === undefined ? selectedDay : selectedDay_;
     let response = await axios({
       method: "post",
@@ -152,34 +173,31 @@ function Createingredient() {
       },
     });
     if (response.status === 200) {
-      setSchedule(response.data.schedule);
-      console.log(response.data);
+      //console.log(response.data);
+      await putAppointmentsInAgenda(
+        response.data.schedule,
+        response.data.appointments
+      );
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }
   };
 
-  const handleDateChange = async (date, month, year) => {
-    if (date === " ") return;
-    let weekDayIndex = new Date(`${month + 1}-${date}-${year}`).getDay();
-    const tempSelectedDay = {
-      date,
-      month: month,
-      year: year,
-      day: strings.days[weekDayIndex - 1 < 0 ? 6 : weekDayIndex - 1],
-    };
-    setSelectedDay(tempSelectedDay);
-    putWeek(date, month, year);
-    await getSchedule(selectedUSerId, tempSelectedDay);
-  };
-
-  const handleSetup = async () => {
-    putMonths();
-    putWeek(selectedDay.date, selectedDay.month, selectedDay.year);
-    if (adminTypes.super.includes(admin.personalInfo.rol)) {
-      await handleAdminsQuery();
+  const getUserData = async (userId) => {
+    let response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "getUserIdentity",
+        userId: userId,
+      },
+    });
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      alert("Error de la base de datos, vuelve a intentarlo más tarde.");
+      return "No user foud";
     }
-    setAppointments(["hola"]);
   };
 
   const handleAdminsQuery = async () => {
@@ -199,12 +217,60 @@ function Createingredient() {
     });
     if (response.status === 200) {
       setAdmins(response.data.admins);
-      // Get current admin schedule
-      setSchedule(response.data.schedule);
-      console.log(response.data);
+      await putAppointmentsInAgenda(
+        response.data.schedule,
+        response.data.appointments
+      );
+      // console.log(response.data);
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }
+  };
+
+  const putAppointmentsInAgenda = async (schedules, appointments) => {
+    let agenda = [];
+    // Iterate schdules
+    for (
+      let schduleIndex = 0;
+      schduleIndex < schedules.length;
+      schduleIndex++
+    ) {
+      const schedule = schedules[schduleIndex];
+      // Iterate hours
+      for (
+        let currentHour = schedule.from;
+        currentHour < schedule.to;
+        currentHour++
+      ) {
+        agenda.push({
+          hour: currentHour,
+          appointments: await appointmentsForHour(currentHour, appointments),
+        });
+      }
+    }
+    setSchedule(schedules);
+    setAppointments(appointments);
+    setAgenda(agenda);
+  };
+
+  const handleDateChange = async (date, month, year) => {
+    if (date === " ") return;
+    let weekDayIndex = new Date(`${month + 1}-${date}-${year}`).getDay();
+    const tempSelectedDay = {
+      date,
+      month: month,
+      year: year,
+      day: strings.days[weekDayIndex - 1 < 0 ? 6 : weekDayIndex - 1],
+    };
+    setSelectedDay(tempSelectedDay);
+    putWeek(date, month, year);
+    await getSchedule(selectedUserId, tempSelectedDay);
+  };
+
+  const handleSetup = async () => {
+    putMonths();
+    putWeek(selectedDay.date, selectedDay.month, selectedDay.year);
+    await handleAdminsQuery();
   };
 
   const handleUserChange = async (event) => {
@@ -307,7 +373,10 @@ function Createingredient() {
       };
     }
     setWeek(week);
-    console.log(week);
+  };
+
+  const readableHour = (hour) => {
+    return `${hour > 12 ? hour - 12 : hour} ${hour >= 12 ? "p" : "a"}m`;
   };
 
   // Logic
@@ -444,6 +513,24 @@ function Createingredient() {
               )}
             </p>
           </div>
+          {/* Current admin selector */}
+          <>
+            {admins !== null &&
+            adminTypes.super.includes(admin.personalInfo.rol) ? (
+              <select
+                className="agenda-daysSection-dropdown"
+                onChange={handleUserChange}
+              >
+                {admins.map((tempAdmin) => (
+                  <option
+                    className="agenda-daysSection-dropdown-option"
+                    selected={tempAdmin.id === selectedUserId}
+                    value={tempAdmin.id}
+                  >{`${tempAdmin.rol}: ${tempAdmin.name}`}</option>
+                ))}
+              </select>
+            ) : null}
+          </>
           {/* Actual appointments */}
           {appointments === null ? (
             <div className="agenda-daysSection-loading-container">
@@ -467,22 +554,59 @@ function Createingredient() {
               ) : (
                 <>
                   {/* Content */}
-                  {adminTypes.super.includes(admin.personalInfo.rol) ? (
-                    <select
-                      className="agenda-daysSection-dropdown"
-                      onChange={handleUserChange}
-                    >
-                      {admins.map((tempAdmin) => (
-                        <option
-                          className="agenda-daysSection-dropdown-option"
-                          selected={tempAdmin.id === admin.id}
-                          value={tempAdmin.id}
-                        >{`${tempAdmin.rol}: ${tempAdmin.name}`}</option>
-                      ))}
-                    </select>
-                  ) : null}
-                  <div>
-                    <p>{`${selectedUSerId}: ${JSON.stringify(schedule)}`}</p>
+                  <div className="agenda-daysSection-daysContainner">
+                    {agenda !== null ? (
+                      <>
+                        {agenda.map((hour) => (
+                          <div className="agenda-daysSection-hour-superContainer">
+                            {/* Hour */}
+                            <div className="agenda-daysSection-hour-container">
+                              <p className="agenda-daysSection-hour">
+                                {readableHour(hour.hour)}
+                              </p>
+                              <div className="agenda-daysSection-hour-separator" />
+                            </div>
+                            {/* Map appointments */}
+                            <div className="agenda-daysSection-appointment-superContainer">
+                              {hour.appointments.map((appointment) => (
+                                <div
+                                  className={`agenda-daysSection-appointment-container ${
+                                    appointment === currentAppointment
+                                      ? "agenda-daysSection-appointment-container-selected"
+                                      : ""
+                                  }`}
+                                  style={{
+                                    top:
+                                      hour.appointments.indexOf(appointment) *
+                                        -40 +
+                                      (appointment.start.minute / 60) * 80,
+                                  }}
+                                  onClick={() =>
+                                    setCurrentAppointment(appointment)
+                                  }
+                                >
+                                  <div>
+                                    <p className="agenda-daysSection-appointment-name">
+                                      {appointment.userData.name}
+                                    </p>
+                                    <p
+                                      className={`agenda-daysSection-appointment-id ${
+                                        appointment === currentAppointment
+                                          ? "agenda-daysSection-appointment-id-selected"
+                                          : ""
+                                      }`}
+                                    >
+                                      {appointment.userId}
+                                    </p>
+                                  </div>
+                                  <RightArrow className="agenda-daysSection-appointment-arrow" />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </>
+                    ) : null}
                   </div>
                 </>
               )}
@@ -495,6 +619,13 @@ function Createingredient() {
           <h1 className="section-title">
             {strings.appointment.title[theme.lang]}
           </h1>
+          {currentAppointment === null ? (
+            <div className="agenda-appointmentSection-empty-container">
+              <p>{strings.appointment.empty[theme.lang]}</p>
+            </div>
+          ) : (
+            <div>{JSON.stringify(currentAppointment)}</div>
+          )}
         </div>
       </div>
     </div>
