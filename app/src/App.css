@@ -1315,6 +1315,7 @@ body {
 }
 .agenda-appointmentSection-container {
   min-width: 30%;
+  max-width: 30%;
   z-index: 0;
   overflow-x: hidden;
 }
@@ -1526,6 +1527,7 @@ body {
   padding: 5px 20px;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
 }
 .agenda-daysSection-appointment-name {
   margin: 0;
@@ -1553,6 +1555,71 @@ body {
   align-items: center;
   justify-content: center;
   flex: 1;
+}
+.agenda-appointmentSection-header-img-container {
+  width: 170px;
+  height: 170px;
+  overflow-y: hidden;
+  display: flex;
+  align-items: center;
+  border-radius: 1000px;
+  box-shadow: var(--shadow);
+  margin: 10px 0;
+}
+.agenda-appointmentSection-header-img {
+  width: 100%;
+  height: auto;
+}
+.agenda-appointmentSection-content-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.agenda-appointmentSection-header-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  border-bottom: 1px solid var(--separators-color);
+  min-width: 100%;
+  padding-bottom: 15px;
+}
+.agenda-appointmentSection-header-title {
+  color: var(--secondary);
+  font-size: 20px;
+  margin: 0;
+}
+.agenda-appointmentSection-header-name {
+  margin: 0;
+  font-weight: 500;
+  font-size: 27px;
+}
+.agenda-appointmentSection-header-id {
+  color: var(--secondary);
+  margin: 0;
+  font-size: 14px;
+}
+.agenda-appintmentSection-fieldName {
+  margin: 10px 0 0 0;
+  color: var(--secondary);
+  font-weight: 500;
+}
+.agenda-appintmentSection-field-container {
+  width: 100%;
+}
+.agenda-appointmentSection-field {
+  margin: 0;
+  font-size: 15px;
+}
+.agenda-appointmentSection-field-horizontal-container {
+  display: flex;
+  flex-direction: row;
+}
+.agenda-appointmentSection-field-subName {
+  font-weight: 500;
+  margin-right: 5px;
 }
 
 /* Default */

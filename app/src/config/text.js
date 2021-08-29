@@ -1309,6 +1309,14 @@ export const agenda = {
       es: "Cita",
       en: "Appointment",
     },
+    date: {
+      es: "Fecha de la cita",
+      en: "Appointment's date",
+    },
+    hour: {
+      es: "Hora de la cita",
+      en: "Appointment's time",
+    },
     phone: {
       es: "Número telefónico",
       en: "Phone number",
@@ -1321,9 +1329,19 @@ export const agenda = {
       es: "Link de Zoom",
       en: "Zoom link",
     },
-    viewAppointmentHistory: {
-      es: "Ver historial de citas",
-      en: "View appointment history",
+    lastAppointment: {
+      date: {
+        es: "Fecha: ",
+        en: "Date: ",
+      },
+      admin: {
+        es: "Asesor: ",
+        en: "Consultant: ",
+      },
+      title: {
+        es: "Datos de la última cita",
+        en: "Last appointment data",
+      },
     },
     empty: {
       es: "Selecciona una cita",

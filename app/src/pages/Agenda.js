@@ -88,9 +88,16 @@ function Createingredient() {
         hour: parseInt(key.split("_")[1].split(":")[0]),
         minute: parseInt(key.split("_")[1].split(":")[1]),
       };
-      const userData = await getUserData(appointments[key].userId);
       if (start.hour === hour) {
-        res.push({ ...appointments[key], userData, start, end });
+        console.log(
+          `Get user identity of ${appointments[key].userId} at ${start.hour}`
+        );
+        res.push({
+          ...appointments[key],
+          userData: await getUserData(appointments[key].userId),
+          start,
+          end,
+        });
       }
     }
     return res;
@@ -375,8 +382,22 @@ function Createingredient() {
     setWeek(week);
   };
 
-  const readableHour = (hour) => {
-    return `${hour > 12 ? hour - 12 : hour} ${hour >= 12 ? "p" : "a"}m`;
+  const readableHour = (hour, minutes) => {
+    return `${hour > 12 ? hour - 12 : hour}${
+      minutes !== undefined ? `:${minutes}` : ""
+    } ${hour >= 12 ? "p" : "a"}m`;
+  };
+
+  const timestampToDateStr = (timestamp) => {
+    const date = new Date(timestamp);
+    let day = date.getDay();
+    day = day === 0 ? 6 : day - 1;
+    return strings.factorDate[theme.lang](
+      strings.days[day][theme.lang],
+      date.getDate(),
+      strings.months[date.getMonth()][theme.lang],
+      date.getFullYear()
+    );
   };
 
   // Logic
@@ -624,7 +645,107 @@ function Createingredient() {
               <p>{strings.appointment.empty[theme.lang]}</p>
             </div>
           ) : (
-            <div>{JSON.stringify(currentAppointment)}</div>
+            <div className="agenda-appointmentSection-content-container">
+              {/* Header */}
+              <div className="agenda-appointmentSection-header-container">
+                <h3 className="agenda-appointmentSection-header-title">
+                  {strings.appointment.user[theme.lang]}
+                </h3>
+                <div className="agenda-appointmentSection-header-img-container">
+                  <img
+                    className="agenda-appointmentSection-header-img"
+                    src={currentAppointment.userData.profilePhoto}
+                  />
+                </div>
+                <h2 className="agenda-appointmentSection-header-name">
+                  {currentAppointment.userData.name}
+                </h2>
+                <p className="agenda-appointmentSection-header-id">
+                  {currentAppointment.userId}
+                </p>
+              </div>
+              {/* Date */}
+              <div className="agenda-appintmentSection-field-container">
+                <p className="agenda-appintmentSection-fieldName">
+                  {strings.appointment.date[theme.lang]}
+                </p>
+                <p className="agenda-appointmentSection-field">
+                  {strings.factorDate[theme.lang](
+                    selectedDay.day[theme.lang],
+                    selectedDay.date,
+                    strings.months[selectedDay.month][theme.lang],
+                    selectedDay.year
+                  )}
+                </p>
+              </div>
+              {/* Hour */}
+              <div className="agenda-appintmentSection-field-container">
+                <p className="agenda-appintmentSection-fieldName">
+                  {strings.appointment.hour[theme.lang]}
+                </p>
+                <p className="agenda-appointmentSection-field">
+                  {readableHour(
+                    currentAppointment.start.hour,
+                    currentAppointment.start.minute
+                  )}
+                </p>
+              </div>
+              {/* Phone */}
+              <div className="agenda-appintmentSection-field-container">
+                <p className="agenda-appintmentSection-fieldName">
+                  {strings.appointment.phone[theme.lang]}
+                </p>
+                <p className="agenda-appointmentSection-field">
+                  {currentAppointment.userData.phoneNumber}
+                </p>
+              </div>
+              {/* AppointmentNum */}
+              <div className="agenda-appintmentSection-field-container">
+                <p className="agenda-appintmentSection-fieldName">
+                  {strings.appointment.appointmentNum[theme.lang]}
+                </p>
+                <p className="agenda-appointmentSection-field">
+                  {currentAppointment.userData.appointmentsData.counter}
+                </p>
+              </div>
+              {/* Las appointment */}
+              <div className="agenda-appintmentSection-field-container">
+                <p className="agenda-appintmentSection-fieldName">
+                  {strings.appointment.lastAppointment.title[theme.lang]}
+                </p>
+                <div className="agenda-appointmentSection-field-horizontal-container">
+                  <p className="agenda-appointmentSection-field agenda-appointmentSection-field-subName">
+                    {strings.appointment.lastAppointment.admin[theme.lang]}
+                  </p>
+                  <p className="agenda-appointmentSection-field">
+                    {
+                      currentAppointment.userData.appointmentsData
+                        .lastAppointment.admin
+                    }
+                  </p>
+                </div>
+                <div className="agenda-appointmentSection-field-horizontal-container">
+                  <p className="agenda-appointmentSection-field agenda-appointmentSection-field-subName">
+                    {strings.appointment.lastAppointment.date[theme.lang]}
+                  </p>
+                  <p className="agenda-appointmentSection-field">
+                    {timestampToDateStr(
+                      currentAppointment.userData.appointmentsData
+                        .lastAppointment.date
+                    )}
+                  </p>
+                </div>
+              </div>
+              {/* Zoom link */}
+              <div className="agenda-appintmentSection-field-container">
+                <p className="agenda-appintmentSection-fieldName">
+                  {strings.appointment.link[theme.lang]}
+                </p>
+                <p className="agenda-appointmentSection-field">
+                  {currentAppointment.videoCallLink}
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </div>
