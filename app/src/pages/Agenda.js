@@ -17,7 +17,7 @@ import { getTheme } from "../config/theme";
 // Http
 import axios from "axios";
 
-function Createingredient() {
+const Agenda = () => {
   // Constants
   // Global
   const theme = getTheme();
@@ -751,6 +751,6 @@ function Createingredient() {
       </div>
     </div>
   );
-}
+};
 
-export default Createingredient;
+export default Agenda;
