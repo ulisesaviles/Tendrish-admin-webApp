@@ -653,6 +653,7 @@ const Agenda = () => {
                 </h3>
                 <div className="agenda-appointmentSection-header-img-container">
                   <img
+                    alt="agenda-appointmentSection-header-img"
                     className="agenda-appointmentSection-header-img"
                     src={currentAppointment.userData.profilePhoto}
                   />
