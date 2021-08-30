@@ -167,6 +167,7 @@ function DditUser() {
   const handleDateChange = async (date, month, year) => {
     setSelectedMeal(null);
     setSelectedMealType(null);
+    setMealPlan(null);
     if (date === " ") return;
     let weekDayIndex = new Date(`${month + 1}-${date}-${year}`).getDay();
     const tempSelectedDay = {
@@ -420,7 +421,7 @@ function DditUser() {
                 <>
                   {mealPlan === null ? (
                     <div className="editUser-userFinder-empty-container">
-                      {strings.userFinder.null[theme.lang](errorName)}
+                      {strings.userPlan.loading[theme.lang]}
                     </div>
                   ) : (
                     <div>

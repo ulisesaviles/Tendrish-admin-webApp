@@ -1450,6 +1450,7 @@ body {
   font-size: 30px;
   color: var(--secondary);
   transition: var(--animation-short);
+  cursor: pointer;
 }
 .agenda-daysSection-header-arrow:hover {
   transform: scale(1.2);
@@ -1710,6 +1711,7 @@ body {
   transition: var(--animation-short);
   padding: 5px 20px;
   margin: 10px 0;
+  cursor: pointer;
 }
 .editUSer-userFinder-meal-container:hover {
   box-shadow: var(--shadow);
