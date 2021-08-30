@@ -18,7 +18,7 @@ import { getTheme } from "../config/theme";
 // Http
 import axios from "axios";
 
-function DditUser() {
+const EditUser = () => {
   // Constants
   // Global
   const theme = getTheme();
@@ -525,6 +525,6 @@ function DditUser() {
       </div>
     </div>
   );
-}
+};
 
-export default DditUser;
+export default EditUser;
