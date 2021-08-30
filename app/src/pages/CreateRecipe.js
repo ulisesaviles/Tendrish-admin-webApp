@@ -151,12 +151,17 @@ function Createingredient() {
       if (recipeToEdit === null) {
         imgUrl = (await uploadImgs())[0];
       } else {
-        imgUrl = recipeToEdit.general.img;
+        console.log(recipeToEdit.general);
+        imgUrl = {
+          url: recipeToEdit.general.img,
+          imgRef: recipeToEdit.general.imgRef,
+        };
       }
       let recipe = {
         general: {
           langs: usedLangs,
-          img: imgUrl,
+          img: imgUrl.url,
+          imgRef: imgUrl.ref,
           name,
           description,
           category: defaultValues.categories[selectedCategoryIndex].id,
