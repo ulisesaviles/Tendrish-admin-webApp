@@ -673,7 +673,7 @@ function Createingredient() {
   const uploadImgs = async () => {
     let formData = new FormData();
     formData.append("method", "uploadImgs");
-    formData.append("destination", "recepiesImgs");
+    formData.append("destination", "recipesImgs");
     formData.append("img", selectedImageObj);
     const response = await axios({
       method: "post",
