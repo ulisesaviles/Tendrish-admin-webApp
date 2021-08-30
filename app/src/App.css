@@ -1528,6 +1528,10 @@ body {
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
+  transition: var(--animation-short);
+}
+.agenda-daysSection-appointment-container:hover {
+  box-shadow: var(--shadow);
 }
 .agenda-daysSection-appointment-name {
   margin: 0;
@@ -1620,6 +1624,134 @@ body {
 .agenda-appointmentSection-field-subName {
   font-weight: 500;
   margin-right: 5px;
+}
+
+/* EditUser */
+.editUSer-userFinder-container {
+  width: 25%;
+  z-index: 2;
+}
+.editUser-userPlan-container {
+  width: 30%;
+  z-index: 1;
+}
+.editUSer-thirdSection-container {
+  width: 45%;
+  z-index: 0;
+}
+.editUser-userFinder-empty-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 50%;
+  text-align: center;
+}
+.editUser-userFinder-seach-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.editUser-userFinder-seach {
+  padding: 5px;
+  margin: 0 0 0 10px;
+  max-width: 20px;
+  min-width: 20px;
+  max-height: 20px;
+  min-height: 20px;
+  margin-bottom: 15px;
+}
+.editUser-userFinder-user-container {
+  width: calc(100%-40px);
+  border-radius: var(--div-border-radius);
+  padding: 5px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  transition: var(--animation-short);
+  cursor: pointer;
+}
+.editUser-userFinder-user-container:hover {
+  box-shadow: var(--shadow);
+}
+.editUser-userFinder-user-name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+.editUser-userFinder-user-id {
+  margin: 0;
+  font-size: 12px;
+  color: var(--secondary);
+}
+.editUser-userFinder-user-id-selected {
+  color: white;
+}
+.editUser-userFinder-user-arrow {
+  font-size: 20px;
+}
+.editUser-userFinder-user-container-selected {
+  box-shadow: var(--shadow);
+  background-image: var(--gradient);
+  color: white;
+}
+.editUser-userFinder-dateSelector-container {
+  margin: 10px 0 20px 0;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--separators-color);
+}
+.editUSer-userFinder-meal-container {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  border-radius: var(--div-border-radius);
+  transition: var(--animation-short);
+  padding: 5px 20px;
+  margin: 10px 0;
+}
+.editUSer-userFinder-meal-container:hover {
+  box-shadow: var(--shadow);
+}
+.editUSer-userFinder-meal-mealType {
+  margin: 0;
+  font-size: 12px;
+  color: var(--secondary);
+  font-weight: 500;
+}
+.editUSer-userFinder-meal-name {
+  margin: 0;
+}
+.editUSer-userFinder-meal-switchBtn {
+  margin: 0;
+  font-size: 12px;
+  color: var(--secondary);
+  font-weight: 500;
+  padding: 1px 10px;
+  border-radius: var(--div-border-radius);
+}
+.editUSer-userFinder-meal-switchBtn-hovered {
+  box-shadow: var(--shadow);
+  background-image: var(--gradient);
+  color: white;
+}
+.editUser-userFinder-settingsBtn {
+  padding: 5px 20px;
+  width: 50%;
+  align-self: center;
+  margin: 20px 0 0 0;
+}
+.editUSer-userFinder-meal-container-selected {
+  background-image: var(--gradient);
+  color: white;
+  box-shadow: var(--shadow);
+}
+.editUSer-userFinder-meal-mealType-selected {
+  color: white;
+}
+.editUSer-userFinder-meal-arrow {
+  font-size: 20px;
 }
 
 /* Default */

@@ -1353,3 +1353,159 @@ export const agenda = {
     en: (day, date, month, year) => `${day}, ${month} ${date} of ${year}`,
   },
 };
+
+export const editUser = {
+  userFinder: {
+    title: {
+      es: "Buscador de usuarios",
+      en: "User finder",
+    },
+    searchPlaceholder: {
+      es: "Ingresa el nombre de un usuario",
+      en: "Enter a user's name",
+    },
+    null: {
+      es: (e) => "Busca algún usuario",
+      en: (e) => "Search for a user",
+    },
+    empty: {
+      es: (userName) => `No hay usuarios llamados '${userName}'`,
+      en: (userName) => `There are no users called '${userName}'`,
+    },
+  },
+  userPlan: {
+    title: {
+      es: "Plan del usuario",
+      en: "User's plan",
+    },
+    meals: {
+      breakfast: {
+        es: "Desayuno",
+        en: "Breakfast",
+      },
+      snack1: {
+        es: "Colación",
+        en: "Snack",
+      },
+      snack2: {
+        es: "Colación",
+        en: "Snack",
+      },
+      lunch: {
+        es: "Almuerzo",
+        en: "Lunck",
+      },
+      dinner: {
+        es: "Cena",
+        en: "Dinner",
+      },
+    },
+    loading: {
+      es: "Cargando...",
+      en: "Loading...",
+    },
+    switchBtn: {
+      es: "Cambiar",
+      en: "Switch",
+    },
+    settingsBtn: {
+      es: "Ajustes de usuario",
+      en: "User's settings",
+    },
+    notesBtn: {
+      es: "Notas del usuario",
+      en: "User's notes",
+    },
+  },
+  recipeFinder: {
+    title: {
+      es: "Buscador de recetas",
+      en: "Recipe finder",
+    },
+    searchPlaceholder: {
+      es: "Ingresa el nombre de alguna receta",
+      en: "Enter a recipe's name",
+    },
+    switchBtn: {
+      es: "Cambiar",
+      en: "Switch",
+    },
+  },
+  userSettings: {
+    title: {
+      es: "Ajustes del usuario",
+      en: "User's settings",
+    },
+    servings: {
+      es: "Porciones de la receta que el usuario come",
+      en: "Servings of the recipe that the user eats",
+    },
+    exclusions: {
+      title: {
+        es: "Exclusiones",
+        en: "Exclusions",
+      },
+      new: {
+        title: {
+          es: "Crear nueva exclusión",
+          en: "Create new exclusion",
+        },
+        name: {
+          placeholder: {
+            es: "Ingresa el nombre de la exclusión",
+            en: "Enter the exclusion name",
+          },
+          title: {
+            es: "Nombre",
+            en: "Name",
+          },
+        },
+        ingredients: {
+          es: "¿Qué ingredientes incluye la exclusión?",
+          en: "What ingredients does the exclusion include?",
+        },
+        save: {
+          es: "Guardar",
+          en: "Save",
+        },
+      },
+    },
+    saveBtn: {
+      es: "Guardar cambios",
+      en: "Save changes",
+    },
+  },
+  notes: {
+    title: {
+      es: "Notas",
+      en: "Notes",
+    },
+  },
+  months: [
+    { es: "Enero", en: "January" },
+    { es: "Febrero", en: "February" },
+    { es: "Marzo", en: "March" },
+    { es: "Abril", en: "April" },
+    { es: "Mayo", en: "May" },
+    { es: "Junio", en: "June" },
+    { es: "Julio", en: "July" },
+    { es: "Agosto", en: "August" },
+    { es: "Septiembre", en: "September" },
+    { es: "Octubre", en: "October" },
+    { es: "Noviembre", en: "November" },
+    { es: "Diciembre", en: "December" },
+  ],
+  days: [
+    { es: "Lunes", en: "Monday" },
+    { es: "Martes", en: "Tuesday" },
+    { es: "Miércoles", en: "Wednesday" },
+    { es: "Jueves", en: "Thursday" },
+    { es: "Viernes", en: "Friday" },
+    { es: "Sábado", en: "Saturday" },
+    { es: "Domingo", en: "Sunday" },
+  ],
+  factorDate: {
+    es: (day, date, month, year) => `${day} ${date} de ${month} de ${year}`,
+    en: (day, date, month, year) => `${day}, ${month} ${date} of ${year}`,
+  },
+};
