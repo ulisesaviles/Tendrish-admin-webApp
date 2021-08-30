@@ -58,7 +58,10 @@ function Stats() {
 
   // Functions
   const correctLang = (multiLangObj) => {
-    if (multiLangObj[theme.lang] === undefined) {
+    if (
+      multiLangObj[theme.lang] === undefined ||
+      multiLangObj[theme.lang] === ""
+    ) {
       return multiLangObj[langs.default];
     }
     return multiLangObj[theme.lang];
