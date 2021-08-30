@@ -1645,7 +1645,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 50%;
+  /* opacity: 50%; */
   text-align: center;
 }
 .editUser-userFinder-seach-container {

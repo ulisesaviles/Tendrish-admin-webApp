@@ -295,7 +295,10 @@ function DditUser() {
           {/* Map users */}
           <>
             {users === null || users.length === 0 ? (
-              <div className="editUser-userFinder-empty-container">
+              <div
+                className="editUser-userFinder-empty-container"
+                style={{ opacity: "50%" }}
+              >
                 {strings.userFinder[users === null ? "null" : "empty"][
                   theme.lang
                 ](errorName)}
@@ -341,7 +344,7 @@ function DditUser() {
                         style={{
                           opacity:
                             hoveredUSer === index || selectedUserId === user.id
-                              ? 1
+                              ? "100%"
                               : 0,
                         }}
                       />
@@ -361,7 +364,10 @@ function DditUser() {
           {/* Content */}
           <>
             {selectedUserId === null ? (
-              <div className="editUser-userFinder-empty-container">
+              <div
+                className="editUser-userFinder-empty-container"
+                style={{ opacity: "50%" }}
+              >
                 {strings.userFinder.null[theme.lang](errorName)}
               </div>
             ) : (
@@ -420,7 +426,10 @@ function DditUser() {
                 {/* Meals */}
                 <>
                   {mealPlan === null ? (
-                    <div className="editUser-userFinder-empty-container">
+                    <div
+                      className="editUser-userFinder-empty-container"
+                      style={{ opacity: "50%" }}
+                    >
                       {strings.userPlan.loading[theme.lang]}
                     </div>
                   ) : (
