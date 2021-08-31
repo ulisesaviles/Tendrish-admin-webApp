@@ -69,9 +69,16 @@ const EditUser = () => {
   const [selectedMealType, setSelectedMealType] = useState(null);
   const meals = ["breakfast", "snack1", "lunch", "snack2", "dinner"];
   // Third section
-  const [thirdSection, setThirdSection] = useState("recipeFinder");
+  const [thirdSection, setThirdSection] = useState(null);
+  const [recipeFinderInputValue, setRecipeFinderInputValue] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [hoveredResultIndex, setHoveredResultIndex] = useState(null);
 
   // Functions
+  const capitilize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+
   const changeThirdSection = (newSection) => {
     setThirdSection(newSection);
     if (newSection === "recipeFinder") {
@@ -144,6 +151,28 @@ const EditUser = () => {
       return new Date(Date.now()).getFullYear % 4 === 0 ? 29 : 28;
   };
 
+  const getRecipesByCategory = async (category) => {
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "recipesSearch",
+        filters: {
+          lang: theme.lang,
+          name: recipeFinderInputValue.toLowerCase(),
+          published: true,
+          category,
+          tags: [],
+          includedIngredients: [],
+        },
+        start: 0,
+        end: 10,
+      },
+    });
+    if (response.status === 200) return response.data;
+    else return [];
+  };
+
   const getUserMealPlan = async (date, userId) => {
     date = {
       ...date,
@@ -179,6 +208,38 @@ const EditUser = () => {
     setSelectedDay(tempSelectedDay);
     putWeek(date, month, year);
     await getUserMealPlan(tempSelectedDay, selectedUserId);
+  };
+
+  const handleRecipeSwap = async (index) => {
+    const selectedRecipe = searchResults[index];
+    if (
+      !window.confirm(
+        `Change '${capitilize(
+          correctLang(selectedMeal.name)
+        )}' for '${capitilize(correctLang(selectedRecipe.general.name))}'`
+      )
+    ) {
+      return;
+    }
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "editUserMealPlan",
+        userId: selectedUserId,
+        date: { ...selectedDay, month: selectedDay.month + 1 },
+        dishToChange: selectedMealType,
+        newRecipe: {
+          id: selectedRecipe.id,
+          category: selectedRecipe.general.category,
+        },
+      },
+    });
+    if (response.status === 200) {
+      setSearchResults(null);
+      setMealPlan(null);
+      await getUserMealPlan(selectedDay, selectedUserId);
+    }
   };
 
   const handleUserSeach = async (userName) => {
@@ -261,8 +322,28 @@ const EditUser = () => {
     setWeek(week);
   };
 
+  const searchForRecipe = async () => {
+    // If lunch or dinner, make two requests
+    let res = [];
+    console.log(selectedMeal.category);
+    if (
+      selectedMeal.category === "dinners" ||
+      selectedMeal.category === "lunches"
+    ) {
+      console.log("Fusion");
+      res = [
+        ...(await getRecipesByCategory("dinners")),
+        ...(await getRecipesByCategory("lunches")),
+      ];
+    } else {
+      res = await getRecipesByCategory(selectedMeal.category);
+    }
+    setSearchResults(res);
+  };
+
   const startMealChange = (meal) => {
     changeThirdSection("recipeFinder");
+    setSearchResults(null);
     setSelectedMeal(mealPlan[meal]);
     setSelectedMealType(meal);
   };
@@ -456,7 +537,7 @@ const EditUser = () => {
                               {correctLang(strings.userPlan.meals[meal])}
                             </p>
                             <p className="editUSer-userFinder-meal-name">
-                              {correctLang(mealPlan[meal].name)}
+                              {capitilize(correctLang(mealPlan[meal].name))}
                             </p>
                           </div>
                           {selectedMealType === meal ? (
@@ -501,16 +582,103 @@ const EditUser = () => {
         {/* Recipe search / User settings */}
         <div className="subsection editUSer-thirdSection-container">
           <h1 className="section-title">
-            {strings[thirdSection].title[theme.lang]}
+            {thirdSection !== null
+              ? strings[thirdSection].title[theme.lang]
+              : null}
           </h1>
           {thirdSection === "recipeFinder" ? (
             <>
-              <p>
-                recipeFinder
-                {selectedMeal !== null
-                  ? ": " + correctLang(selectedMeal.name)
-                  : null}
-              </p>
+              {/* Search box*/}
+              <div className="recipe-search-container">
+                <input
+                  className="input"
+                  placeholder={
+                    strings.recipeFinder.searchPlaceholder[theme.lang]
+                  }
+                  value={recipeFinderInputValue}
+                  onChange={(event) =>
+                    setRecipeFinderInputValue(event.target.value)
+                  }
+                />
+                <div
+                  className="recipe-search-btn btn"
+                  onClick={searchForRecipe}
+                >
+                  <IoSearch />
+                </div>
+              </div>
+              {/* Search results */}
+              <div
+                className={`editUSer-recipeFinder-results-container${
+                  searchResults === null ||
+                  (typeof searchResults === "object" &&
+                    searchResults.length === 0)
+                    ? "-empty"
+                    : ""
+                }`}
+              >
+                {searchResults === null ? (
+                  <div
+                    className="editUser-userFinder-empty-container"
+                    style={{ opacity: "50%" }}
+                  >
+                    {strings.recipeFinder.states.undone[theme.lang]}
+                  </div>
+                ) : typeof searchResults === "object" &&
+                  searchResults.length === 0 ? (
+                  <div
+                    className="editUser-userFinder-empty-container"
+                    style={{ opacity: "50%" }}
+                  >
+                    {strings.recipeFinder.states.empty[theme.lang]}
+                  </div>
+                ) : (
+                  // Search results
+                  <>
+                    {searchResults.map((recipe) => {
+                      const index = searchResults.indexOf(recipe);
+                      return (
+                        <div
+                          className="recipe-search-recipe-container"
+                          onMouseEnter={() => setHoveredResultIndex(index)}
+                          onMouseLeave={() => setHoveredResultIndex(null)}
+                          onClick={() => handleRecipeSwap(index)}
+                        >
+                          <div className="recipe-search-recipe-img-container">
+                            <img
+                              src={recipe.general.img}
+                              className="recipe-search-recipe-img"
+                              alt="recipe-search-recipe-img"
+                            />
+                          </div>
+                          <div className="recipe-search-recipe-txt-container">
+                            <p className="recipe-search-recipe-name">
+                              {capitilize(correctLang(recipe.general.name))}
+                            </p>
+                            <p className="recipe-search-recipe-category">
+                              {capitilize(
+                                recipe[`search-category-${theme.lang}`] !==
+                                  undefined
+                                  ? recipe[`search-category-${theme.lang}`]
+                                  : recipe[`search-category-${langs.default}`]
+                              )}
+                            </p>
+                            <div className="recipe-search-recipe-view-container">
+                              <div
+                                className={`recipe-search-recipe-view ${
+                                  index === hoveredResultIndex ? "btn" : ""
+                                }`}
+                              >
+                                {strings.recipeFinder.switchBtn[theme.lang]}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
             </>
           ) : thirdSection === "userSettings" ? (
             <>

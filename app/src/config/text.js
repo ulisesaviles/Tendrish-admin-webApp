@@ -1393,7 +1393,7 @@ export const editUser = {
       },
       lunch: {
         es: "Almuerzo",
-        en: "Lunck",
+        en: "Lunch",
       },
       dinner: {
         es: "Cena",
@@ -1429,6 +1429,16 @@ export const editUser = {
     switchBtn: {
       es: "Cambiar",
       en: "Switch",
+    },
+    states: {
+      undone: {
+        es: "Presiona el botón de búsqueda",
+        en: "Press the search button",
+      },
+      empty: {
+        es: "Ninguna receta coincide con su búsqueda",
+        en: "No recipe matches your search",
+      },
     },
   },
   userSettings: {

@@ -97,6 +97,7 @@ body {
   color: var(--primary-font-color);
   display: flex;
   min-width: 82vw;
+  max-width: 82vw;
   justify-content: center;
   align-items: center;
   overflow-y: scroll;
@@ -801,11 +802,13 @@ body {
 .recipe-search-recipe-name {
   margin: 0;
   font-weight: 500;
+  text-align: center;
 }
 .recipe-search-recipe-category {
   margin: 0;
   font-size: 13px;
   color: var(--secondary);
+  text-align: center;
 }
 .recipe-search-recipe-view-container {
   display: flex;
@@ -1755,6 +1758,20 @@ body {
 }
 .editUSer-userFinder-meal-arrow {
   font-size: 20px;
+}
+.editUSer-recipeFinder-results-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  max-width: 100%;
+  justify-content: space-evenly;
+}
+.editUSer-recipeFinder-results-container-empty {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Default */
