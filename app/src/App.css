@@ -1773,6 +1773,38 @@ body {
   justify-content: center;
   align-items: center;
 }
+.editUser-notes-createNote-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.editUser-notes-createNote {
+  color: var(--secondary);
+  font-weight: 500;
+}
+.editUser-notes-createNote-btn {
+  padding: 2px 20px;
+}
+.editUser-notes-note-header-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 15px;
+}
+.editUser-notes-note-author {
+  font-weight: 500;
+  color: var(--secondary);
+  margin: 0;
+}
+.editUser-notes-note-date {
+  opacity: 60%;
+  font-size: 13px;
+  font-weight: 300;
+  margin: 0 0 0 5px;
+}
+.editUser-notes-note {
+  margin: 0;
+}
 
 /* Default */
 .App {

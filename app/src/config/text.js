@@ -1490,6 +1490,18 @@ export const editUser = {
       es: "Notas",
       en: "Notes",
     },
+    inputPlaceholder: {
+      es: "Ingresa una nueva nota",
+      en: "Enter a new note",
+    },
+    createNote: {
+      es: "Crear una nueva nota",
+      en: "Create a new note",
+    },
+    createNoteBtn: {
+      es: "Guardar",
+      en: "Save",
+    },
   },
   months: [
     { es: "Enero", en: "January" },

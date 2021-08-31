@@ -28,6 +28,7 @@ const EditUser = () => {
   const [errorName, setErrorName] = useState("");
   const [hoveredUSer, setHoveredUSer] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const admin = JSON.parse(localStorage.getItem("user"));
   // User plan
   const getTodaysDate = () => {
     let todaysDate = {
@@ -73,21 +74,27 @@ const EditUser = () => {
   const [recipeFinderInputValue, setRecipeFinderInputValue] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const [hoveredResultIndex, setHoveredResultIndex] = useState(null);
+  const [notes, setNotes] = useState(null);
+  const [newNote, setNewNote] = useState("");
 
   // Functions
   const capitilize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
-  const changeThirdSection = (newSection) => {
+  const changeThirdSection = async (newSection) => {
     setThirdSection(newSection);
     if (newSection === "recipeFinder") {
+      setNotes(null);
     } else if (newSection === "userSettings") {
       setSelectedMeal(null);
       setSelectedMealType(null);
+      setNotes(null);
     } else if (newSection === "notes") {
       setSelectedMeal(null);
       setSelectedMealType(null);
+      const notes = await getNotes(selectedUserId);
+      setNotes(notes);
     }
   };
 
@@ -151,6 +158,22 @@ const EditUser = () => {
       return new Date(Date.now()).getFullYear % 4 === 0 ? 29 : 28;
   };
 
+  const getNotes = async (userId) => {
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "getNotesOnUser",
+        userId,
+      },
+    });
+    if (response.status === 200) {
+      console.log("Get user notes: success");
+      return response.data;
+    }
+    return [];
+  };
+
   const getRecipesByCategory = async (category) => {
     const response = await axios({
       method: "post",
@@ -208,6 +231,30 @@ const EditUser = () => {
     setSelectedDay(tempSelectedDay);
     putWeek(date, month, year);
     await getUserMealPlan(tempSelectedDay, selectedUserId);
+  };
+
+  const handleNewNote = async (note) => {
+    const currentNotes = notes;
+    setNotes(null);
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "writeNotesOnUser",
+        userId: selectedUserId,
+        admin: {
+          id: admin.id,
+          password: admin.personalInfo.password,
+        },
+        notes: note,
+      },
+    });
+    if (response.status === 200) {
+      setNewNote("");
+      setNotes(await getNotes(selectedUserId));
+      return;
+    }
+    setNotes(currentNotes);
   };
 
   const handleRecipeSwap = async (index) => {
@@ -320,6 +367,18 @@ const EditUser = () => {
       };
     }
     setWeek(week);
+  };
+
+  const readableDate = (timestamp) => {
+    const date = new Date(timestamp);
+    let day = date.getDay();
+    day = day === 0 ? 6 : day - 1;
+    return strings.factorDate[theme.lang](
+      [strings.days[day][theme.lang]],
+      date.getDate(),
+      strings.months[date.getMonth()][theme.lang],
+      date.getFullYear()
+    );
   };
 
   const searchForRecipe = async () => {
@@ -682,11 +741,53 @@ const EditUser = () => {
             </>
           ) : thirdSection === "userSettings" ? (
             <>
-              <p>userSettings</p>
+              <p>Settings</p>
             </>
           ) : thirdSection === "notes" ? (
             <>
-              <p>notes</p>
+              {notes === null ? (
+                <div
+                  className="editUser-userFinder-empty-container"
+                  style={{ opacity: "50%" }}
+                >
+                  {strings.userPlan.loading[theme.lang]}
+                </div>
+              ) : (
+                <div className="editUser-notesSection-container">
+                  <div className="editUser-notes-container">
+                    {notes.map((note) => (
+                      <div className="editUser-note-container">
+                        <div className="editUser-notes-note-header-container">
+                          <p className="editUser-notes-note-author">
+                            {note.admin.name}
+                          </p>
+                          <p className="editUser-notes-note-date">
+                            ( {readableDate(note.date)} )
+                          </p>
+                        </div>
+                        <p className="editUser-notes-note">{note.notes}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="editUser-notes-createNote-container">
+                    <p className="editUser-notes-createNote">
+                      {strings.notes.createNote[theme.lang]}
+                    </p>
+                    <input
+                      className="input"
+                      placeholder={strings.notes.inputPlaceholder[theme.lang]}
+                      value={newNote}
+                      onChange={(e) => setNewNote(e.target.value)}
+                    />
+                    <div
+                      className="editUser-notes-createNote-btn btn"
+                      onClick={() => handleNewNote(newNote)}
+                    >
+                      {strings.notes.createNoteBtn[theme.lang]}
+                    </div>
+                  </div>
+                </div>
+              )}
             </>
           ) : null}
         </div>
