@@ -1805,6 +1805,10 @@ body {
 .editUser-notes-note {
   margin: 0;
 }
+.editUser-servings-saveBtn {
+  padding: 1px 20px;
+  align-self: center;
+}
 
 /* Default */
 .App {

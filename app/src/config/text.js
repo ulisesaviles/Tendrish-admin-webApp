@@ -1447,8 +1447,18 @@ export const editUser = {
       en: "User's settings",
     },
     servings: {
-      es: "Porciones de la receta que el usuario come",
-      en: "Servings of the recipe that the user eats",
+      title: {
+        es: "Porciones de la receta que el usuario come",
+        en: "Servings of the recipe that the user eats",
+      },
+      saveBtn: {
+        es: "Guardar cambios",
+        en: "Save changes",
+      },
+      success: {
+        es: "Cambios guardados con éxito!",
+        en: "Changes saved succesfully!",
+      },
     },
     exclusions: {
       title: {

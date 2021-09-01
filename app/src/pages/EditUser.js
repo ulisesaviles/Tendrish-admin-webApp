@@ -8,6 +8,8 @@ import { editUser as strings, langs } from "../config/text";
 import {
   MdChevronLeft as LeftArrow,
   MdChevronRight as RightArrow,
+  MdAdd,
+  MdRemove,
 } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 
@@ -76,6 +78,8 @@ const EditUser = () => {
   const [hoveredResultIndex, setHoveredResultIndex] = useState(null);
   const [notes, setNotes] = useState(null);
   const [newNote, setNewNote] = useState("");
+  const [servings, setServings] = useState(null);
+  const [exclusions, setExclusions] = useState(null);
 
   // Functions
   const capitilize = (string) => {
@@ -85,14 +89,15 @@ const EditUser = () => {
   const changeThirdSection = async (newSection) => {
     setThirdSection(newSection);
     if (newSection === "recipeFinder") {
-      setNotes(null);
+      resetNotes();
+      resetSettings();
     } else if (newSection === "userSettings") {
-      setSelectedMeal(null);
-      setSelectedMealType(null);
-      setNotes(null);
+      resetMealPlan();
+      resetNotes();
+      await getUserSettings(selectedUserId);
     } else if (newSection === "notes") {
-      setSelectedMeal(null);
-      setSelectedMealType(null);
+      resetMealPlan();
+      resetSettings();
       const notes = await getNotes(selectedUserId);
       setNotes(notes);
     }
@@ -216,6 +221,22 @@ const EditUser = () => {
     }
   };
 
+  const getUserSettings = async (userId) => {
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "getUserSettings",
+        userId,
+      },
+    });
+    if (response.status === 200) {
+      setExclusions(response.data.exclusions);
+      setServings(response.data.servings);
+      return;
+    }
+  };
+
   const handleDateChange = async (date, month, year) => {
     setSelectedMeal(null);
     setSelectedMealType(null);
@@ -286,6 +307,23 @@ const EditUser = () => {
       setSearchResults(null);
       setMealPlan(null);
       await getUserMealPlan(selectedDay, selectedUserId);
+    }
+  };
+
+  const handleServingsChange = (isNumerator, newValue) => {
+    if (newValue === "" || parseInt(newValue) < 0) {
+      newValue = 0;
+    }
+    if (isNumerator) {
+      setServings({
+        ...servings,
+        numerator: parseInt(newValue),
+      });
+    } else {
+      setServings({
+        ...servings,
+        denominator: parseInt(newValue),
+      });
     }
   };
 
@@ -381,6 +419,20 @@ const EditUser = () => {
     );
   };
 
+  const resetMealPlan = () => {
+    setSelectedMeal(null);
+    setSelectedMealType(null);
+  };
+
+  const resetNotes = () => {
+    setNotes(null);
+  };
+
+  const resetSettings = () => {
+    setServings(null);
+    setExclusions(null);
+  };
+
   const searchForRecipe = async () => {
     // If lunch or dinner, make two requests
     let res = [];
@@ -405,6 +457,21 @@ const EditUser = () => {
     setSearchResults(null);
     setSelectedMeal(mealPlan[meal]);
     setSelectedMealType(meal);
+  };
+
+  const updateServings = async () => {
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "changeUserServings",
+        userId: selectedUserId,
+        servings,
+      },
+    });
+    if (response.status === 200) {
+      return alert(strings.userSettings.servings.success[theme.lang]);
+    }
   };
 
   // Render
@@ -646,6 +713,7 @@ const EditUser = () => {
               : null}
           </h1>
           {thirdSection === "recipeFinder" ? (
+            // RecipeFinder
             <>
               {/* Search box*/}
               <div className="recipe-search-container">
@@ -740,10 +808,96 @@ const EditUser = () => {
               </div>
             </>
           ) : thirdSection === "userSettings" ? (
+            // User settings
             <>
-              <p>Settings</p>
+              {exclusions === null || servings === null ? (
+                <div
+                  className="editUser-userFinder-empty-container"
+                  style={{ opacity: "50%" }}
+                >
+                  {strings.userPlan.loading[theme.lang]}
+                </div>
+              ) : (
+                <div className="input-section">
+                  <p className="input-name" style={{ marginBottom: 20 }}>
+                    {strings.userSettings.servings.title[theme.lang]}
+                  </p>
+                  <div className="fraction-container">
+                    {/* Numarator */}
+                    <>
+                      <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                        <div
+                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                          onClick={() =>
+                            handleServingsChange(true, servings.numerator - 1)
+                          }
+                        >
+                          <MdRemove />
+                        </div>
+                        <input
+                          className="createRecipe-cuantity-input"
+                          value={servings.numerator}
+                          onChange={(e) =>
+                            handleServingsChange(true, e.target.value)
+                          }
+                        />
+                        <div
+                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                          onClick={() =>
+                            handleServingsChange(true, servings.numerator + 1)
+                          }
+                        >
+                          <MdAdd />
+                        </div>
+                      </div>
+                    </>
+                    <div className="dividedBy" />
+                    {/* Denominator */}
+                    <>
+                      <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                        <div
+                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                          onClick={() =>
+                            handleServingsChange(
+                              false,
+                              servings.denominator - 1
+                            )
+                          }
+                        >
+                          <MdRemove />
+                        </div>
+                        <input
+                          className="createRecipe-cuantity-input"
+                          value={servings.denominator}
+                          onChange={(e) =>
+                            handleServingsChange(false, e.target.value)
+                          }
+                        />
+                        <div
+                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                          onClick={() =>
+                            handleServingsChange(
+                              false,
+                              servings.denominator + 1
+                            )
+                          }
+                        >
+                          <MdAdd />
+                        </div>
+                      </div>
+                    </>
+                  </div>
+                  <p
+                    className="btn editUser-servings-saveBtn"
+                    onClick={updateServings}
+                  >
+                    {strings.userSettings.servings.saveBtn[theme.lang]}
+                  </p>
+                </div>
+              )}
             </>
           ) : thirdSection === "notes" ? (
+            // Notes
             <>
               {notes === null ? (
                 <div
