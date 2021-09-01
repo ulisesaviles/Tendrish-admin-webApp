@@ -147,17 +147,25 @@ function Stats() {
     let keys = [];
     let day = new Date(Date.now()).getDate() - 1;
     let month = new Date(Date.now()).getMonth();
+    console.log(data);
     while (res.length < limit) {
       if (data[month] === undefined) {
         // Theres no data this month
-        while (day > 0) {
+        while (day >= 0) {
           // Fill empty days with zeros
           res.unshift(0);
           keys.unshift(day + 1);
-          if (res.length >= limit) break;
+          if (res.length >= limit) {
+            // break;
+            return {
+              keys,
+              data: res,
+            };
+          }
           day--;
         }
         month--;
+        day = daysInMonth(month) - 1;
       } else {
         // Theres data
         if (day < 0) {
