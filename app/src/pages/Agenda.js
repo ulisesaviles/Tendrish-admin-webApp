@@ -29,22 +29,17 @@ const Agenda = () => {
       date: new Date(Date.now()).getDate(), // starts at 1
       month: new Date(Date.now()).getMonth(), // Starts at 0
       year: new Date(Date.now()).getFullYear(),
+      day: null,
     };
     todaysDate.day =
       strings.days[
-        new Date(
-          `${todaysDate.month + 1}-${todaysDate.date}-${todaysDate.year}`
-        ).getDay() -
-          1 <
-        0
+        new Date(Date.now()).getDay() - 1 < 0
           ? 6
-          : new Date(
-              `${todaysDate.month + 1}-${todaysDate.date}-${todaysDate.year}`
-            ).getDay() - 1
+          : new Date(Date.now()).getDay() - 1
       ];
     return todaysDate;
   };
-  let todaysDate = getTodaysDate();
+  const todaysDate = getTodaysDate();
   const [months, setMonths] = useState([
     {
       monthIndex: 7, // August
@@ -154,7 +149,7 @@ const Agenda = () => {
   };
 
   const getFirtsDayOfMonth = (monthIndex, year) => {
-    let res = new Date(`${monthIndex + 1}-1-${year}`).getDay() - 1;
+    let res = new Date(`${monthIndex + 1}/1/${year}`).getDay() - 1;
     if (res === -1) {
       res = 6;
     }
@@ -262,7 +257,7 @@ const Agenda = () => {
 
   const handleDateChange = async (date, month, year) => {
     if (date === " ") return;
-    let weekDayIndex = new Date(`${month + 1}-${date}-${year}`).getDay();
+    let weekDayIndex = new Date(`${month + 1}/${date}/${year}`).getDay();
     const tempSelectedDay = {
       date,
       month: month,
@@ -350,11 +345,11 @@ const Agenda = () => {
     for (let counter = 0; counter < 7; counter++) {
       // Get weekday
       weekDayIndex = new Date(
-        `${currentDate.month + 1}-${currentDate.date}-${currentDate.year}`
+        `${currentDate.month + 1}/${currentDate.date}/${currentDate.year}`
       ).getDay();
       // Push into week
       week.push({
-        day: strings.days[weekDayIndex - 1 < 0 ? 6 : weekDayIndex - 1],
+        day: strings.days[weekDayIndex == 0 ? 6 : weekDayIndex - 1],
         date: currentDate.date,
         month: currentDate.month,
         year: currentDate.year,
