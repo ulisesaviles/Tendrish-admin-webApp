@@ -36,7 +36,7 @@ const Login = () => {
   // Functions
   const handleSignIn = async () => {
     try {
-      let response = await axios({
+      const response = await axios({
         method: "post",
         url: "https://us-central1-tendrishh.cloudfunctions.net/server",
         data: {
@@ -47,22 +47,27 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        let storedUser = {
+        const storedUser = {
           id: response.data.id,
           personalInfo: response.data.personalInfo,
         };
         localStorage.setItem("user", JSON.stringify(storedUser));
-        history.push(`?tab=${defaultTab[storedUser.personalInfo.rol]}`);
-      } else {
-        setSubmited(false);
-        console.log(`${response.status}: ${response.data.error}`);
-        setError(strings.error[theme.lang]);
+        console.log(JSON.stringify(localStorage.getItem("user")));
+        navigateToDefaultTab(storedUser.personalInfo.rol);
+        return;
       }
+
+      setSubmited(false);
+      setError(strings.error[theme.lang]);
     } catch (error) {
       setError(strings.error[theme.lang]);
       setSubmited(false);
       console.log(`Error: ${error}`);
     }
+  };
+
+  const navigateToDefaultTab = (rol) => {
+    setTimeout(() => history.push(`?tab=${defaultTab[rol]}`), 1000);
   };
 
   //Logic

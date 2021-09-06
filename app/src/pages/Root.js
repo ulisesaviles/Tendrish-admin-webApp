@@ -63,7 +63,10 @@ const Root = ({ location }) => {
     let tempUser = localStorage.getItem("user");
     if (tempUser !== null) {
       tempUser = JSON.parse(tempUser);
-      setUser(tempUser);
+      if (user === null || tempUser.id !== user.id) {
+        console.log("Setting user");
+        setUser(tempUser);
+      }
     }
   };
 
@@ -73,6 +76,8 @@ const Root = ({ location }) => {
     if (theme.tab === null || user === null) {
       history.replace("?tab=Login");
     }
+    getUser();
+    // eslint-disable-next-line
   }, [history, theme.tab, user]);
   if (theme.colorScheme === "dark" && logo !== darkLogo) {
     setLogo(darkLogo);
