@@ -349,7 +349,7 @@ const Agenda = () => {
       ).getDay();
       // Push into week
       week.push({
-        day: strings.days[weekDayIndex == 0 ? 6 : weekDayIndex - 1],
+        day: strings.days[weekDayIndex === 0 ? 6 : weekDayIndex - 1],
         date: currentDate.date,
         month: currentDate.month,
         year: currentDate.year,
