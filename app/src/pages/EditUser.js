@@ -12,6 +12,7 @@ import {
   MdRemove,
   MdCheckBoxOutlineBlank,
   MdCheckBox,
+  MdKeyboardArrowDown,
 } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 
@@ -78,7 +79,9 @@ const EditUser = () => {
   const [newNote, setNewNote] = useState("");
   const [servings, setServings] = useState(null);
   const [exclusions, setExclusions] = useState(null);
-  // const [openedExclusions, setOpenedExclusions] = useState(null);
+  const [openedExclusions, setOpenedExclusions] = useState([]);
+  const [updater, setUpdater] = useState(0);
+  const [displayCreateExclusion, setDisplayCreateExclusion] = useState(false);
 
   // Functions
   const capitilize = (string) => {
@@ -232,7 +235,7 @@ const EditUser = () => {
     if (response.status === 200) {
       setExclusions(response.data.exclusions);
       setServings(response.data.servings);
-      return;
+      console.log(response.data);
     }
   };
 
@@ -349,6 +352,17 @@ const EditUser = () => {
     await getUserMealPlan(todaysDate, userId);
   };
 
+  const handleViewExclusion = (exclusionIndex) => {
+    let temp = openedExclusions;
+    if (temp.includes(exclusionIndex)) {
+      temp.splice(temp.indexOf(exclusionIndex), 1);
+    } else {
+      temp.push(exclusionIndex);
+    }
+    setOpenedExclusions(temp);
+    updateDom();
+  };
+
   const putWeek = (centerDate, centerMonth, centerYear) => {
     // Set initial date to iterate from there
     const initialDate = {
@@ -457,6 +471,10 @@ const EditUser = () => {
     setSearchResults(null);
     setSelectedMeal(mealPlan[meal]);
     setSelectedMealType(meal);
+  };
+
+  const updateDom = () => {
+    setUpdater(updater + 1);
   };
 
   const updateServings = async () => {
@@ -713,6 +731,10 @@ const EditUser = () => {
               ? strings[thirdSection].title[theme.lang]
               : null}
           </h1>
+          {/* Updater */}
+          <>
+            <p style={{ fontSize: 0.1, opacity: 0 }}>{updater}</p>
+          </>
           {thirdSection === "recipeFinder" ? (
             // RecipeFinder
             <>
@@ -903,37 +925,129 @@ const EditUser = () => {
                     <p className="input-name">
                       {strings.userSettings.exclusions.title[theme.lang]}
                     </p>
-                    {exclusions.map((exclusion) => (
-                      <div className="editUser-exlusion-container">
-                        {exclusion.selected ? (
-                          <MdCheckBox className="ingredient-lang-checkbox" />
-                        ) : (
-                          <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                        )}
-                        {exclusion.name[theme.lang]}
-                        <p className="editUser-exlusion-length">
-                          ({exclusion.ingredientsToExclude.length}{" "}
+                    {/* Map existing exclusions */}
+                    {exclusions.map((exclusion) => {
+                      const index = exclusions.indexOf(exclusion);
+                      return (
+                        <div className="editUser-exlusion-superContainer">
+                          <div className="editUser-exlusion-container">
+                            {exclusion.selected ? (
+                              <MdCheckBox className="ingredient-lang-checkbox" />
+                            ) : (
+                              <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                            )}
+                            {exclusion.name[theme.lang]}
+                            <p className="editUser-exlusion-length">
+                              ({exclusion.ingredientsToExclude.length}{" "}
+                              {
+                                strings.userSettings.exclusions
+                                  .excludedProducts[theme.lang]
+                              }
+                              )
+                            </p>
+                            {exclusion.exclusiveForUser === selectedUserId ? (
+                              <p className="editUser-exlusion-length">
+                                (
+                                {strings.userSettings.exclusions.exclusivity[
+                                  theme.lang
+                                ](selectedUserName)}
+                                )
+                              </p>
+                            ) : null}
+                            <p
+                              className="editUser-exlusion-view"
+                              onClick={() => handleViewExclusion(index)}
+                            >
+                              {strings.userSettings.exclusions.view[theme.lang]}
+                            </p>
+                          </div>
+                          {openedExclusions.includes(index) ? (
+                            <>
+                              {exclusion.ingredientsToExclude.map(
+                                (ingredient) => (
+                                  <div className="editUser-exclusion">
+                                    <p className="editUser-exclusion-bullet">
+                                      •
+                                    </p>
+                                    {correctLang(ingredient.name)}
+                                  </div>
+                                )
+                              )}
+                            </>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+
+                    {/* Create exclusion */}
+                    <>
+                      <div
+                        onClick={() =>
+                          setDisplayCreateExclusion(!displayCreateExclusion)
+                        }
+                        className="createCat-title-container"
+                      >
+                        <p className="createCat">
                           {
-                            strings.userSettings.exclusions.excludedProducts[
+                            strings.userSettings.exclusions.new.title[
                               theme.lang
                             ]
+                          }{" "}
+                        </p>
+                        <MdKeyboardArrowDown
+                          className={
+                            displayCreateExclusion
+                              ? "dropdown-icon dropdown-icon-selected"
+                              : "dropdown-icon"
                           }
-                          )
-                        </p>
-                        {exclusion.exclusiveForUser === selectedUserId ? (
-                          <p className="editUser-exlusion-length">
-                            (
-                            {strings.userSettings.exclusions.exclusivity[
-                              theme.lang
-                            ](selectedUserName)}
-                            )
-                          </p>
-                        ) : null}
-                        <p className="editUser-exlusion-view">
-                          {strings.userSettings.exclusions.view[theme.lang]}
-                        </p>
+                        />
                       </div>
-                    ))}
+                      {displayCreateExclusion ? (
+                        <div className="editUSer-exclusion-createExclusion-container">
+                          <p className="input-name">
+                            {
+                              strings.userSettings.exclusions.new.name.title[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                          {langs.available.map((lang) => (
+                            <div
+                              className="input-container"
+                              key={langs.available.indexOf(lang)}
+                            >
+                              <p className="input-lang">{`${lang.key.toUpperCase()}: `}</p>
+                              <input
+                                className="input"
+                                placeholder={
+                                  strings.userSettings.exclusions.new.name
+                                    .placeholder[lang.key]
+                                }
+                              />
+                            </div>
+                          ))}
+                          <p className="input-name">
+                            {
+                              strings.userSettings.exclusions.new.ingredients[
+                                theme.lang
+                              ]
+                            }
+                          </p>
+                          <div className="btn editUser-exclusions-createBtn">
+                            {
+                              strings.userSettings.exclusions.new.save[
+                                theme.lang
+                              ]
+                            }
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
+
+                    {/* Save btn */}
+                    <div className="editUSer-exclusions-save-btn btn">
+                      {strings.userSettings.saveBtn[theme.lang]}
+                    </div>
                   </div>
                 </>
               )}

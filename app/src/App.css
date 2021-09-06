@@ -945,6 +945,7 @@ body {
   font-weight: 700;
   color: var(--secondary);
   margin: 0;
+  align-self: flex-start;
 }
 .recipe-recipeSection-recipe-ingredient-cuantity {
   margin: 0 5px 0 10px;
@@ -1808,6 +1809,52 @@ body {
 .editUser-servings-saveBtn {
   padding: 1px 20px;
   align-self: center;
+}
+.editUser-exlusion-container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+}
+.editUser-exlusion-length {
+  opacity: 50%;
+  font-weight: 300;
+  margin: 0 0 0 5px;
+}
+.editUser-exlusion-view {
+  color: var(--secondary);
+  margin: 0 0 0 20px;
+  cursor: pointer;
+  transition: var(--animation-short);
+}
+.editUser-exlusion-view:hover {
+  transform: scale(1.1);
+}
+.editUser-exclusion {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.editUser-exclusion-bullet {
+  color: var(--secondary);
+  margin: 0 5px 0 15px;
+}
+.editUSer-exclusion-createExclusion-container {
+  margin: -10px 30px 0 30px;
+  display: flex;
+  flex-direction: column;
+}
+.editUser-exclusions-createBtn {
+  width: fit-content;
+  padding: 2px 20px;
+  align-self: center;
+  margin-top: 15px;
+}
+.editUSer-exclusions-save-btn {
+  width: fit-content;
+  padding: 3px 30px;
+  align-self: center;
+  margin-top: 15px;
 }
 
 /* Default */

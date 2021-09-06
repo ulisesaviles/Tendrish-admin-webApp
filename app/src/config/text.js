@@ -1465,6 +1465,18 @@ export const editUser = {
         es: "Exclusiones",
         en: "Exclusions",
       },
+      excludedProducts: {
+        es: "productos excluidos",
+        en: "excluded products",
+      },
+      view: {
+        es: "Ver",
+        en: "View",
+      },
+      exclusivity: {
+        es: (uName) => `Exclusivo de ${uName}`,
+        en: (uName) => `${uName} exclusive`,
+      },
       new: {
         title: {
           es: "Crear nueva exclusión",
@@ -1485,8 +1497,8 @@ export const editUser = {
           en: "What ingredients does the exclusion include?",
         },
         save: {
-          es: "Guardar",
-          en: "Save",
+          es: "Crear",
+          en: "Create",
         },
       },
     },
