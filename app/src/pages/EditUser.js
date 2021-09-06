@@ -10,6 +10,8 @@ import {
   MdChevronRight as RightArrow,
   MdAdd,
   MdRemove,
+  MdCheckBoxOutlineBlank,
+  MdCheckBox,
 } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 
@@ -30,6 +32,7 @@ const EditUser = () => {
   const [errorName, setErrorName] = useState("");
   const [hoveredUSer, setHoveredUSer] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUserName, setSelectedUserName] = useState(null);
   const admin = JSON.parse(localStorage.getItem("user"));
   // User plan
   const getTodaysDate = () => {
@@ -37,18 +40,13 @@ const EditUser = () => {
       date: new Date(Date.now()).getDate(), // starts at 1
       month: new Date(Date.now()).getMonth(), // Starts at 0
       year: new Date(Date.now()).getFullYear(),
+      day: null,
     };
     todaysDate.day =
       strings.days[
-        new Date(
-          `${todaysDate.month + 1}-${todaysDate.date}-${todaysDate.year}`
-        ).getDay() -
-          1 <
-        0
+        new Date(Date.now()).getDay() - 1 < 0
           ? 6
-          : new Date(
-              `${todaysDate.month + 1}-${todaysDate.date}-${todaysDate.year}`
-            ).getDay() - 1
+          : new Date(Date.now()).getDay() - 1
       ];
     return todaysDate;
   };
@@ -80,6 +78,7 @@ const EditUser = () => {
   const [newNote, setNewNote] = useState("");
   const [servings, setServings] = useState(null);
   const [exclusions, setExclusions] = useState(null);
+  // const [openedExclusions, setOpenedExclusions] = useState(null);
 
   // Functions
   const capitilize = (string) => {
@@ -242,7 +241,7 @@ const EditUser = () => {
     setSelectedMealType(null);
     setMealPlan(null);
     if (date === " ") return;
-    let weekDayIndex = new Date(`${month + 1}-${date}-${year}`).getDay();
+    let weekDayIndex = new Date(`${month + 1}/${date}/${year}`).getDay();
     const tempSelectedDay = {
       date,
       month: month,
@@ -343,9 +342,10 @@ const EditUser = () => {
     }
   };
 
-  const handleUserSelection = async (userId) => {
+  const handleUserSelection = async (userId, name) => {
     putWeek(todaysDate.date, todaysDate.month, todaysDate.year);
     setSelectedUserId(userId);
+    setSelectedUserName(name);
     await getUserMealPlan(todaysDate, userId);
   };
 
@@ -375,7 +375,7 @@ const EditUser = () => {
     for (let counter = 0; counter < 7; counter++) {
       // Get weekday
       weekDayIndex = new Date(
-        `${currentDate.month + 1}-${currentDate.date}-${currentDate.year}`
+        `${currentDate.month + 1}/${currentDate.date}/${currentDate.year}`
       ).getDay();
       // Push into week
       week.push({
@@ -524,7 +524,7 @@ const EditUser = () => {
                       }`}
                       onMouseEnter={() => setHoveredUSer(index)}
                       onMouseLeave={() => setHoveredUSer(null)}
-                      onClick={() => handleUserSelection(user.id)}
+                      onClick={() => handleUserSelection(user.id, user.name)}
                     >
                       <div className="editUser-userFinder-user-text-container">
                         <h4
@@ -600,6 +600,7 @@ const EditUser = () => {
                           >
                             <p className="agenda-daysSection-header-item-day">
                               {day.day[theme.lang].charAt(0)}
+                              {/* {JSON.stringify(day)} */}
                             </p>
                             <p
                               className={`agenda-daysSection-header-item-date ${
@@ -705,7 +706,7 @@ const EditUser = () => {
           </>
         </div>
 
-        {/* Recipe search / User settings */}
+        {/* Third section */}
         <div className="subsection editUSer-thirdSection-container">
           <h1 className="section-title">
             {thirdSection !== null
@@ -818,82 +819,123 @@ const EditUser = () => {
                   {strings.userPlan.loading[theme.lang]}
                 </div>
               ) : (
-                <div className="input-section">
-                  <p className="input-name" style={{ marginBottom: 20 }}>
-                    {strings.userSettings.servings.title[theme.lang]}
-                  </p>
-                  <div className="fraction-container">
-                    {/* Numarator */}
-                    <>
-                      <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
-                        <div
-                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
-                          onClick={() =>
-                            handleServingsChange(true, servings.numerator - 1)
-                          }
-                        >
-                          <MdRemove />
+                <>
+                  {/* Servings */}
+                  <div className="input-section">
+                    <p className="input-name" style={{ marginBottom: 20 }}>
+                      {strings.userSettings.servings.title[theme.lang]}
+                    </p>
+                    <div className="fraction-container">
+                      {/* Numarator */}
+                      <>
+                        <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                          <div
+                            className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                            onClick={() =>
+                              handleServingsChange(true, servings.numerator - 1)
+                            }
+                          >
+                            <MdRemove />
+                          </div>
+                          <input
+                            className="createRecipe-cuantity-input"
+                            value={servings.numerator}
+                            onChange={(e) =>
+                              handleServingsChange(true, e.target.value)
+                            }
+                          />
+                          <div
+                            className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                            onClick={() =>
+                              handleServingsChange(true, servings.numerator + 1)
+                            }
+                          >
+                            <MdAdd />
+                          </div>
                         </div>
-                        <input
-                          className="createRecipe-cuantity-input"
-                          value={servings.numerator}
-                          onChange={(e) =>
-                            handleServingsChange(true, e.target.value)
-                          }
-                        />
-                        <div
-                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
-                          onClick={() =>
-                            handleServingsChange(true, servings.numerator + 1)
-                          }
-                        >
-                          <MdAdd />
+                      </>
+                      <div className="dividedBy" />
+                      {/* Denominator */}
+                      <>
+                        <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                          <div
+                            className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                            onClick={() =>
+                              handleServingsChange(
+                                false,
+                                servings.denominator - 1
+                              )
+                            }
+                          >
+                            <MdRemove />
+                          </div>
+                          <input
+                            className="createRecipe-cuantity-input"
+                            value={servings.denominator}
+                            onChange={(e) =>
+                              handleServingsChange(false, e.target.value)
+                            }
+                          />
+                          <div
+                            className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                            onClick={() =>
+                              handleServingsChange(
+                                false,
+                                servings.denominator + 1
+                              )
+                            }
+                          >
+                            <MdAdd />
+                          </div>
                         </div>
-                      </div>
-                    </>
-                    <div className="dividedBy" />
-                    {/* Denominator */}
-                    <>
-                      <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
-                        <div
-                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
-                          onClick={() =>
-                            handleServingsChange(
-                              false,
-                              servings.denominator - 1
-                            )
-                          }
-                        >
-                          <MdRemove />
-                        </div>
-                        <input
-                          className="createRecipe-cuantity-input"
-                          value={servings.denominator}
-                          onChange={(e) =>
-                            handleServingsChange(false, e.target.value)
-                          }
-                        />
-                        <div
-                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
-                          onClick={() =>
-                            handleServingsChange(
-                              false,
-                              servings.denominator + 1
-                            )
-                          }
-                        >
-                          <MdAdd />
-                        </div>
-                      </div>
-                    </>
+                      </>
+                    </div>
+                    <p
+                      className="btn editUser-servings-saveBtn"
+                      onClick={updateServings}
+                    >
+                      {strings.userSettings.servings.saveBtn[theme.lang]}
+                    </p>
                   </div>
-                  <p
-                    className="btn editUser-servings-saveBtn"
-                    onClick={updateServings}
-                  >
-                    {strings.userSettings.servings.saveBtn[theme.lang]}
-                  </p>
-                </div>
+
+                  {/* Exclusions */}
+                  <div className="input-section">
+                    <p className="input-name">
+                      {strings.userSettings.exclusions.title[theme.lang]}
+                    </p>
+                    {exclusions.map((exclusion) => (
+                      <div className="editUser-exlusion-container">
+                        {exclusion.selected ? (
+                          <MdCheckBox className="ingredient-lang-checkbox" />
+                        ) : (
+                          <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                        )}
+                        {exclusion.name[theme.lang]}
+                        <p className="editUser-exlusion-length">
+                          ({exclusion.ingredientsToExclude.length}{" "}
+                          {
+                            strings.userSettings.exclusions.excludedProducts[
+                              theme.lang
+                            ]
+                          }
+                          )
+                        </p>
+                        {exclusion.exclusiveForUser === selectedUserId ? (
+                          <p className="editUser-exlusion-length">
+                            (
+                            {strings.userSettings.exclusions.exclusivity[
+                              theme.lang
+                            ](selectedUserName)}
+                            )
+                          </p>
+                        ) : null}
+                        <p className="editUser-exlusion-view">
+                          {strings.userSettings.exclusions.view[theme.lang]}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </>
           ) : thirdSection === "notes" ? (
