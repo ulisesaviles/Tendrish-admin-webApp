@@ -1,5 +1,5 @@
 // React imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Local imports
 import { stats as strings, langs } from "../config/text";
@@ -131,6 +131,7 @@ function Stats() {
         admin,
       },
     });
+    console.log("Got stats");
     if (response.status === 200) {
       setStats({
         ...response.data,
@@ -246,10 +247,12 @@ function Stats() {
     return ranges;
   };
 
-  if (firstLoad) {
-    setFirstLoad(false);
-    getStats();
-  }
+  useEffect(() => {
+    if (firstLoad) {
+      setFirstLoad(false);
+      getStats();
+    }
+  });
 
   // Render
   return (

@@ -464,6 +464,7 @@ function Createingredient() {
     });
     if (response.status === 200) {
       setDefaultValues(response.data);
+      console.log(response.data);
       setAccompanimentsSuggestions(response.data.accompaniments);
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
@@ -635,12 +636,13 @@ function Createingredient() {
     setAccompaniments(tempAccompaniments);
 
     // Selected creator
-    for (let i = 0; i < defaultValues.creators.length; i++) {
-      if (defaultValues.creators[i].id === recipe.opc.creator) {
-        setSelectedCreatorIndex(i);
-        break;
+    if (adminTypes.super.includes(admin.personalInfo.rol))
+      for (let i = 0; i < defaultValues.creators.length; i++) {
+        if (defaultValues.creators[i].id === recipe.opc.creator) {
+          setSelectedCreatorIndex(i);
+          break;
+        }
       }
-    }
 
     // Ingredients
     let tempIngredients = [];
@@ -729,7 +731,7 @@ function Createingredient() {
       setFirstLoad(false);
       handleSetupQuery();
     }
-  });
+  }, [firstLoad]);
 
   // Render
   return (

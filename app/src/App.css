@@ -617,9 +617,11 @@ body {
   flex-wrap: wrap;
 }
 .tagContainer {
-  width: 30%;
+  min-width: 30%;
+  width: min-content;
   margin: 8px 0;
   padding: 2px 0;
+  text-align: center;
 }
 .unselected-tag {
   background-color: var(--container-background);
@@ -650,7 +652,7 @@ body {
 .accompaniment-selected {
   display: flex;
   justify-content: space-between;
-  max-width: 90px;
+  width: min-content;
   padding: 1px 15px;
   margin: 5px 0;
   text-align: center;

@@ -1,5 +1,5 @@
 // React imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Local imports
 import { adminTypes, profiles as strings } from "../config/text";
@@ -173,10 +173,12 @@ function Profiles() {
     setNewAdmin({ ...newAdmin, rol: newAdmin.rol });
   };
 
-  if (firstLoad) {
-    setFirstLoad(false);
-    getAdmins();
-  }
+  useEffect(() => {
+    if (firstLoad) {
+      setFirstLoad(false);
+      getAdmins();
+    }
+  }, [firstLoad]);
 
   // Render
   return (
@@ -486,7 +488,7 @@ function Profiles() {
             {admins.map((admin) => {
               const adminIndex = admins.indexOf(admin);
               return (
-                <div className="profiles-superRow-container">
+                <div className="profiles-superRow-container" key={adminIndex}>
                   <h4 className="profiles-row-index">{adminIndex + 1}</h4>
                   <div className="profiles-row-container">
                     {strings.headers.map((column) => (
