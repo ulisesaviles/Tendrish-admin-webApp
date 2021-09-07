@@ -1,5 +1,5 @@
 // React imports
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Local imports
 import { agenda as strings, adminTypes } from "../config/text";
@@ -396,10 +396,13 @@ const Agenda = () => {
   };
 
   // Logic
-  if (firstLoad) {
-    setFirstLoad(false);
-    handleSetup();
-  }
+  // eslint-disable-next-line
+  useEffect(() => {
+    if (firstLoad) {
+      setFirstLoad(false);
+      handleSetup();
+    }
+  });
 
   // Render
   return (

@@ -178,6 +178,7 @@ function Profiles() {
       setFirstLoad(false);
       getAdmins();
     }
+    // eslint-disable-next-line
   }, [firstLoad]);
 
   // Render

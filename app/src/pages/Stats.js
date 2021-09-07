@@ -247,6 +247,7 @@ function Stats() {
     return ranges;
   };
 
+  // eslint-disable-next-line
   useEffect(() => {
     if (firstLoad) {
       setFirstLoad(false);

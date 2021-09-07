@@ -726,12 +726,13 @@ function Createingredient() {
   };
 
   // Logic
+  // eslint-disable-next-line
   useEffect(() => {
     if (firstLoad) {
       setFirstLoad(false);
       handleSetupQuery();
     }
-  }, [firstLoad]);
+  });
 
   // Render
   return (
