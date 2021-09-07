@@ -141,6 +141,7 @@ function Createingredient() {
         id: currentRecipe.general.name.en.toLowerCase(),
       })
     );
+    localStorage.setItem("wantsToEdit", "true");
     // Navigate to editRecipe
     history.replace(
       `?tab=CreateRecipe&lang=${theme.lang}&colorScheme=${theme.colorScheme}`

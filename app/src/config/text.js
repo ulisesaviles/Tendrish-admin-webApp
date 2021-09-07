@@ -611,6 +611,10 @@ export const createRecipe = {
       },
     },
   },
+  messages: {
+    succes: {},
+    errors: {},
+  },
 };
 
 export const viewRecipe = {

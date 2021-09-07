@@ -686,7 +686,7 @@ body {
 }
 .accompaniments-suggestion-container {
   width: 40%;
-  height: 160px;
+  height: min-content;
   box-shadow: var(--shadow);
   border-radius: var(--div-border-radius);
   margin: 10px 0;
@@ -721,6 +721,7 @@ body {
   padding: 1px 20px;
   border-radius: var(--div-border-radius);
   box-shadow: var(--shadow);
+  margin: 10px 0;
 }
 .accompaniments-suggestion-select:hover {
   background-image: var(--gradient);

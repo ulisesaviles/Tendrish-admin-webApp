@@ -1,5 +1,5 @@
 // React imports
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 // Local imports
 import { adminTypes, createRecipe as strings, langs } from "../config/text";
@@ -25,8 +25,8 @@ import axios from "axios";
 function Createingredient() {
   // Constants
   // Global
-  const theme = getTheme();
   const [firstLoad, setFirstLoad] = useState(true);
+  const theme = getTheme();
   const [defaultValues, setDefaultValues] = useState({
     categories: [],
     ingredients: [],
@@ -45,6 +45,7 @@ function Createingredient() {
   });
   const admin = JSON.parse(localStorage.getItem("user"));
   const [recipeToEdit, setRecipeToEdit] = useState(null);
+  const [updater, setUpdater] = useState(0);
 
   // General
   const [usedLangs, setUsedLangs] = useState([langs.default]);
@@ -145,72 +146,96 @@ function Createingredient() {
   };
 
   const createRecipe = async (publish) => {
-    if (inputsAreValid()) {
-      setError(null);
-      let imgUrl;
-      if (recipeToEdit === null) {
-        imgUrl = (await uploadImgs())[0];
-      } else {
-        console.log(recipeToEdit.general);
+    // Check if error in inputs and set it
+    if (!inputsAreValid()) {
+      setError(strings.Opc.submit.error.inputs[theme.lang]);
+      return;
+    }
+    setError(null);
+
+    // Manage image uploads or substitution
+    let imgUrl;
+    if (recipeToEdit === null) {
+      imgUrl = (await uploadImgs())[0];
+    } else {
+      if (selectedImageObj === null) {
         imgUrl = {
           url: recipeToEdit.general.img,
           imgRef: recipeToEdit.general.imgRef,
         };
+      } else {
+        imgUrl = (await uploadImgs())[0];
       }
-      let recipe = {
-        general: {
-          langs: usedLangs,
-          img: imgUrl.url,
-          imgRef: imgUrl.ref,
-          name,
-          description,
-          category: defaultValues.categories[selectedCategoryIndex].id,
-        },
-        prep: {
-          servings,
-          time,
-          ingredients,
-          instructions,
-        },
-        opc: {
-          notes,
-          tags: selectedTagsIds,
-          creator: adminTypes.super.includes(admin.personalInfo.rol)
-            ? defaultValues.creators[selectedCreatorIndex].id
-            : admin.id,
-          accompaniments: formatAccompaniments([...accompaniments]),
-        },
-      };
-      console.log({ method: "createRecipe", recipe, publish });
-      console.log(JSON.stringify(recipe));
+    }
+
+    // Create recipe Obj
+    const recipe = {
+      general: {
+        langs: usedLangs,
+        img: imgUrl.url,
+        imgRef: imgUrl.ref,
+        name,
+        description,
+        category: defaultValues.categories[selectedCategoryIndex].id,
+      },
+      prep: {
+        servings,
+        time,
+        ingredients,
+        instructions,
+      },
+      opc: {
+        notes,
+        tags: selectedTagsIds,
+        creator: adminTypes.super.includes(admin.personalInfo.rol)
+          ? defaultValues.creators[selectedCreatorIndex].id
+          : admin.id,
+        accompaniments: formatAccompaniments([...accompaniments]),
+      },
+    };
+    console.log({ method: "createRecipe", recipe, publish });
+
+    // If it is an edit, first delete the original recipe
+    try {
+      let response;
       if (
         recipeToEdit !== null &&
         name[langs.default].toLowerCase() !== recipeToEdit.id
       ) {
-        await axios({
+        response = await axios({
           method: "post",
           url: "https://us-central1-tendrishh.cloudfunctions.net/server",
           data: {
-            method: "deleteRecipe",
+            method: "editRecipe",
             admin: {
               email: admin.id,
               password: admin.personalInfo.password,
             },
             recipeId: recipeToEdit.id,
+            publish,
+            recipe,
           },
         });
+      } else {
+        // Post the new recipe obj
+        response = await axios({
+          method: "post",
+          url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+          data: { method: "createRecipe", recipe, publish },
+        });
       }
-      const response = await axios({
-        method: "post",
-        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-        data: { method: "createRecipe", recipe, publish },
-      });
+
+      // If success:
       if (response.status === 200) {
         alert("Agregado exitosamente");
+        clearInputs();
+        return;
       }
-      clearInputs();
-    } else {
-      setError(strings.Opc.submit.error.inputs[theme.lang]);
+
+      // Manage errors
+      alert(`${response.status}: ${response.data}`);
+    } catch (e) {
+      alert(e);
     }
   };
 
@@ -434,23 +459,28 @@ function Createingredient() {
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
       data: {
         method: "createRecipeSetup",
-        rol: "Developer",
+        rol: admin.personalInfo.rol,
       },
     });
     if (response.status === 200) {
       setDefaultValues(response.data);
-      console.log(response.data);
       setAccompanimentsSuggestions(response.data.accompaniments);
+      console.log("SETUP QUERY DONE");
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }
-    let recipeToEdit = localStorage.getItem("recipeToEdit");
-    if (recipeToEdit !== null) {
-      console.log("Detected a recipe to edit");
-      setRecipeToEdit(JSON.parse(recipeToEdit));
-      await loadRecipeToInputs(JSON.parse(recipeToEdit), response.data);
-      localStorage.removeItem("recipeToEdit");
+    let tempRecipeToEdit = localStorage.getItem("recipeToEdit");
+    const wantsToEdit = localStorage.getItem("wantsToEdit");
+    if (wantsToEdit === "false" || tempRecipeToEdit === null) {
+      console.log(`wantsToEdit: ${wantsToEdit}`);
+      return;
     }
+
+    tempRecipeToEdit = { ...JSON.parse(tempRecipeToEdit) };
+    console.log("Wants to edit");
+    await loadRecipeToInputs(tempRecipeToEdit, response.data);
+    localStorage.setItem("wantsToEdit", "false");
+    console.log("Removed from storage");
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -553,6 +583,8 @@ function Createingredient() {
   };
 
   const loadRecipeToInputs = async (recipe, defaultValues) => {
+    console.log(recipe.general.name.en);
+
     // usedLangs
     setUsedLangs(recipe.general.langs);
 
@@ -653,6 +685,8 @@ function Createingredient() {
     setDescription(tempDescription);
     setNotes(tempNotes);
     setInstructions(tempInstructions);
+    setRecipeToEdit(recipe);
+    updateDom();
   };
 
   const removeIngredient = (index) => {
@@ -668,6 +702,10 @@ function Createingredient() {
     let tempInstructions = [...instructions];
     tempInstructions.splice(index, 1);
     setInstructions(tempInstructions);
+  };
+
+  const updateDom = () => {
+    setUpdater(updater + 1);
   };
 
   const uploadImgs = async () => {
@@ -686,10 +724,13 @@ function Createingredient() {
   };
 
   // Logic
-  if (firstLoad) {
-    setFirstLoad(false);
-    handleSetupQuery();
-  }
+  useEffect(() => {
+    if (firstLoad) {
+      setFirstLoad(false);
+      handleSetupQuery();
+      console.log("It was true");
+    }
+  });
 
   // Render
   return (
@@ -698,6 +739,11 @@ function Createingredient() {
         {/* General */}
         <div className="subsection createRecipe-general-container">
           <h1 className="section-title">{strings.general.title[theme.lang]}</h1>
+          {/* Updater */}
+          <>
+            <p style={{ fontSize: 0.1, opacity: 0 }}>{updater}</p>
+          </>
+
           {/* Langs */}
           <div className="input-section">
             <h3 className="input-name">{strings.general.langs[theme.lang]}</h3>
