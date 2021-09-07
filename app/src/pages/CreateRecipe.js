@@ -465,22 +465,22 @@ function Createingredient() {
     if (response.status === 200) {
       setDefaultValues(response.data);
       setAccompanimentsSuggestions(response.data.accompaniments);
-      console.log("SETUP QUERY DONE");
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }
     let tempRecipeToEdit = localStorage.getItem("recipeToEdit");
     const wantsToEdit = localStorage.getItem("wantsToEdit");
-    if (wantsToEdit === "false" || tempRecipeToEdit === null) {
-      console.log(`wantsToEdit: ${wantsToEdit}`);
+    if (
+      wantsToEdit === "false" ||
+      wantsToEdit === null ||
+      tempRecipeToEdit === null
+    ) {
       return;
     }
 
     tempRecipeToEdit = { ...JSON.parse(tempRecipeToEdit) };
-    console.log("Wants to edit");
     await loadRecipeToInputs(tempRecipeToEdit, response.data);
     localStorage.setItem("wantsToEdit", "false");
-    console.log("Removed from storage");
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -728,7 +728,6 @@ function Createingredient() {
     if (firstLoad) {
       setFirstLoad(false);
       handleSetupQuery();
-      console.log("It was true");
     }
   });
 
