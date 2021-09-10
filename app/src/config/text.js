@@ -1478,8 +1478,8 @@ export const editUser = {
         en: "View",
       },
       exclusivity: {
-        es: (uName) => `Exclusivo de ${uName}`,
-        en: (uName) => `${uName} exclusive`,
+        es: (uName) => `Exclusivo del usuario`,
+        en: (uName) => `User exclusive`,
       },
       new: {
         title: {
@@ -1555,5 +1555,17 @@ export const editUser = {
   factorDate: {
     es: (day, date, month, year) => `${day} ${date} de ${month} de ${year}`,
     en: (day, date, month, year) => `${day}, ${month} ${date} of ${year}`,
+  },
+  responses: {
+    creation: {
+      success: {
+        es: "¡Creado con éxito!",
+        en: "Successfully created!",
+      },
+      invalidInputs: {
+        es: "Datos ingresados no válidos",
+        en: "Invalid inputs",
+      },
+    },
   },
 };

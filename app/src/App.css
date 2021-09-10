@@ -423,6 +423,7 @@ body {
 .ingredient-lang-checkbox {
   color: var(--secondary);
   margin-right: 5px;
+  cursor: pointer;
 }
 .ingredient-lang {
   margin: 0 0 2px 0;
@@ -1751,6 +1752,7 @@ body {
   width: 50%;
   align-self: center;
   margin: 20px 0 0 0;
+  text-align: center;
 }
 .editUSer-userFinder-meal-container-selected {
   background-image: var(--gradient);
