@@ -282,6 +282,7 @@ const EditUser = () => {
       },
     });
     if (response.status === 200) {
+      console.log(response.data);
       setExclusions(response.data.exclusions);
       setServings(response.data.servings);
     }
@@ -615,7 +616,29 @@ const EditUser = () => {
 
   const updateUserExclusions = async () => {
     // Get selected exclusions ids
+    let ids = [];
+    for (let i = 0; i < exclusions.length; i++) {
+      const exclusion = exclusions[i];
+      if (exclusion.selected) {
+        ids.push(exclusion.id);
+      }
+    }
+    console.log(ids);
     // Make request
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "updateUserExclusions",
+        userId: selectedUserId,
+        exclusions: ids,
+      },
+    });
+    if (response.status === 200) {
+      alert(strings.responses.update.success[theme.lang]);
+      return;
+    }
+    alert(strings.responses.update.fail[theme.lang]);
   };
 
   // Render
