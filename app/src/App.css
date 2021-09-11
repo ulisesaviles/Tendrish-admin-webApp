@@ -285,7 +285,7 @@ body {
   min-width: 80%;
 }
 .nav-user-rol {
-  color: var(--secondary-font-color);
+  color: var(--secondary);
   font-weight: 600;
   font-size: 16px;
   margin: 0;
@@ -400,6 +400,23 @@ body {
   .toggles-container {
     flex-direction: column;
   }
+}
+.signOut-dropdown {
+  position: absolute;
+  color: var(--primary-font-color);
+  border-radius: calc(var(--div-border-radius) / 2)
+    calc(var(--div-border-radius) / 2) var(--div-border-radius)
+    var(--div-border-radius);
+  box-shadow: var(--shadow);
+  padding: 2px 20px;
+}
+.signOut {
+  transition: var(--animation-short);
+  margin: 0;
+  cursor: pointer;
+}
+.signOut:hover {
+  color: var(--secondary);
 }
 
 /* Create ingredient */

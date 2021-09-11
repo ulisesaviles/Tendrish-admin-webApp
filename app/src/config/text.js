@@ -85,6 +85,13 @@ export const tabs = [
   },
 ];
 
+export const navBar = {
+  signOut: {
+    es: "Cerrar sesión",
+    en: "Sign out",
+  },
+};
+
 export const login = {
   title: {
     es: "Iniciar sesión",
@@ -1565,6 +1572,16 @@ export const editUser = {
       invalidInputs: {
         es: "Datos ingresados no válidos",
         en: "Invalid inputs",
+      },
+    },
+    update: {
+      success: {
+        es: "¡Actualizado con éxito!",
+        en: "Successfully updated!",
+      },
+      fail: {
+        es: "Error del servidor",
+        en: "Server error",
       },
     },
   },

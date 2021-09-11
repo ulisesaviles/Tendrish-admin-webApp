@@ -16,7 +16,7 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 // Local imports
 import lightLogo from "../assets/logos/light.jpg";
 import darkLogo from "../assets/logos/dark.jpg";
-import { allowedTabs, tabs } from "../config/text";
+import { allowedTabs, tabs, navBar as strings } from "../config/text";
 import { SetTheme } from "../config/theme";
 
 const Root = ({ location }) => {
@@ -31,8 +31,24 @@ const Root = ({ location }) => {
     tab: url.get("tab"),
   };
   theme = SetTheme(theme);
+  const [dropdownIsDisplayed, setDropdownIsDisplayed] = useState(false);
 
   // Functions
+  const getUser = () => {
+    let tempUser = localStorage.getItem("user");
+    if (tempUser !== null) {
+      tempUser = JSON.parse(tempUser);
+      if (user === null || tempUser.id !== user.id) {
+        console.log("Setting user");
+        setUser(tempUser);
+      }
+    }
+  };
+
+  const handleDropdown = () => {
+    setDropdownIsDisplayed(!dropdownIsDisplayed);
+  };
+
   const renderCurrentTab = (tab) => {
     if (tab === "Agenda") {
       return <Pages.Agenda />;
@@ -59,15 +75,9 @@ const Root = ({ location }) => {
     }
   };
 
-  const getUser = () => {
-    let tempUser = localStorage.getItem("user");
-    if (tempUser !== null) {
-      tempUser = JSON.parse(tempUser);
-      if (user === null || tempUser.id !== user.id) {
-        console.log("Setting user");
-        setUser(tempUser);
-      }
-    }
+  const signOut = () => {
+    handleDropdown();
+    history.push("?tab=Login");
   };
 
   // Logic
@@ -98,8 +108,20 @@ const Root = ({ location }) => {
             <p className="nav-user-rol">{user.personalInfo.rol}</p>
             <div className="nav-name-container">
               <p className="nav-user-name">{user.personalInfo.name}</p>
-              <MdKeyboardArrowDown className="nav-v-icon" />
+              <MdKeyboardArrowDown
+                className="nav-v-icon"
+                onClick={handleDropdown}
+              />
             </div>
+            <>
+              {dropdownIsDisplayed ? (
+                <div className="signOut-dropdown">
+                  <p className="signOut" onClick={signOut}>
+                    {strings.signOut[theme.lang]}
+                  </p>
+                </div>
+              ) : null}
+            </>
           </div>
           <img src={logo} alt="Logo" className="nav-logo" />
           <div className="nav-items">
