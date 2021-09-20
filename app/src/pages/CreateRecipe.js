@@ -463,8 +463,11 @@ function Createingredient() {
       },
     });
     if (response.status === 200) {
-      setDefaultValues(response.data);
-      console.log(response.data);
+      let temp = response.data;
+      temp.ingredients.sort((a, b) =>
+        correctLang(a.name).localeCompare(correctLang(b.name))
+      );
+      setDefaultValues(temp);
       setAccompanimentsSuggestions(response.data.accompaniments);
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
@@ -647,6 +650,10 @@ function Createingredient() {
     // Ingredients
     let tempIngredients = [];
     let tempIngredientInputs = [];
+    // Sort recipe.prep.ingredients
+    recipe.prep.ingredients.sort((a, b) =>
+      correctLang(a.name).localeCompare(correctLang(b.name))
+    );
     for (let i = 0; i < recipe.prep.ingredients.length; i++) {
       tempIngredients.push({
         ...recipe.prep.ingredients[i],
@@ -658,7 +665,7 @@ function Createingredient() {
           ),
         },
       });
-      tempIngredientInputs.push(recipe.prep.ingredients[i].id);
+      tempIngredientInputs.push(correctLang(recipe.prep.ingredients[i].name));
     }
     setIngredients(tempIngredients);
     setIngredientsInputs(tempIngredientInputs);
