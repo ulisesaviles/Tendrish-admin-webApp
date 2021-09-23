@@ -227,8 +227,8 @@ export const createIngredient = {
     {
       key: "carbohydrates",
       name: {
-        es: "Carbohidratos (mg)",
-        en: "Carbohydrates (mg)",
+        es: "Carbohidratos (gr)",
+        en: "Carbohydrates (gr)",
       },
       placeholder: {
         es: "Ingresa los carbohidratos",
@@ -786,7 +786,7 @@ export const viewRecipe = {
             es: "Carbohidratos",
             en: "Carbohydrates",
           },
-          unit: "mg",
+          unit: "gr",
           className: "nutrifact",
           dailyValue: 300,
         },
