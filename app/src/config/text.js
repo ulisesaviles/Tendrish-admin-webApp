@@ -178,6 +178,80 @@ export const createIngredient = {
         },
       ],
     },
+    aditionalInfo: {
+      title: {
+        es: "Información dicional",
+        en: "Aditional info",
+      },
+      items: [
+        {
+          key: "redMeat",
+          title: {
+            es: "Es carne roja",
+            en: "It's red meat",
+          },
+          toolTip: {
+            es: "Por ejemplo: carne de res, carne de puerco, chorizo, tocino, etc.",
+            en: "For example: beef, pork, bacon, etc.",
+          },
+        },
+        {
+          key: "seafood",
+          title: {
+            es: "Es marisco",
+            en: "It's seafood",
+          },
+          toolTip: {
+            es: "Por ejemplo: salmón, tilapia, atún, camarón, etc.",
+            en: "For example: salmon, fish, tuna, shrimp, etc.",
+          },
+        },
+        {
+          key: "whiteMeat",
+          title: {
+            es: "Es carne blanca",
+            en: "It's white meat",
+          },
+          toolTip: {
+            es: "Por ejemplo: jamón de pechuga de pavo, pavo entero, pavo molido, pechuga de pollo, piernas de pollo, pollo entero, etc.",
+            en: "For example: turkey breast ham, whole turkey, ground turkey, chicken breast, chicken legs, whole chicken, etc.",
+          },
+        },
+        {
+          key: "gluten",
+          title: {
+            es: "Contiene gluten",
+            en: "It contains gluten",
+          },
+          toolTip: {
+            es: "Contiene gluten.",
+            en: "It contains gluten.",
+          },
+        },
+        {
+          key: "animalOrigin",
+          title: {
+            es: "Es un alimento de origen animal",
+            en: "It is a food of animal origin",
+          },
+          toolTip: {
+            es: "Por ejemplo: leche, carne, huevo, etc.",
+            en: "For example: milk, meat, egg, etc.",
+          },
+        },
+        {
+          key: "lactose",
+          title: {
+            es: "Contiene lactosa",
+            en: "It contains lactose",
+          },
+          toolTip: {
+            es: "Por ejemplo: leche, queso, crema, etc.",
+            en: "For example: milk, cheese, cream, etc.",
+          },
+        },
+      ],
+    },
   },
   nutritionalInfo: [
     {

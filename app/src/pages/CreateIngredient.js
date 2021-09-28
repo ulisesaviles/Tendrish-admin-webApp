@@ -19,6 +19,9 @@ import { getTheme } from "../config/theme";
 // Http
 import axios from "axios";
 
+// Tooltips
+import ReactTooltip from "react-tooltip";
+
 function Createingredient() {
   // Constants
   const theme = getTheme();
@@ -47,8 +50,30 @@ function Createingredient() {
   const [cuantity, setCuantity] = useState(
     measuredBy === "mass" || measuredBy === "volume" ? 100 : 1
   );
+  const [selectedAditionalInfo, setSelectedAditionalInfo] = useState([]);
 
   // Functions
+  const arrayWith = (originalArr, itemsToAdd) => {
+    for (let i = 0; i < itemsToAdd.length; i++) {
+      const element = itemsToAdd[i];
+      if (!originalArr.includes(element)) {
+        originalArr.push(element);
+      }
+    }
+    return originalArr;
+  };
+
+  const arrayWithout = (originalArr, itemsToRemove) => {
+    for (let i = 0; i < itemsToRemove.length; i++) {
+      const element = itemsToRemove[i];
+      const index = originalArr.indexOf(element);
+      if (index >= 0) {
+        originalArr.splice(index, 1);
+      }
+    }
+    return originalArr;
+  };
+
   const nutrivaluesPerUnit = () => {
     let res = {};
     for (let i = 0; i < strings.nutritionalInfo.length; i++) {
@@ -65,6 +90,16 @@ function Createingredient() {
     }
     setNames(tempNames);
     setCuantity(measuredBy === "mass" || measuredBy === "volume" ? 100 : 1);
+  };
+
+  const handleAditionalInfoClick = (key) => {
+    let temp = [...selectedAditionalInfo];
+    if (temp.includes(key)) {
+      temp = handleInfoTriggers(false, key, temp);
+    } else {
+      temp = handleInfoTriggers(true, key, temp);
+    }
+    setSelectedAditionalInfo(temp);
   };
 
   const handleChangeNames = (lang, value) => {
@@ -110,6 +145,26 @@ function Createingredient() {
     } else {
       setCuantity(parseInt(cuantity) + 1);
     }
+  };
+
+  const handleInfoTriggers = (addition, key, infoArray) => {
+    if (addition) {
+      if (["redMeat", "whiteMeat", "seafood", "lactose"].includes(key)) {
+        infoArray = arrayWith(infoArray, ["animalOrigin"]);
+      }
+      infoArray.push(key);
+    } else {
+      if (key === "animalOrigin") {
+        infoArray = arrayWithout(infoArray, [
+          "redMeat",
+          "whiteMeat",
+          "seafood",
+          "lactose",
+        ]);
+      }
+      infoArray.splice(infoArray.indexOf(key), 1);
+    }
+    return infoArray;
   };
 
   const handleLangClick = (lang) => {
@@ -162,6 +217,7 @@ function Createingredient() {
         {/* General */}
         <div className="subsection ingredient-general-container">
           <h1 className="section-title">{strings.general.title[theme.lang]}</h1>
+
           {/* Langs */}
           <div className="input-section">
             <h3 className="input-name">{strings.general.langs[theme.lang]}</h3>
@@ -181,6 +237,7 @@ function Createingredient() {
               </div>
             ))}
           </div>
+
           {/* Name */}
           <div className="input-section">
             <h3 className="input-name">
@@ -202,6 +259,7 @@ function Createingredient() {
               ))}
             </div>
           </div>
+
           {/* Measured by */}
           <div className="input-section">
             <h3 className="input-name">
@@ -221,7 +279,37 @@ function Createingredient() {
               </div>
             ))}
           </div>
+
+          {/* Aditional info */}
+          <div className="input-section">
+            <h3 className="input-name">
+              {strings.general.aditionalInfo.title[theme.lang]}
+            </h3>
+            {strings.general.aditionalInfo.items.map((item) => (
+              <div
+                className="ingredient-lang-container"
+                onClick={() => handleAditionalInfoClick(item.key)}
+                data-tip
+                data-for={`toolTip_${item.key}`}
+              >
+                {selectedAditionalInfo.includes(item.key) ? (
+                  <MdCheckBox className="ingredient-lang-checkbox" />
+                ) : (
+                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                )}
+                <p className="ingredient-lang">{item.title[theme.lang]}</p>
+                <ReactTooltip
+                  id={`toolTip_${item.key}`}
+                  place="right"
+                  effect="float"
+                >
+                  {item.toolTip[theme.lang]}
+                </ReactTooltip>
+              </div>
+            ))}
+          </div>
         </div>
+
         {/* Nutrivalues */}
         <div className="subsection ingredient-nutrivalue-container">
           <h1 className="section-title">
