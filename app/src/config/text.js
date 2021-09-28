@@ -62,8 +62,8 @@ export const tabs = [
   {
     key: "CreateIngredient",
     name: {
-      es: "Crear ingrediente",
-      en: "Create ingredient",
+      es: "Ingredientes",
+      en: "Ingredients",
     },
     icon: <IoIosNutrition className="nav-item-icon" />,
   },
@@ -776,7 +776,7 @@ export const viewRecipe = {
             es: "Sodio",
             en: "Sodium",
           },
-          unit: "mg",
+          unit: "",
           className: "nutrifact",
           dailyValue: 2400,
         },
@@ -820,46 +820,6 @@ export const viewRecipe = {
           className: "nutrifact",
           dailyValue: null,
         },
-        // {
-        //   key: "calcium",
-        //   name: {
-        //     es: "Calcio",
-        //     en: "Calcium",
-        //   },
-        //   unit: "mg",
-        //   className: "mineral",
-        //   dailyValue: 1300,
-        // },
-        // {
-        //   key: "iron",
-        //   name: {
-        //     es: "Hierro",
-        //     en: "Iron",
-        //   },
-        //   unit: "mg",
-        //   className: "mineral",
-        //   dailyValue: 18,
-        // },
-        // {
-        //   key: "potassium",
-        //   name: {
-        //     es: "Potasio",
-        //     en: "Potassium",
-        //   },
-        //   unit: "mg",
-        //   className: "mineral",
-        //   dailyValue: 4700,
-        // },
-        // {
-        //   key: "vitaminD",
-        //   name: {
-        //     es: "Vitamina D",
-        //     en: "Vitamin D",
-        //   },
-        //   unit: "mcg",
-        //   className: "mineral",
-        //   dailyValue: 20,
-        // },
       ],
       like: {
         es: "Me gusta",
