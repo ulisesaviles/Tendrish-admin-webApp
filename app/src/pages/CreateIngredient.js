@@ -53,7 +53,7 @@ function Createingredient() {
   const [states, setStates] = useState([
     {
       name: strings.states.default,
-      nutrivalues: initialNutriValues,
+      nutriValues: initialNutriValues,
       cuantity: defaultCuantity,
     },
   ]);
@@ -86,7 +86,7 @@ function Createingredient() {
     for (let i = 0; i < strings.nutritionalInfo.length; i++) {
       const key = strings.nutritionalInfo[i].key;
       res[key] = parseFloat(
-        parseInt(states[index].nutrivalues[key]) / states[index].cuantity
+        parseInt(states[index].nutriValues[key]) / states[index].cuantity
       ).toFixed(4);
     }
     return res;
@@ -128,7 +128,7 @@ function Createingredient() {
   const formatStates = () => {
     let temp = [...states];
     for (let i = 0; i < temp.length; i++) {
-      temp[i].nutrivalues = nutrivaluesPerUnit(i);
+      temp[i].nutriValues = nutrivaluesPerUnit(i);
     }
     return temp;
   };
@@ -151,19 +151,12 @@ function Createingredient() {
 
   const handleChangeNutriValue = (key, value) => {
     let temp = [...states];
-    temp[selectedStateIndex].nutrivalues[key] = value;
+    temp[selectedStateIndex].nutriValues[key] = value;
     setStates(temp);
   };
 
   const handleCreateIngredient = async () => {
     if (nutriValuesAreValid() && namesAreValid()) {
-      console.log({
-        method: "createIngredient",
-        names,
-        states: formatStates(),
-        measuredBy,
-        aditionalInfo: selectedAditionalInfo,
-      });
       let response = await axios({
         method: "post",
         url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -239,7 +232,7 @@ function Createingredient() {
     // Create new state
     setStates([
       ...states,
-      { name: {}, nutrivalues: initialNutriValues, cuantity: defaultCuantity },
+      { name: {}, nutriValues: initialNutriValues, cuantity: defaultCuantity },
     ]);
     // Make it current
     setSelectedStateIndex(states.length);
@@ -299,7 +292,7 @@ function Createingredient() {
     for (let j = 0; j < states.length; j++) {
       const state = states[j];
       for (let i = 0; i < keys.length; i++) {
-        const nutrivalue = state.nutrivalues[keys[i]];
+        const nutrivalue = state.nutriValues[keys[i]];
         if (isNaN(parseInt(nutrivalue))) {
           setError(strings.error[theme.lang]);
           return false;
@@ -315,7 +308,7 @@ function Createingredient() {
     setStates([
       {
         name: strings.states.default,
-        nutrivalues: initialNutriValues,
+        nutriValues: initialNutriValues,
         cuantity: defaultCuantity,
       },
     ]);
@@ -519,7 +512,7 @@ function Createingredient() {
                 className="input"
                 placeholder={nutriFact.placeholder[theme.lang]}
                 type={"number"}
-                value={states[selectedStateIndex].nutrivalues[nutriFact.key]}
+                value={states[selectedStateIndex].nutriValues[nutriFact.key]}
                 onChange={(event) =>
                   handleChangeNutriValue(nutriFact.key, event.target.value)
                 }
