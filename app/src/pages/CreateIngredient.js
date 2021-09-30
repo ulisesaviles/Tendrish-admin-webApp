@@ -2,7 +2,11 @@
 import { useState } from "react";
 
 // Local imports
-import { createIngredient as strings, langs } from "../config/text";
+import {
+  createIngredient as strings,
+  viewIngredient as stringsView,
+  langs,
+} from "../config/text";
 
 // Icons
 import {
@@ -10,6 +14,8 @@ import {
   MdCheckBox,
   MdAdd,
   MdRemove,
+  MdSearch,
+  MdChevronLeft as LeftArrow,
 } from "react-icons/md";
 import { IoRemoveCircle } from "react-icons/io5";
 
@@ -25,7 +31,14 @@ import ReactTooltip from "react-tooltip";
 
 function Createingredient() {
   // Constants
+  // General
   const theme = getTheme();
+  const [selectedTab, setSelectedTab] = useState("view"); // view || create
+
+  // ViewIngredient
+  const [searchInput, setSearchInput] = useState("");
+
+  // CreateIngredient
   const [usedLangs, setUsedLangs] = useState([langs.default]);
   let tempNames = {};
   tempNames[langs.default] = "";
@@ -188,6 +201,12 @@ function Createingredient() {
     }
   };
 
+  const handleGoToViewTab = () => {
+    if (window.confirm(strings.general.backConfirmation[theme.lang])) {
+      setSelectedTab("view");
+    }
+  };
+
   const handleInfoTriggers = (addition, key, infoArray) => {
     if (addition) {
       if (["redMeat", "whiteMeat", "seafood", "lactose"].includes(key)) {
@@ -305,6 +324,7 @@ function Createingredient() {
 
   const resetTab = () => {
     cleanNameInputs();
+    setSelectedStateIndex(0);
     setStates([
       {
         name: strings.states.default,
@@ -314,221 +334,283 @@ function Createingredient() {
     ]);
   };
 
+  const search = () => {
+    console.log("Searching...");
+  };
+
   // Render
   return (
     <div className="tab-container">
       <div className="content-container">
-        {/* General */}
-        <div className="subsection ingredient-general-container">
-          <h1 className="section-title">{strings.general.title[theme.lang]}</h1>
-
-          {/* Langs */}
-          <div className="input-section">
-            <h3 className="input-name">{strings.general.langs[theme.lang]}</h3>
-            {langs.available.map((lang) => (
+        {selectedTab === "create" ? (
+          <>
+            {/* General */}
+            <div className="subsection ingredient-general-container">
               <div
-                className="ingredient-lang-container"
-                onClick={() => {
-                  handleLangClick(lang.key);
-                }}
+                className="createIngredient-back-containter btn"
+                onClick={handleGoToViewTab}
               >
-                {usedLangs.includes(lang.key) ? (
-                  <MdCheckBox className="ingredient-lang-checkbox" />
-                ) : (
-                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                )}
-                <p className="ingredient-lang">{lang.name[theme.lang]}</p>
+                <LeftArrow className="createIngredient-back-arrow" />{" "}
+                {strings.general.back[theme.lang]}
               </div>
-            ))}
-          </div>
+              <h1 className="section-title">
+                {strings.general.title[theme.lang]}
+              </h1>
 
-          {/* Name */}
-          <div className="input-section">
-            <h3 className="input-name">
-              {strings.general.name.title[theme.lang]}
-            </h3>
-            <div className="ingredient-inputs-container">
-              {usedLangs.map((lang) => (
-                <div className="input-container">
-                  <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
+              {/* Langs */}
+              <div className="input-section">
+                <h3 className="input-name">
+                  {strings.general.langs[theme.lang]}
+                </h3>
+                {langs.available.map((lang) => (
+                  <div
+                    className="ingredient-lang-container"
+                    onClick={() => {
+                      handleLangClick(lang.key);
+                    }}
+                  >
+                    {usedLangs.includes(lang.key) ? (
+                      <MdCheckBox className="ingredient-lang-checkbox" />
+                    ) : (
+                      <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                    )}
+                    <p className="ingredient-lang">{lang.name[theme.lang]}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Name */}
+              <div className="input-section">
+                <h3 className="input-name">
+                  {strings.general.name.title[theme.lang]}
+                </h3>
+                <div className="ingredient-inputs-container">
+                  {usedLangs.map((lang) => (
+                    <div className="input-container">
+                      <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
+                      <input
+                        className="input"
+                        placeholder={strings.general.name.placeHolder[lang]}
+                        value={names[lang]}
+                        onChange={(event) =>
+                          handleChangeNames(lang, event.target.value)
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Measured by */}
+              <div className="input-section">
+                <h3 className="input-name">
+                  {strings.general.measuredBy.title[theme.lang]}
+                </h3>
+                {strings.general.measuredBy.options.map((option) => (
+                  <div
+                    className="ingredient-lang-container"
+                    onClick={() => handleMeasureChange(option.key)}
+                  >
+                    {measuredBy === option.key ? (
+                      <MdCheckBox className="ingredient-lang-checkbox" />
+                    ) : (
+                      <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                    )}
+                    <p className="ingredient-lang">{option[theme.lang]}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Aditional info */}
+              <div className="input-section">
+                <h3 className="input-name">
+                  {strings.general.aditionalInfo.title[theme.lang]}
+                </h3>
+                {strings.general.aditionalInfo.items.map((item) => (
+                  <div
+                    className="ingredient-lang-container"
+                    onClick={() => handleAditionalInfoClick(item.key)}
+                    data-tip
+                    data-for={`toolTip_${item.key}`}
+                  >
+                    {selectedAditionalInfo.includes(item.key) ? (
+                      <MdCheckBox className="ingredient-lang-checkbox" />
+                    ) : (
+                      <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                    )}
+                    <p className="ingredient-lang">{item.title[theme.lang]}</p>
+                    <ReactTooltip
+                      id={`toolTip_${item.key}`}
+                      place="right"
+                      effect="float"
+                    >
+                      {item.toolTip[theme.lang]}
+                    </ReactTooltip>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Nutrivalues */}
+            <div className="subsection ingredient-nutrivalue-container">
+              <h1 className="section-title">
+                {strings.nutritionalInfoTitle[theme.lang]}
+              </h1>
+              {/* States */}
+              <div>
+                <h3 className="input-name">
+                  {strings.states.title[theme.lang]}
+                </h3>
+                <div className="ingredient-states-container">
+                  {states.map((state) => {
+                    const index = states.indexOf(state);
+                    return (
+                      <div
+                        key={index}
+                        className={`ingredient-state-container ${
+                          index === selectedStateIndex ? "btn" : ""
+                        }`}
+                        onClick={() => setSelectedStateIndex(index)}
+                      >
+                        {correctLang(state.name)}
+                        {index !== 0 ? (
+                          <IoRemoveCircle
+                            className="ingredient-state-delete"
+                            onClick={() => handleRemoveState(index)}
+                          />
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                  <div
+                    className="ingredient-state-container"
+                    onClick={handleNewState}
+                  >
+                    <MdAdd />
+                  </div>
+                </div>
+              </div>
+              {/* Name */}
+              {selectedStateIndex !== 0 ? (
+                <div className="ingredient-state-name-container">
+                  <h3 className="input-name">
+                    {strings.states.name.title[theme.lang]}
+                  </h3>
+                  {usedLangs.map((lang) => (
+                    <div className="input-container">
+                      <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
+                      <input
+                        className="input"
+                        placeholder={strings.states.name.placeholder[lang]}
+                        value={states[selectedStateIndex].name[lang]}
+                        onChange={(e) => handleStateNames(lang, e.target.value)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {/* Cuantity */}
+              <>
+                <p className="createRecipe-timeType">
+                  {strings.quantity.title[theme.lang]}
+                </p>
+                <div
+                  className="createRecepy-quantity-input-container"
+                  style={{ marginBottom: 20 }}
+                >
+                  <div
+                    className="createRecepy-add-btn btn"
+                    onClick={() => handleCuantityChange("substraction")}
+                  >
+                    <MdRemove />
+                  </div>
+                  <input
+                    className="createRecipe-cuantity-input"
+                    value={states[selectedStateIndex].cuantity}
+                    style={{ fontSize: 18 }}
+                    onChange={(event) => cuantitySetter(event.target.value)}
+                  />
+                  <div
+                    className="createRecepy-add-btn btn"
+                    onClick={() => handleCuantityChange("sum")}
+                  >
+                    <MdAdd />
+                  </div>
+                </div>
+                <p className="createRecipe-timeType" style={{ marginTop: -20 }}>
+                  {strings.quantity.unit[measuredBy][theme.lang]}
+                </p>
+              </>
+
+              {/* Nutrivalues inputs */}
+              {strings.nutritionalInfo.map((nutriFact) => (
+                <div>
+                  <h3 className="input-name">{nutriFact.name[theme.lang]}</h3>
                   <input
                     className="input"
-                    placeholder={strings.general.name.placeHolder[lang]}
-                    value={names[lang]}
+                    placeholder={nutriFact.placeholder[theme.lang]}
+                    type={"number"}
+                    value={
+                      states[selectedStateIndex].nutriValues[nutriFact.key]
+                    }
                     onChange={(event) =>
-                      handleChangeNames(lang, event.target.value)
+                      handleChangeNutriValue(nutriFact.key, event.target.value)
                     }
                   />
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Measured by */}
-          <div className="input-section">
-            <h3 className="input-name">
-              {strings.general.measuredBy.title[theme.lang]}
-            </h3>
-            {strings.general.measuredBy.options.map((option) => (
+              {/* Error display */}
+              <p className="ingredient-error">{error}</p>
+              {/* Create btn */}
               <div
-                className="ingredient-lang-container"
-                onClick={() => handleMeasureChange(option.key)}
+                className="btn create-ingredient-btn"
+                onClick={handleCreateIngredient}
               >
-                {measuredBy === option.key ? (
-                  <MdCheckBox className="ingredient-lang-checkbox" />
-                ) : (
-                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                )}
-                <p className="ingredient-lang">{option[theme.lang]}</p>
+                {strings.createBtn[theme.lang]}
               </div>
-            ))}
-          </div>
-
-          {/* Aditional info */}
-          <div className="input-section">
-            <h3 className="input-name">
-              {strings.general.aditionalInfo.title[theme.lang]}
-            </h3>
-            {strings.general.aditionalInfo.items.map((item) => (
-              <div
-                className="ingredient-lang-container"
-                onClick={() => handleAditionalInfoClick(item.key)}
-                data-tip
-                data-for={`toolTip_${item.key}`}
-              >
-                {selectedAditionalInfo.includes(item.key) ? (
-                  <MdCheckBox className="ingredient-lang-checkbox" />
-                ) : (
-                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                )}
-                <p className="ingredient-lang">{item.title[theme.lang]}</p>
-                <ReactTooltip
-                  id={`toolTip_${item.key}`}
-                  place="right"
-                  effect="float"
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Search */}
+            <div className="subsection ingredient-general-container">
+              <div className="viewIngredient-search-header-container">
+                <h1 className="section-title">
+                  {stringsView.search.title[theme.lang]}
+                </h1>
+                ({stringsView.search.or[theme.lang]})
+                <div
+                  className="viewIngredient-search-header-create btn"
+                  onClick={() => setSelectedTab("create")}
                 >
-                  {item.toolTip[theme.lang]}
-                </ReactTooltip>
+                  {stringsView.search.create[theme.lang]}
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Nutrivalues */}
-        <div className="subsection ingredient-nutrivalue-container">
-          <h1 className="section-title">
-            {strings.nutritionalInfoTitle[theme.lang]}
-          </h1>
-          {/* States */}
-          <div>
-            <h3 className="input-name">{strings.states.title[theme.lang]}</h3>
-            <div className="ingredient-states-container">
-              {states.map((state) => {
-                const index = states.indexOf(state);
-                return (
-                  <div
-                    key={index}
-                    className={`ingredient-state-container ${
-                      index === selectedStateIndex ? "btn" : ""
-                    }`}
-                    onClick={() => setSelectedStateIndex(index)}
-                  >
-                    {correctLang(state.name)}
-                    {index !== 0 ? (
-                      <IoRemoveCircle
-                        className="ingredient-state-delete"
-                        onClick={() => handleRemoveState(index)}
-                      />
-                    ) : null}
-                  </div>
-                );
-              })}
-              <div
-                className="ingredient-state-container"
-                onClick={handleNewState}
-              >
-                <MdAdd />
-              </div>
-            </div>
-          </div>
-          {/* Name */}
-          {selectedStateIndex !== 0 ? (
-            <div className="ingredient-state-name-container">
-              <h3 className="input-name">
-                {strings.states.name.title[theme.lang]}
-              </h3>
-              {usedLangs.map((lang) => (
-                <div className="input-container">
-                  <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
+              {/* Searchbox */}
+              <div className="recipe-search-supercontainer">
+                <div className="recipe-search-container">
                   <input
                     className="input"
-                    placeholder={strings.states.name.placeholder[lang]}
-                    value={states[selectedStateIndex].name[lang]}
-                    onChange={(e) => handleStateNames(lang, e.target.value)}
+                    placeholder={stringsView.search.placeholder[theme.lang]}
+                    value={searchInput}
+                    onChange={(event) => setSearchInput(event.target.value)}
                   />
+                  <div className="recipe-search-btn btn" onClick={search}>
+                    <MdSearch />
+                  </div>
                 </div>
-              ))}
+              </div>
             </div>
-          ) : null}
 
-          {/* Cuantity */}
-          <>
-            <p className="createRecipe-timeType">
-              {strings.quantity.title[theme.lang]}
-            </p>
-            <div
-              className="createRecepy-quantity-input-container"
-              style={{ marginBottom: 20 }}
-            >
-              <div
-                className="createRecepy-add-btn btn"
-                onClick={() => handleCuantityChange("substraction")}
-              >
-                <MdRemove />
-              </div>
-              <input
-                className="createRecipe-cuantity-input"
-                value={states[selectedStateIndex].cuantity}
-                style={{ fontSize: 18 }}
-                onChange={(event) => cuantitySetter(event.target.value)}
-              />
-              <div
-                className="createRecepy-add-btn btn"
-                onClick={() => handleCuantityChange("sum")}
-              >
-                <MdAdd />
-              </div>
+            {/* Ingredient */}
+            <div className="subsection ingredient-nutrivalue-container">
+              <h1 className="section-title">
+                {stringsView.view.title[theme.lang]}
+              </h1>
             </div>
-            <p className="createRecipe-timeType" style={{ marginTop: -20 }}>
-              {strings.quantity.unit[measuredBy][theme.lang]}
-            </p>
           </>
-
-          {/* Nutrivalues inputs */}
-          {strings.nutritionalInfo.map((nutriFact) => (
-            <div>
-              <h3 className="input-name">{nutriFact.name[theme.lang]}</h3>
-              <input
-                className="input"
-                placeholder={nutriFact.placeholder[theme.lang]}
-                type={"number"}
-                value={states[selectedStateIndex].nutriValues[nutriFact.key]}
-                onChange={(event) =>
-                  handleChangeNutriValue(nutriFact.key, event.target.value)
-                }
-              />
-            </div>
-          ))}
-          {/* Error display */}
-          <p className="ingredient-error">{error}</p>
-          {/* Create btn */}
-          <div
-            className="btn create-ingredient-btn"
-            onClick={handleCreateIngredient}
-          >
-            {strings.createBtn[theme.lang]}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

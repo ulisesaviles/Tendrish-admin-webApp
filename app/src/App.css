@@ -502,6 +502,27 @@ body {
   transform: scale(1.3);
   opacity: 100%;
 }
+.viewIngredient-search-header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.viewIngredient-search-header-create {
+  padding: 2px 10px;
+}
+.createIngredient-back-containter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
+  padding: 0 10px;
+}
+.createIngredient-back-arrow {
+  font-size: 25px;
+  margin: 2px 0 0 -10px;
+}
 
 /* Create recipe */
 .createRecipe-general-container {

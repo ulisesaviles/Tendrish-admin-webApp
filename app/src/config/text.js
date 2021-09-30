@@ -137,6 +137,14 @@ export const login = {
 
 export const createIngredient = {
   general: {
+    back: {
+      es: "Ver ingredientes",
+      en: "View ingredients",
+    },
+    backConfirmation: {
+      es: "¿Estás seguro que quieres salir? Los cabios no serán guardados.",
+      en: "Are you sure you want to go back? Changes will not be saved.",
+    },
     title: {
       es: "General",
       en: "General",
@@ -466,6 +474,33 @@ export const createIngredient = {
     error: {
       es: "Error del servidor",
       en: "Server error",
+    },
+  },
+};
+
+export const viewIngredient = {
+  search: {
+    title: {
+      es: "Buscar ingrediente",
+      en: "Seach ingredient",
+    },
+    placeholder: {
+      es: "Ingresa el nombre de algún ingrediente",
+      en: "Enter an ingredient name",
+    },
+    create: {
+      es: "Crear ingrediente",
+      en: "Create ingredient",
+    },
+    or: {
+      es: "ó",
+      en: "or",
+    },
+  },
+  view: {
+    title: {
+      es: "Ver ingrediente",
+      en: "View ingredient",
     },
   },
 };
