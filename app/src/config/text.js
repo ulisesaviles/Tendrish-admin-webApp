@@ -398,6 +398,34 @@ export const createIngredient = {
       },
     },
   ],
+  states: {
+    title: {
+      es: "Estados del ingrediente",
+      en: "Ingredient states",
+    },
+    toolTip: {
+      es: "Cada estado en que se puede encontrar el ingrediente. Ej: congelado, molido, cocido, etc.",
+      en: "Every state in which the ingredient can be found. Ex: frozen, ground, cooked, etc.",
+    },
+    default: {
+      es: "default",
+      en: "default",
+    },
+    name: {
+      title: {
+        es: "Nombre del estado del ingrediente",
+        en: "Ingredient state name",
+      },
+      placeholder: {
+        es: "Ingresa el nombre del estado del ingrediente. Ej: cocido",
+        en: "Enter the name of the ingredient state. Ex: cooked",
+      },
+    },
+    delete: {
+      es: (name) => `¿Seguro que quieres eliminar el estado "${name}"?`,
+      en: (name) => `Are you sure you want to remove the "${name}" state?`,
+    },
+  },
   nutritionalInfoTitle: {
     es: "Valor nutricional",
     en: "Nutritional value",
@@ -428,6 +456,16 @@ export const createIngredient = {
         es: "Piezas",
         en: "Pieces",
       },
+    },
+  },
+  responses: {
+    success: {
+      es: "¡Creado con éxito!",
+      en: "Successfully created!",
+    },
+    error: {
+      es: "Error del servidor",
+      en: "Server error",
     },
   },
 };

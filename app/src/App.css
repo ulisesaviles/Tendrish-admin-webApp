@@ -6,6 +6,7 @@
   /* divs */
   --background: rgb(245, 245, 245);
   --container-background: rgb(255, 255, 255);
+  --subcontainer-background: rgb(230, 230, 230);
   --gradient: linear-gradient(
     to bottom right,
     rgb(213, 52, 133),
@@ -43,6 +44,7 @@
 .app-dark {
   --primary-font-color: rgb(255, 231, 242);
   --container-background: rgb(15, 15, 15);
+  --subcontainer-background: rgb(30, 30, 30);
   --background: rgb(0, 0, 0);
   --shadow: 0px 4px 10px rgb(0, 0, 0);
   --shadow-hover: 0px 4px 10px rgb(0, 0, 0);
@@ -428,6 +430,7 @@ body {
   z-index: 1;
   width: 60%;
   box-shadow: none;
+  overflow-x: hidden;
 }
 .ingredient-lang-container {
   display: flex;
@@ -458,6 +461,46 @@ body {
   margin: 0;
   font-size: 14px;
   font-weight: 500;
+}
+.ingredient-state-container {
+  border-radius: 100px;
+  background-color: var(--subcontainer-background);
+  padding: 2px 20px;
+  max-width: fit-content;
+  transition: var(--animation-short);
+  cursor: pointer;
+  margin: 0 5px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+.ingredient-state-container:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.ingredient-states-container {
+  display: flex;
+  min-width: 100%;
+  flex-direction: row;
+  min-height: min-content;
+  max-width: 100%;
+  overflow-x: scroll;
+  padding: 12px 4px;
+}
+.ingredient-states-container::-webkit-scrollbar {
+  height: 5px;
+  position: absolute;
+}
+.ingredient-state-delete {
+  color: var(--errors);
+  margin-left: 5px;
+  font-size: 14px;
+  transition: var(--animation-short);
+  opacity: 50%;
+}
+.ingredient-state-delete:hover {
+  transform: scale(1.3);
+  opacity: 100%;
 }
 
 /* Create recipe */
