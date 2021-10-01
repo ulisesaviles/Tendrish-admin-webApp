@@ -496,6 +496,20 @@ export const viewIngredient = {
       es: "ó",
       en: "or",
     },
+    states: {
+      null: {
+        es: "Ingresa el nombre de algún ingrediente",
+        en: "Enter an ingredient name",
+      },
+      loading: {
+        es: "Cargando...",
+        en: "Loading...",
+      },
+      empty: {
+        es: (name) => `No hay ingredientes llamados "${name}"`,
+        en: (name) => `There are not ingredients called "${name}"`,
+      },
+    },
   },
   view: {
     title: {

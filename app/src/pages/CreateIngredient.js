@@ -37,6 +37,10 @@ function Createingredient() {
 
   // ViewIngredient
   const [searchInput, setSearchInput] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [lastSearchName, setLastSearchName] = useState("");
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
 
   // CreateIngredient
   const [usedLangs, setUsedLangs] = useState([langs.default]);
@@ -334,8 +338,26 @@ function Createingredient() {
     ]);
   };
 
-  const search = () => {
-    console.log("Searching...");
+  const search = async () => {
+    setLastSearchName(searchInput);
+    setLoading(true);
+    const response = await axios.post(
+      "https://us-central1-tendrishh.cloudfunctions.net/server",
+      {
+        method: "getIngredientsByName",
+        name: searchInput,
+        lang: theme.lang,
+      }
+    );
+    setLoading(false);
+    if (response.status === 200) {
+      let temp = response.data;
+      console.log(temp);
+      temp.sort((a, b) =>
+        correctLang(a.names).localeCompare(correctLang(b.names))
+      );
+      setSearchResults(temp);
+    }
   };
 
   // Render
@@ -575,6 +597,7 @@ function Createingredient() {
           <>
             {/* Search */}
             <div className="subsection ingredient-general-container">
+              {/* Header */}
               <div className="viewIngredient-search-header-container">
                 <h1 className="section-title">
                   {stringsView.search.title[theme.lang]}
@@ -587,6 +610,7 @@ function Createingredient() {
                   {stringsView.search.create[theme.lang]}
                 </div>
               </div>
+
               {/* Searchbox */}
               <div className="recipe-search-supercontainer">
                 <div className="recipe-search-container">
@@ -601,6 +625,40 @@ function Createingredient() {
                   </div>
                 </div>
               </div>
+
+              {/* Search results */}
+              <div className="ingredient-searchResults-container">
+                {loading ? (
+                  <div className="ingredient-searchResults-msg">
+                    {stringsView.search.states.loading[theme.lang]}
+                  </div>
+                ) : searchResults === null ? (
+                  <div className="ingredient-searchResults-msg">
+                    {stringsView.search.states.null[theme.lang]}
+                  </div>
+                ) : searchResults.length === 0 ? (
+                  <div className="ingredient-searchResults-msg">
+                    {stringsView.search.states.empty[theme.lang](
+                      lastSearchName
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    {searchResults.map((ingredient) => (
+                      <div
+                        className={
+                          selectedIngredient === ingredient
+                            ? "ingredient-search-result-selected"
+                            : "ingredient-search-result"
+                        }
+                        onClick={() => setSelectedIngredient(ingredient)}
+                      >
+                        {correctLang(ingredient.names)}
+                      </div>
+                    ))}
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Ingredient */}
@@ -608,6 +666,7 @@ function Createingredient() {
               <h1 className="section-title">
                 {stringsView.view.title[theme.lang]}
               </h1>
+              {correctLang(selectedIngredient.names)}
             </div>
           </>
         )}

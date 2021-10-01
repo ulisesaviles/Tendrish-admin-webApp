@@ -70,6 +70,7 @@ body {
   cursor: pointer;
   transition: var(--animation-short);
   box-shadow: var(--shadow);
+  text-align: center;
 }
 .btn:hover {
   box-shadow: var(--shadow-hover);
@@ -522,6 +523,38 @@ body {
 .createIngredient-back-arrow {
   font-size: 25px;
   margin: 2px 0 0 -10px;
+}
+.ingredient-searchResults-container {
+  display: flex;
+  flex: 1;
+  overflow-y: scroll;
+  flex-direction: column;
+}
+.ingredient-searchResults-msg {
+  align-self: center;
+  margin: auto;
+  opacity: 70%;
+}
+.ingredient-search-result {
+  border-radius: 100px;
+  transition: var(--animation-short);
+  padding: 2px 20px;
+  width: calc(100% - 60px);
+  margin: 0 10px;
+}
+.ingredient-search-result:hover {
+  box-shadow: var(--shadow);
+  color: var(--secondary);
+}
+.ingredient-search-result-selected {
+  border-radius: 100px;
+  padding: 2px 20px;
+  width: calc(100% - 60px);
+  margin: 0 10px;
+  box-shadow: var(--shadow);
+  background-image: var(--gradient);
+  color: white;
+  font-weight: 500;
 }
 
 /* Create recipe */
