@@ -47,7 +47,6 @@ function Profiles() {
     langs: ["es"],
   });
   const [admins, setAdmins] = useState([]);
-  const [langs, setLangs] = useState([]);
 
   // Functions
   const createAdmin = async () => {
