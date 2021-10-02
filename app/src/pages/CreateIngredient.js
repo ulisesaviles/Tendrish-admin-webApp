@@ -909,7 +909,6 @@ function Createingredient() {
                         const index = selectedIngredient.states.indexOf(state);
                         return (
                           <div
-                            className={`ingredient-view-state-name`}
                             className={`ingredient-state-container ${
                               index === viewSelectedStateIndex ? "btn" : ""
                             }`}
