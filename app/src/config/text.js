@@ -853,6 +853,10 @@ export const createRecipe = {
         es: "Cantidad",
         en: "Quantity",
       },
+      states: {
+        es: "Estado del ingrediente",
+        en: "Ingredient state",
+      },
       unit: {
         title: {
           es: "Unidad",

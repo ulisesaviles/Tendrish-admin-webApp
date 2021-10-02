@@ -610,6 +610,7 @@ body {
 }
 .createRecipe-opc-container {
   min-width: 35%;
+  max-width: 35%;
   z-index: 0;
 }
 .createRecipe-selected-image {
@@ -640,6 +641,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
   min-width: 70%;
   min-height: 100px;
   height: auto;
@@ -777,7 +779,7 @@ body {
   min-width: 30%;
   width: min-content;
   margin: 8px 0;
-  padding: 2px 0;
+  padding: 2px 5px;
   text-align: center;
 }
 .unselected-tag {

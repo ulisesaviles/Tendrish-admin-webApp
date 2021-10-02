@@ -42,6 +42,7 @@ function Createingredient() {
         id: "",
       },
     ],
+    states: [{ es: "", en: "" }],
   });
   const admin = JSON.parse(localStorage.getItem("user"));
   const [recipeToEdit, setRecipeToEdit] = useState(null);
@@ -72,6 +73,8 @@ function Createingredient() {
     },
     unit: "",
     measuredBy: "",
+    state: { es: "", en: "" },
+    availableStates: [{ es: "", en: "" }],
   };
   const [ingredients, setIngredients] = useState([defaultIngredient]);
   const [ingredientsInputs, setIngredientsInputs] = useState([""]);
@@ -195,7 +198,7 @@ function Createingredient() {
     };
     console.log({ method: "createRecipe", recipe, publish });
 
-    // If it is an edit, first delete the original recipe
+    // If it is an edit
     try {
       let response;
       if (
@@ -307,6 +310,7 @@ function Createingredient() {
     let tempIngredients = [...ingredients];
     let id = null;
     let measuredBy = null;
+    let availableStates = null;
     for (let i = 0; i < defaultValues.ingredients.length; i++) {
       if (
         correctLang(defaultValues.ingredients[i].name)
@@ -321,12 +325,15 @@ function Createingredient() {
       ) {
         id = defaultValues.ingredients[i].id;
         measuredBy = defaultValues.ingredients[i].measuredBy;
+        availableStates = defaultValues.ingredients[i].states;
       }
     }
     tempIngredients[ingredientIndex] = {
       ...tempIngredients[ingredientIndex],
       id,
       measuredBy,
+      availableStates,
+      state: availableStates !== null ? availableStates[0] : null,
       unit:
         measuredBy !== null
           ? strings.prep.ingredients.unit.suggestions[measuredBy][0].key
@@ -402,6 +409,12 @@ function Createingredient() {
     setIngredientsInputs(tempIngredientInputs);
   };
 
+  const handleIngredientStateChange = (index, state) => {
+    let temp = [...ingredients];
+    temp[index].state = state;
+    setIngredients(temp);
+  };
+
   const handleInstructionsChange = (value, lang, index) => {
     let tempInstructions = [...instructions];
     tempInstructions[index][lang] = value;
@@ -462,16 +475,19 @@ function Createingredient() {
         rol: admin.personalInfo.rol,
       },
     });
-    if (response.status === 200) {
-      let temp = response.data;
-      temp.ingredients.sort((a, b) =>
-        correctLang(a.name).localeCompare(correctLang(b.name))
-      );
-      setDefaultValues(temp);
-      setAccompanimentsSuggestions(response.data.accompaniments);
-    } else {
+
+    if (response.status !== 200) {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }
+
+    let temp = response.data;
+    temp.ingredients.sort((a, b) =>
+      correctLang(a.name).localeCompare(correctLang(b.name))
+    );
+    console.log(temp);
+    setDefaultValues(temp);
+    setAccompanimentsSuggestions(response.data.accompaniments);
+
     let tempRecipeToEdit = localStorage.getItem("recipeToEdit");
     const wantsToEdit = localStorage.getItem("wantsToEdit");
     if (
@@ -990,51 +1006,42 @@ function Createingredient() {
             <h3 className="input-name">
               {strings.prep.ingredients.title[theme.lang]}
             </h3>
-            {ingredients.map((ingredient) => (
-              <div
-                className="createRecipe-ingredient-container"
-                key={ingredients.indexOf(ingredient)}
-              >
-                {/* Bullets */}
-                <div>
-                  <h1 className="createRecipe-ingredient-bullet">•</h1>
-                  <MdRemoveCircle
-                    className="deleteIcon"
-                    onClick={() =>
-                      removeIngredient(ingredients.indexOf(ingredient))
-                    }
-                  />
-                  {ingredients.length > 1 ? null : null}
-                </div>
-                <div className="createRecipe-ingredient-inputs-container">
-                  {/* Ingredient name */}
-                  <div className="createRecipe-ingredient-input-container">
-                    <input
-                      className={`input${
-                        ingredient.id === null ? " input-error" : ""
-                      }`}
-                      placeholder={
-                        strings.prep.ingredients.placeholder[theme.lang]
-                      }
-                      value={ingredientsInputs[ingredients.indexOf(ingredient)]}
-                      onChange={(event) =>
-                        handleIngredientsChange(
-                          ingredients.indexOf(ingredient),
-                          event.target.value
-                        )
-                      }
-                      onFocus={() =>
-                        setFocusedInputIndex(ingredients.indexOf(ingredient))
-                      }
-                      onBlur={() =>
-                        setTimeout(() => setFocusedInputIndex(null), 300)
-                      }
+            {ingredients.map((ingredient) => {
+              const index = ingredients.indexOf(ingredient);
+              return (
+                <div className="createRecipe-ingredient-container" key={index}>
+                  {/* Bullets */}
+                  <div>
+                    <h1 className="createRecipe-ingredient-bullet">•</h1>
+                    <MdRemoveCircle
+                      className="deleteIcon"
+                      onClick={() => removeIngredient(index)}
                     />
-                    {focusedInputIndex === ingredients.indexOf(ingredient) ? (
-                      <div className="hide-overflow-y">
-                        <div className="suggestions-container">
-                          {getSuggestions(ingredients.indexOf(ingredient)).map(
-                            (suggestion) => (
+                    {ingredients.length > 1 ? null : null}
+                  </div>
+                  <div className="createRecipe-ingredient-inputs-container">
+                    {/* Ingredient name */}
+                    <div className="createRecipe-ingredient-input-container">
+                      <input
+                        className={`input${
+                          ingredient.id === null ? " input-error" : ""
+                        }`}
+                        placeholder={
+                          strings.prep.ingredients.placeholder[theme.lang]
+                        }
+                        value={ingredientsInputs[index]}
+                        onChange={(event) =>
+                          handleIngredientsChange(index, event.target.value)
+                        }
+                        onFocus={() => setFocusedInputIndex(index)}
+                        onBlur={() =>
+                          setTimeout(() => setFocusedInputIndex(null), 300)
+                        }
+                      />
+                      {focusedInputIndex === index ? (
+                        <div className="hide-overflow-y">
+                          <div className="suggestions-container">
+                            {getSuggestions(index).map((suggestion) => (
                               <div
                                 className="suggestion-container"
                                 onClick={() =>
@@ -1043,135 +1050,164 @@ function Createingredient() {
                               >
                                 {suggestion}
                               </div>
-                            )
-                          )}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  {/* Unit section */}
-                  <div style={{ width: "100%", marginBottom: 10 }}>
-                    <p className="input-lang">{`${
-                      strings.prep.ingredients.unit.title[theme.lang]
-                    }: `}</p>
-                    <div style={{ marginLeft: 15 }}>
-                      {ingredient.id != null
-                        ? strings.prep.ingredients.unit.suggestions[
-                            ingredient.measuredBy
-                          ].map((suggestion) => (
-                            <div
-                              className="ingredient-lang-container"
-                              onClick={() => {
-                                handleIngredientUnitChange(
-                                  ingredients.indexOf(ingredient),
-                                  suggestion.key
-                                );
-                              }}
-                              key={strings.prep.ingredients.unit.suggestions[
-                                ingredient.measuredBy
-                              ].indexOf(suggestion)}
-                            >
-                              {suggestion.key === ingredient.unit ? (
-                                <MdCheckBox className="ingredient-lang-checkbox" />
-                              ) : (
-                                <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                              )}
-                              <p className="ingredient-lang">
-                                {suggestion[theme.lang]}
-                              </p>
-                            </div>
-                          ))
-                        : null}
+                      ) : null}
                     </div>
-                  </div>
 
-                  {/* Cuantity */}
-                  <div className="createRecipe-cuantity-container">
-                    <p className="input-lang">{`${
-                      strings.prep.ingredients.quantity[theme.lang]
-                    }: `}</p>
-                    <div className="fraction-container">
-                      <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
-                        <div
-                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
-                          onClick={() =>
-                            handleIngredientQuantityChange(
-                              ingredients.indexOf(ingredient),
-                              true,
-                              ingredient.cuantity.numerator - 1
-                            )
-                          }
-                        >
-                          <MdRemove />
-                        </div>
-                        <input
-                          className="createRecipe-cuantity-input"
-                          value={ingredient.cuantity.numerator}
-                          onChange={(event) =>
-                            handleIngredientQuantityChange(
-                              ingredients.indexOf(ingredient),
-                              true,
-                              event.target.value
-                            )
-                          }
-                        />
-                        <div
-                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
-                          onClick={() =>
-                            handleIngredientQuantityChange(
-                              ingredients.indexOf(ingredient),
-                              true,
-                              ingredient.cuantity.numerator + 1
-                            )
-                          }
-                        >
-                          <MdAdd />
-                        </div>
+                    {/* Unit section */}
+                    <div style={{ width: "100%", marginBottom: 10 }}>
+                      <p className="input-lang">{`${
+                        strings.prep.ingredients.unit.title[theme.lang]
+                      }: `}</p>
+                      <div style={{ marginLeft: 15 }}>
+                        {ingredient.id != null
+                          ? strings.prep.ingredients.unit.suggestions[
+                              ingredient.measuredBy
+                            ].map((suggestion) => (
+                              <div
+                                className="ingredient-lang-container"
+                                onClick={() => {
+                                  handleIngredientUnitChange(
+                                    index,
+                                    suggestion.key
+                                  );
+                                }}
+                                key={strings.prep.ingredients.unit.suggestions[
+                                  ingredient.measuredBy
+                                ].indexOf(suggestion)}
+                              >
+                                {suggestion.key === ingredient.unit ? (
+                                  <MdCheckBox className="ingredient-lang-checkbox" />
+                                ) : (
+                                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                                )}
+                                <p className="ingredient-lang">
+                                  {suggestion[theme.lang]}
+                                </p>
+                              </div>
+                            ))
+                          : null}
                       </div>
-                      <div className="dividedBy" />
-                      <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
-                        <div
-                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
-                          onClick={() =>
-                            handleIngredientQuantityChange(
-                              ingredients.indexOf(ingredient),
-                              false,
-                              ingredient.cuantity.denominator - 1
-                            )
-                          }
-                        >
-                          <MdRemove />
+                    </div>
+
+                    {/* States */}
+                    <div style={{ width: "100%", marginBottom: 10 }}>
+                      <p className="input-lang">{`${
+                        strings.prep.ingredients.states[theme.lang]
+                      }: `}</p>
+                      <div style={{ marginLeft: 15 }}>
+                        {ingredient.id != null
+                          ? ingredient.availableStates.map((state) => (
+                              <div
+                                className="ingredient-lang-container"
+                                onClick={() => {
+                                  handleIngredientStateChange(index, state);
+                                }}
+                                key={index}
+                              >
+                                {state === ingredient.state ? (
+                                  <MdCheckBox className="ingredient-lang-checkbox" />
+                                ) : (
+                                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                                )}
+                                <p className="ingredient-lang">
+                                  {state[theme.lang]}
+                                </p>
+                              </div>
+                            ))
+                          : null}
+                      </div>
+                    </div>
+
+                    {/* Cuantity */}
+                    <div className="createRecipe-cuantity-container">
+                      <p className="input-lang">{`${
+                        strings.prep.ingredients.quantity[theme.lang]
+                      }: `}</p>
+                      <div className="fraction-container">
+                        <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                          <div
+                            className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                            onClick={() =>
+                              handleIngredientQuantityChange(
+                                index,
+                                true,
+                                ingredient.cuantity.numerator - 1
+                              )
+                            }
+                          >
+                            <MdRemove />
+                          </div>
+                          <input
+                            className="createRecipe-cuantity-input"
+                            value={ingredient.cuantity.numerator}
+                            onChange={(event) =>
+                              handleIngredientQuantityChange(
+                                index,
+                                true,
+                                event.target.value
+                              )
+                            }
+                          />
+                          <div
+                            className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                            onClick={() =>
+                              handleIngredientQuantityChange(
+                                index,
+                                true,
+                                ingredient.cuantity.numerator + 1
+                              )
+                            }
+                          >
+                            <MdAdd />
+                          </div>
                         </div>
-                        <input
-                          className="createRecipe-cuantity-input"
-                          value={ingredient.cuantity.denominator}
-                          onChange={(event) =>
-                            handleIngredientQuantityChange(
-                              ingredients.indexOf(ingredient),
-                              false,
-                              event.target.value
-                            )
-                          }
-                        />
-                        <div
-                          className="createRecepy-add-btn btn createRecepy-add-btn-mini"
-                          onClick={() =>
-                            handleIngredientQuantityChange(
-                              ingredients.indexOf(ingredient),
-                              false,
-                              ingredient.cuantity.denominator + 1
-                            )
-                          }
-                        >
-                          <MdAdd />
+                        <div className="dividedBy" />
+                        <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                          <div
+                            className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                            onClick={() =>
+                              handleIngredientQuantityChange(
+                                index,
+                                false,
+                                ingredient.cuantity.denominator - 1
+                              )
+                            }
+                          >
+                            <MdRemove />
+                          </div>
+                          <input
+                            className="createRecipe-cuantity-input"
+                            value={ingredient.cuantity.denominator}
+                            onChange={(event) =>
+                              handleIngredientQuantityChange(
+                                index,
+                                false,
+                                event.target.value
+                              )
+                            }
+                          />
+                          <div
+                            className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                            onClick={() =>
+                              handleIngredientQuantityChange(
+                                index,
+                                false,
+                                ingredient.cuantity.denominator + 1
+                              )
+                            }
+                          >
+                            <MdAdd />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <div className="btn add-ingredient-btn" onClick={addIngredient}>
               {strings.prep.ingredients.btn[theme.lang]}
             </div>
