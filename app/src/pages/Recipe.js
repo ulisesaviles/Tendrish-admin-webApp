@@ -28,8 +28,11 @@ function Createingredient() {
   const [inputValue, setInputValue] = useState("");
   const [currentRecipeIndex, setCurrentRecipeIndex] = useState(null);
   const [queriedIndexes, setQueriedIndexes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const limitPerSearch = 10;
   // Recipe
   const [currentRecipe, setCurrentRecipe] = useState(null);
+  const [loadingRecipe, setLoadingRecipe] = useState(false);
 
   // Functions
   const capitilize = (string) => {
@@ -149,6 +152,7 @@ function Createingredient() {
   };
 
   const getFullRecipe = async (recipe) => {
+    setLoadingRecipe(true);
     // Get ingredients
     recipe.prep.ingredients = await getRecipeIngredients(
       recipe.prep.ingredients
@@ -161,6 +165,7 @@ function Createingredient() {
     recipe.nutrivalues = await getNutrivalues(
       recipe.general.name.en.toLowerCase()
     );
+    setLoadingRecipe(false);
     return recipe;
   };
 
@@ -194,36 +199,48 @@ function Createingredient() {
   };
 
   const getRecipeIngredients = async (ingredientsList) => {
+    let response;
     for (let i = 0; i < ingredientsList.length; i++) {
-      ingredientsList[i].name = (
-        await axios({
+      try {
+        response = await axios({
           method: "post",
           url: "https://us-central1-tendrishh.cloudfunctions.net/server",
           data: {
             method: "getIngredientName",
             ingredientId: ingredientsList[i].id,
           },
-        })
-      ).data;
+        });
+        if (response.status === 200) {
+          ingredientsList[i].name = response.data;
+        } else {
+          ingredientsList[i] = null;
+        }
+      } catch (e) {
+        ingredientsList[i] = null;
+      }
     }
     return ingredientsList;
   };
 
   const handleRecipeClick = async (index) => {
     setCurrentRecipeIndex(index);
-    if (!queriedIndexes.includes(index)) {
-      setQueriedIndexes([...queriedIndexes, index]);
-      let recipe = await getFullRecipe(searchResults[index]);
-      let temp = searchResults;
-      temp[index] = recipe;
-      setSearchResults(temp);
-      setCurrentRecipe(recipe);
-    } else {
+    if (queriedIndexes.includes(index)) {
       setCurrentRecipe(searchResults[index]);
+      return;
     }
+
+    setQueriedIndexes([...queriedIndexes, index]);
+    let recipe = await getFullRecipe(searchResults[index]);
+    let temp = searchResults;
+    temp[index] = recipe;
+    setSearchResults(temp);
+    setCurrentRecipe(recipe);
   };
 
-  const search = async () => {
+  const search = async (loadMore) => {
+    const tempSearchResults =
+      searchResults === null ? null : [...searchResults];
+    setLoading(true);
     setValuesToDefault();
     const response = await axios({
       method: "post",
@@ -238,12 +255,20 @@ function Createingredient() {
           tags: [],
           includedIngredients: [],
         },
-        start: 0,
-        end: 10,
+        start: loadMore ? tempSearchResults.length : 0,
+        end: loadMore
+          ? tempSearchResults.length + limitPerSearch
+          : limitPerSearch,
       },
     });
     setCurrentRecipe(null);
-    if (response.status === 200) setSearchResults(response.data);
+    if (response.status === 200) {
+      console.log(loadMore);
+      setSearchResults(
+        loadMore ? [...tempSearchResults, ...response.data] : response.data
+      );
+    }
+    setLoading(false);
   };
 
   const setValuesToDefault = () => {
@@ -252,6 +277,8 @@ function Createingredient() {
     setSearchResults(null);
     setQueriedIndexes([]);
   };
+
+  console.log(currentRecipe);
 
   // Render
   return (
@@ -269,7 +296,7 @@ function Createingredient() {
                 value={inputValue}
                 onChange={(event) => setInputValue(event.target.value)}
               />
-              <div className="recipe-search-btn btn" onClick={search}>
+              <div className="recipe-search-btn btn" onClick={() => search()}>
                 <MdSearch />
               </div>
             </div>
@@ -305,7 +332,9 @@ function Createingredient() {
                 : ""
             }`}
           >
-            {searchResults === null ? (
+            {loading ? (
+              <p>{strings.search.loading[theme.lang]}</p>
+            ) : searchResults === null ? (
               <p>{strings.search.states.undone[theme.lang]}</p>
             ) : typeof searchResults === "object" &&
               searchResults.length === 0 ? (
@@ -350,10 +379,19 @@ function Createingredient() {
                     </div>
                   </div>
                 ))}
+                {searchResults.length % limitPerSearch === 0 ? (
+                  <div
+                    className="btn recipe-loadMore"
+                    onClick={() => search(true)}
+                  >
+                    {strings.search.loadMore[theme.lang](limitPerSearch)}
+                  </div>
+                ) : null}
               </>
             )}
           </div>
         </div>
+
         {/* Recipe */}
         <div className="subsection recipe-recipeSection-container">
           <h1 className="section-title">{strings.recipe.title[theme.lang]}</h1>
@@ -362,7 +400,9 @@ function Createingredient() {
               currentRecipe === null ? "-empty" : ""
             }`}
           >
-            {currentRecipe === null ? (
+            {loadingRecipe ? (
+              <p>{strings.search.loading[theme.lang]}</p>
+            ) : currentRecipe === null ? (
               <p>{strings.recipe.empty[theme.lang]}</p>
             ) : (
               <>
@@ -404,24 +444,33 @@ function Createingredient() {
                         {strings.recipe.recipe.ingredients.title[theme.lang]}
                       </p>
                       {currentRecipe.prep.ingredients.map((ingredient) => (
-                        <div className="recipe-recipeSection-recipe-ingredient-container">
-                          <p className="recipe-recipeSection-recipe-ingredient-bullet">
-                            •
-                          </p>
-                          <p className="recipe-recipeSection-recipe-ingredient-cuantity">
-                            {ingredient.cuantity.denominator === 1
-                              ? ingredient.cuantity.numerator
-                              : `${ingredient.cuantity.numerator}/${ingredient.cuantity.denominator}`}
-                            {
-                              strings.recipe.recipe.units[
-                                ingredient.measuredBy
-                              ][ingredient.unit][theme.lang]
-                            }
-                          </p>
-                          <p style={{ margin: 0 }}>
-                            {correctLang(ingredient.name)}
-                          </p>
-                        </div>
+                        <>
+                          {ingredient !== null ? (
+                            <div className="recipe-recipeSection-recipe-ingredient-container">
+                              <p className="recipe-recipeSection-recipe-ingredient-bullet">
+                                •
+                              </p>
+                              <p className="recipe-recipeSection-recipe-ingredient-cuantity">
+                                {ingredient.cuantity.denominator === 1
+                                  ? ingredient.cuantity.numerator
+                                  : `${ingredient.cuantity.numerator}/${ingredient.cuantity.denominator}`}
+                                {
+                                  strings.recipe.recipe.units[
+                                    ingredient.measuredBy
+                                  ][ingredient.unit][theme.lang]
+                                }
+                              </p>
+                              <p style={{ margin: 0 }}>
+                                {capitilize(correctLang(ingredient.name))}
+                                {ingredient.state != null
+                                  ? `, ${correctLang(
+                                      ingredient.state
+                                    ).toLowerCase()}`
+                                  : null}
+                              </p>
+                            </div>
+                          ) : null}
+                        </>
                       ))}
                     </>
                     <div className="recipe-recipeSection-recipe-separator" />
