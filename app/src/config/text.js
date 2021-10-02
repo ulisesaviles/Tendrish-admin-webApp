@@ -1016,6 +1016,14 @@ export const viewRecipe = {
       es: "Buscador de recetas",
       en: "Recipe finder",
     },
+    loading: {
+      es: "Cargando...",
+      en: "Loading...",
+    },
+    loadMore: {
+      es: (limit) => `Cargar ${limit} más`,
+      en: (limit) => `Load ${limit} more`,
+    },
     placeholder: {
       es: "Ingresa el nombre de alguna receta",
       en: "Enter the name of a recipe",
@@ -1228,12 +1236,12 @@ export const viewRecipe = {
         },
         volume: {
           teaspoon: {
-            es: "cucharaditas",
-            en: "teaspoons",
+            es: "cda",
+            en: "tspn",
           },
           tablespoon: {
-            es: "cucharadas",
-            en: "tablespoons",
+            es: "cdta",
+            en: "Tblsp",
           },
           cup: {
             es: "tazas",
