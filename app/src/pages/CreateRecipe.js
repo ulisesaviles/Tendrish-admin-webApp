@@ -195,6 +195,7 @@ function Createingredient() {
           : admin.id,
         accompaniments: formatAccompaniments([...accompaniments]),
       },
+      aditionalInfo: getRecipeAditionalInfo(),
     };
     console.log({ method: "createRecipe", recipe, publish });
 
@@ -304,6 +305,22 @@ function Createingredient() {
     return accompaniments;
   };
 
+  const getRecipeAditionalInfo = () => {
+    let res = [];
+    for (let i = 0; i < ingredients.length; i++) {
+      const ingredient = ingredients[i];
+      if (ingredient.aditionalInfo != null) {
+        for (let j = 0; j < ingredient.aditionalInfo.length; j++) {
+          const info = ingredient.aditionalInfo[j];
+          if (!res.includes(info)) {
+            res.push(info);
+          }
+        }
+      }
+    }
+    return res;
+  };
+
   const getSuggestions = (ingredientIndex) => {
     let ingredientName = ingredientsInputs[ingredientIndex];
     let suggestions = [];
@@ -311,6 +328,7 @@ function Createingredient() {
     let id = null;
     let measuredBy = null;
     let availableStates = null;
+    let aditionalInfo = null;
     for (let i = 0; i < defaultValues.ingredients.length; i++) {
       if (
         correctLang(defaultValues.ingredients[i].name)
@@ -326,6 +344,7 @@ function Createingredient() {
         id = defaultValues.ingredients[i].id;
         measuredBy = defaultValues.ingredients[i].measuredBy;
         availableStates = defaultValues.ingredients[i].states;
+        aditionalInfo = defaultValues.ingredients[i].aditionalInfo;
       }
     }
     tempIngredients[ingredientIndex] = {
@@ -333,6 +352,7 @@ function Createingredient() {
       id,
       measuredBy,
       availableStates,
+      aditionalInfo,
       state: availableStates !== null ? availableStates[0] : null,
       unit:
         measuredBy !== null
