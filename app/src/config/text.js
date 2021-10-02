@@ -1347,6 +1347,13 @@ export const profiles = {
         },
         options: ["CEO", "Super admin", "Developer", "Admin", "Marketing"],
       },
+      lang: {
+        title: {
+          es: "Lenguaje que habla",
+          en: "Language that he/she speaks",
+        },
+        options: ["es", "en"],
+      },
       locked: {
         title: {
           es: "Bloquear / desbloquear perfil",
@@ -1437,6 +1444,13 @@ export const profiles = {
           en: "Rol",
         },
         options: ["CEO", "Super admin", "Developer", "Admin", "Marketing"],
+      },
+      lang: {
+        title: {
+          es: "Lenguaje que habla",
+          en: "Language that he/she speaks",
+        },
+        options: ["es", "en"],
       },
       availabilityRange: {
         title: {

@@ -44,8 +44,10 @@ function Profiles() {
     ],
     rol: "Admin",
     locked: false,
+    langs: ["es"],
   });
   const [admins, setAdmins] = useState([]);
+  const [langs, setLangs] = useState([]);
 
   // Functions
   const createAdmin = async () => {
@@ -140,6 +142,10 @@ function Profiles() {
           hidden: true,
           value: "",
         },
+        langs:
+          admins[adminToEditIndex].langs == null
+            ? []
+            : admins[adminToEditIndex].langs,
       });
     else
       setNewAdmin({
@@ -157,8 +163,19 @@ function Profiles() {
           },
         ],
         rol: "Admin",
+        langs: [],
       });
     setAdminToEditIndex(adminToEditIndex);
+  };
+
+  const handleSelectLang = (lang) => {
+    let temp = newAdmin.langs;
+    if (temp.includes(lang)) {
+      temp.splice(temp.indexOf(lang), 1);
+    } else {
+      temp.push(lang);
+    }
+    setNewAdmin({ ...newAdmin, langs: temp });
   };
 
   const removeRange = (index) => {
@@ -293,6 +310,26 @@ function Profiles() {
                       }`}
                     >
                       {option}
+                    </p>
+                  ))}
+                </div>
+              </>
+              {/* Lang */}
+              <>
+                <h4 className="profiles-popup-input-name">
+                  {strings.popups[popupType].lang.title[theme.lang]}
+                </h4>
+                <div className="toggle recipe-search-visibility-toggle">
+                  {strings.popups[popupType].lang.options.map((option) => (
+                    <p
+                      onClick={() => handleSelectLang(option)}
+                      className={`toggle-item profiles-toggle-item ${
+                        newAdmin.langs.includes(option)
+                          ? " toggle-item-selected"
+                          : null
+                      }`}
+                    >
+                      {option.toUpperCase()}
                     </p>
                   ))}
                 </div>
