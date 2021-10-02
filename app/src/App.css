@@ -1179,6 +1179,10 @@ body {
   margin: 0 0 20px 0;
   width: 90%;
 }
+.recipe-loadMore {
+  padding: 2px 20px;
+  margin: 10px;
+}
 
 /* Profiles */
 .profiles-content-container {
