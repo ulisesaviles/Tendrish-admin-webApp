@@ -442,6 +442,10 @@ export const createIngredient = {
     es: "Crear ingrediente",
     en: "Create ingredient",
   },
+  editBtn: {
+    es: "Guardar cambios",
+    en: "Save changes",
+  },
   error: {
     es: "Asegúrate de haber ingresado toda la información correctamente",
     en: "Make sure you have entered all the information correctly",
@@ -474,6 +478,10 @@ export const createIngredient = {
     error: {
       es: "Error del servidor",
       en: "Server error",
+    },
+    editSuccess: {
+      es: "¡Actualizado con éxito!",
+      en: "Successfully updated!",
     },
   },
 };
@@ -513,8 +521,221 @@ export const viewIngredient = {
   },
   view: {
     title: {
-      es: "Ver ingrediente",
-      en: "View ingredient",
+      es: "Detalles del ingrediente",
+      en: "Ingredient's detaills",
+    },
+    name: {
+      es: "Nombre",
+      en: "Name",
+    },
+    measuredBy: {
+      title: {
+        es: "Medido por",
+        en: "Measured by",
+      },
+      mass: { es: "Masa", en: "Mass" },
+      volume: { es: "Volumen", en: "Volume" },
+      piece: { es: "Pieza", en: "Piece" },
+    },
+    aditionalInfo: {
+      title: {
+        es: "Información dicional",
+        en: "Aditional info",
+      },
+      empty: {
+        es: "El ingrediente no contiene información adicional",
+        en: "The ingredient does not contain additional information",
+      },
+      redMeat: {
+        es: "Es carne roja",
+        en: "It's red meat",
+      },
+      seafood: {
+        es: "Es marisco",
+        en: "It's seafood",
+      },
+      whiteMeat: {
+        es: "Es carne blanca",
+        en: "It's white meat",
+      },
+      gluten: {
+        es: "Contiene gluten",
+        en: "It contains gluten",
+      },
+      animalOrigin: {
+        es: "Es un alimento de origen animal",
+        en: "It is a food of animal origin",
+      },
+      lactose: {
+        es: "Contiene lactosa",
+        en: "It contains lactose",
+      },
+    },
+    states: {
+      title: {
+        es: "Estados",
+        en: "States",
+      },
+      name: {
+        es: "Nombre del estado",
+        en: "State's name",
+      },
+      default: {
+        es: "default",
+        en: "default",
+      },
+      nutriValues: {
+        quantity: {
+          title: {
+            es: "Contenido nutricional para cada:",
+            en: "Nutritional content for each:",
+          },
+          unit: {
+            mass: {
+              es: "Gramos",
+              en: "Grams",
+            },
+            volume: {
+              es: "Militros",
+              en: "Milliliters",
+            },
+            piece: {
+              es: "Piezas",
+              en: "Pieces",
+            },
+          },
+        },
+        title: {
+          es: "Valor nutricional",
+          en: "Nutritional value",
+        },
+        dailyValue: {
+          es: "(Basado en una dieta diaria de 2,000 calorías)",
+          en: "(Based on a 2,000 calorie daily diet)",
+        },
+        items: [
+          {
+            key: "calories",
+            name: {
+              es: "Calorías",
+              en: "Calories",
+            },
+            unit: "",
+            className: "calories",
+            dailyValue: null,
+          },
+          {
+            key: "totalFat",
+            name: {
+              es: "Grasa total",
+              en: "Total fat",
+            },
+            unit: "gr",
+            className: "nutrifact",
+            dailyValue: 65,
+          },
+          {
+            key: "saturatedFat",
+            name: {
+              es: "Grasa saturada",
+              en: "Saturated fat",
+            },
+            unit: "gr",
+            className: "subnutrifact",
+            dailyValue: 20,
+          },
+          {
+            key: "cholesterol",
+            name: {
+              es: "Colesterol",
+              en: "Cholesterol",
+            },
+            unit: "mg",
+            className: "nutrifact",
+            dailyValue: 300,
+          },
+          {
+            key: "sodium",
+            name: {
+              es: "Sodio",
+              en: "Sodium",
+            },
+            unit: "",
+            className: "nutrifact",
+            dailyValue: 2400,
+          },
+          {
+            key: "carbohydrates",
+            name: {
+              es: "Carbohidratos",
+              en: "Carbohydrates",
+            },
+            unit: "gr",
+            className: "nutrifact",
+            dailyValue: 300,
+          },
+          {
+            key: "dietaryFiber",
+            name: {
+              es: "Fibra dietética",
+              en: "Dietary fiber",
+            },
+            unit: "gr",
+            className: "subnutrifact",
+            dailyValue: 25,
+          },
+          {
+            key: "sugar",
+            name: {
+              es: "Azúcar",
+              en: "Sugar",
+            },
+            unit: "gr",
+            className: "subnutrifact",
+            dailyValue: null,
+          },
+          {
+            key: "protein",
+            name: {
+              es: "Proteína",
+              en: "Protein",
+            },
+            unit: "gr",
+            className: "nutrifact",
+            dailyValue: null,
+          },
+        ],
+      },
+    },
+    empty: {
+      es: "Busca un ingrediente y selecciónalo para conocer sus detalles",
+      en: "Search for an ingredient and select it to know its details",
+    },
+    edit: {
+      es: "Editar ingrediente",
+      en: "Edit ingredient",
+    },
+    delete: {
+      es: "Eliminar ingrediente",
+      en: "Delete ingredient",
+    },
+    deleteConfirmation: {
+      es: (name) =>
+        `¿Estás seguro que quieres eliminar el ingrediente "${name}"? Esta acción no puede ser revertida.`,
+      en: (name) =>
+        `Are you sure you want to delete the ingredient "${name}"? This action cannot be undone.`,
+    },
+    responses: {
+      delete: {
+        success: {
+          es: "Eliminado con éxito.",
+          en: "Successfully deleted.",
+        },
+        error: {
+          es: "Error del servidor",
+          en: "Server error",
+        },
+      },
     },
   },
 };

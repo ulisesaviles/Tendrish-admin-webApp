@@ -534,6 +534,7 @@ body {
   align-self: center;
   margin: auto;
   opacity: 70%;
+  text-align: center;
 }
 .ingredient-search-result {
   border-radius: 100px;
@@ -541,6 +542,7 @@ body {
   padding: 2px 20px;
   width: calc(100% - 60px);
   margin: 0 10px;
+  cursor: pointer;
 }
 .ingredient-search-result:hover {
   box-shadow: var(--shadow);
@@ -555,6 +557,46 @@ body {
   background-image: var(--gradient);
   color: white;
   font-weight: 500;
+}
+.ingredient-view-name-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0 0 3px 20px;
+}
+.ingredient-view-name-lang {
+  margin: 0 5px 0 0;
+  color: var(--secondary);
+  font-weight: 500;
+}
+.ingredient-view-aditionalInfo-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 20px;
+}
+.ingredient-view-aditionalInfo-bullet {
+  font-weight: 700;
+  color: var(--secondary);
+  margin: 0 10px 0 0;
+}
+.ingredient-view-state-names-container {
+  display: flex;
+}
+.ingredient-delete {
+  color: var(--secondary);
+  margin: 10px 0;
+  align-self: center;
+  transition: var(--animation-short);
+  cursor: pointer;
+}
+.viewIngredient-editBtn {
+  align-self: center;
+  padding: 3px 30px;
+  margin-top: 20px;
+}
+.ingredient-delete:hover {
+  transform: scale(1.1);
 }
 
 /* Create recipe */

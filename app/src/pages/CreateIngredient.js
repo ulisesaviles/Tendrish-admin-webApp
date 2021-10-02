@@ -41,6 +41,8 @@ function Createingredient() {
   const [loading, setLoading] = useState(false);
   const [lastSearchName, setLastSearchName] = useState("");
   const [selectedIngredient, setSelectedIngredient] = useState(null);
+  const [viewSelectedStateIndex, setViewSelectedStateIndex] = useState(0);
+  const [cuantityForDisplay, setCuantityforDisplay] = useState(100);
 
   // CreateIngredient
   const [usedLangs, setUsedLangs] = useState([langs.default]);
@@ -75,6 +77,8 @@ function Createingredient() {
     },
   ]);
   const [selectedStateIndex, setSelectedStateIndex] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIngredientId, setEditingIngredientId] = useState(null);
 
   // Functions
   const arrayWith = (originalArr, itemsToAdd) => {
@@ -98,15 +102,8 @@ function Createingredient() {
     return originalArr;
   };
 
-  const nutrivaluesPerUnit = (index) => {
-    let res = {};
-    for (let i = 0; i < strings.nutritionalInfo.length; i++) {
-      const key = strings.nutritionalInfo[i].key;
-      res[key] = parseFloat(
-        parseInt(states[index].nutriValues[key]) / states[index].cuantity
-      ).toFixed(4);
-    }
-    return res;
+  const capitilize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
   const cleanNameInputs = () => {
@@ -117,6 +114,14 @@ function Createingredient() {
     setNames(tempNames);
   };
 
+  const clearViewTab = () => {
+    setSearchInput("");
+    setSearchResults(null);
+    setLastSearchName("");
+    setSelectedIngredient(null);
+    setViewSelectedStateIndex(0);
+  };
+
   const correctLang = (multiLangObj) => {
     if (multiLangObj[theme.lang] === undefined) {
       return multiLangObj[langs.default];
@@ -124,7 +129,38 @@ function Createingredient() {
     return multiLangObj[theme.lang];
   };
 
-  const cuantitySetter = async (value) => {
+  const createIngredient = async () => {
+    if (!nutriValuesAreValid() || !namesAreValid()) {
+      alert(strings.responses.error[theme.lang]);
+      return;
+    }
+
+    let response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "createIngredient",
+        names,
+        states: formatStates(),
+        measuredBy,
+        aditionalInfo: selectedAditionalInfo,
+      },
+    });
+
+    if (response.status !== 200) {
+      return;
+    }
+
+    alert(strings.responses.success[theme.lang]);
+    resetTab();
+
+    if (isEditing) {
+      setIsEditing(false);
+      setSelectedTab("view");
+    }
+  };
+
+  const cuantitySetter = async (value, view) => {
     try {
       if (value === "") {
         value = 0;
@@ -134,11 +170,75 @@ function Createingredient() {
           return;
         }
       }
-      let temp = [...states];
-      temp[selectedStateIndex].cuantity = value;
-      setStates(temp);
+
+      if (!view) {
+        let temp = [...states];
+        temp[selectedStateIndex].cuantity = value;
+        setStates(temp);
+        return;
+      }
+
+      setCuantityforDisplay(value);
     } catch (e) {
       return;
+    }
+  };
+
+  const deleteIngredient = async () => {
+    if (
+      !window.confirm(
+        stringsView.view.deleteConfirmation[theme.lang](
+          correctLang(selectedIngredient.names)
+        )
+      )
+    ) {
+      return;
+    }
+
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "deleteIngredient",
+        id: selectedIngredient.id,
+      },
+    });
+
+    if (response.status !== 200) {
+      alert(stringsView.view.responses.delete.error[theme.lang]);
+      return;
+    }
+
+    alert(stringsView.view.responses.delete.success[theme.lang]);
+    clearViewTab();
+    if (isEditing) {
+      setIsEditing(false);
+      setSelectedTab("view");
+    }
+  };
+
+  const editIngredient = async () => {
+    if (nutriValuesAreValid() && namesAreValid()) {
+      let response = await axios({
+        method: "post",
+        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+        data: {
+          method: "editIngredient",
+          id: editingIngredientId,
+          names,
+          states: formatStates(),
+          measuredBy,
+          aditionalInfo: selectedAditionalInfo,
+        },
+      });
+      if (response.status === 200) {
+        alert(strings.responses.editSuccess[theme.lang]);
+        resetTab();
+        setIsEditing(false);
+        setSelectedTab("view");
+      } else {
+        alert(strings.responses.error[theme.lang]);
+      }
     }
   };
 
@@ -172,41 +272,39 @@ function Createingredient() {
     setStates(temp);
   };
 
-  const handleCreateIngredient = async () => {
-    if (nutriValuesAreValid() && namesAreValid()) {
-      let response = await axios({
-        method: "post",
-        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-        data: {
-          method: "createIngredient",
-          names,
-          states: formatStates(),
-          measuredBy,
-          aditionalInfo: selectedAditionalInfo,
-        },
-      });
-      if (response.status === 200) {
-        alert(strings.responses.success[theme.lang]);
-        resetTab();
-      } else {
-        alert(strings.responses.error[theme.lang]);
-      }
+  const handleCreateOrEdit = async () => {
+    if (isEditing) {
+      await editIngredient();
+    } else {
+      await createIngredient();
     }
   };
 
-  const handleCuantityChange = (type) => {
-    const cuantity = states[selectedStateIndex].cuantity;
+  const handleCuantityChange = (type, view) => {
+    if (!view) {
+      const cuantity = states[selectedStateIndex].cuantity;
+      if (type === "substraction") {
+        if (cuantity > 1) {
+          cuantitySetter(parseInt(cuantity) - 1);
+        }
+      } else {
+        cuantitySetter(parseInt(cuantity) + 1);
+      }
+      return;
+    }
+
     if (type === "substraction") {
-      if (cuantity > 1) {
-        cuantitySetter(parseInt(cuantity) - 1);
+      if (cuantityForDisplay > 1) {
+        cuantitySetter(parseInt(cuantityForDisplay) - 1, true);
       }
     } else {
-      cuantitySetter(parseInt(cuantity) + 1);
+      cuantitySetter(parseInt(cuantityForDisplay) + 1, true);
     }
   };
 
   const handleGoToViewTab = () => {
     if (window.confirm(strings.general.backConfirmation[theme.lang])) {
+      setIsEditing(false);
       setSelectedTab("view");
     }
   };
@@ -282,6 +380,16 @@ function Createingredient() {
     setStates(temp);
   };
 
+  const loadIngredientToInputs = (ingredient) => {
+    setUsedLangs(Object.keys(ingredient.names));
+    setNames(ingredient.names);
+    setMeasuredBy(ingredient.measuredBy);
+    setSelectedAditionalInfo(
+      ingredient.aditionalInfo === undefined ? [] : ingredient.aditionalInfo
+    );
+    setStates(parseStates(ingredient.states, ingredient.measuredBy));
+  };
+
   const namesAreValid = () => {
     for (let i = 0; i < usedLangs.length; i++) {
       if (
@@ -310,6 +418,14 @@ function Createingredient() {
     return true;
   };
 
+  const navigateToEditIngredient = () => {
+    setEditingIngredientId(selectedIngredient.id);
+    loadIngredientToInputs(selectedIngredient);
+    setIsEditing(true);
+    clearViewTab();
+    setTimeout(() => setSelectedTab("create"), 100);
+  };
+
   const nutriValuesAreValid = () => {
     let keys = Object.keys(initialNutriValues);
     for (let j = 0; j < states.length; j++) {
@@ -324,6 +440,34 @@ function Createingredient() {
     }
     setError(null);
     return true;
+  };
+
+  const nutrivaluesPerUnit = (index) => {
+    let res = {};
+    for (let i = 0; i < strings.nutritionalInfo.length; i++) {
+      const key = strings.nutritionalInfo[i].key;
+      res[key] = parseFloat(
+        parseInt(states[index].nutriValues[key]) / states[index].cuantity
+      ).toFixed(4);
+    }
+    return res;
+  };
+
+  const parseStates = (states, measuredBy) => {
+    const cuantity = {
+      piece: 1,
+      mass: 100,
+      volume: 100,
+    };
+    for (let i = 0; i < states.length; i++) {
+      const keys = Object.keys(states[i].nutriValues);
+      for (let j = 0; j < keys.length; j++) {
+        const nutriFact = keys[j];
+        states[i].nutriValues[nutriFact] *= cuantity[measuredBy];
+        states[i].cuantity = cuantity[measuredBy];
+      }
+    }
+    return states;
   };
 
   const resetTab = () => {
@@ -358,6 +502,33 @@ function Createingredient() {
       );
       setSearchResults(temp);
     }
+  };
+
+  const selectIngredient = (ingredient) => {
+    if (selectedIngredient !== null && ingredient.id === selectedIngredient.id)
+      return;
+
+    let temp = { ...ingredient };
+    if (temp.states === undefined) {
+      temp.states = [];
+    }
+    if (
+      temp.states.length === 0 ||
+      (temp.states.length > 0 && temp.states[0].name.en !== "default")
+    )
+      temp.states.unshift({
+        name: stringsView.view.states.default,
+        nutriValues: temp.nutriValues,
+      });
+
+    delete temp.nutriValues;
+    delete temp["searchName-es"];
+    delete temp["searchName-en"];
+
+    setSelectedIngredient(temp);
+    setCuantityforDisplay(
+      temp.measuredBy === "mass" || temp.measuredBy === "volume" ? 100 : 1
+    );
   };
 
   // Render
@@ -512,6 +683,7 @@ function Createingredient() {
                   </div>
                 </div>
               </div>
+
               {/* Name */}
               {selectedStateIndex !== 0 ? (
                 <div className="ingredient-state-name-container">
@@ -587,9 +759,11 @@ function Createingredient() {
               {/* Create btn */}
               <div
                 className="btn create-ingredient-btn"
-                onClick={handleCreateIngredient}
+                onClick={handleCreateOrEdit}
               >
-                {strings.createBtn[theme.lang]}
+                {isEditing
+                  ? strings.editBtn[theme.lang]
+                  : strings.createBtn[theme.lang]}
               </div>
             </div>
           </>
@@ -646,14 +820,16 @@ function Createingredient() {
                   <>
                     {searchResults.map((ingredient) => (
                       <div
+                        key={searchResults.indexOf(ingredient)}
                         className={
-                          selectedIngredient === ingredient
+                          selectedIngredient !== null &&
+                          selectedIngredient.id === ingredient.id
                             ? "ingredient-search-result-selected"
                             : "ingredient-search-result"
                         }
-                        onClick={() => setSelectedIngredient(ingredient)}
+                        onClick={() => selectIngredient(ingredient)}
                       >
-                        {correctLang(ingredient.names)}
+                        {capitilize(correctLang(ingredient.names))}
                       </div>
                     ))}
                   </>
@@ -663,10 +839,269 @@ function Createingredient() {
 
             {/* Ingredient */}
             <div className="subsection ingredient-nutrivalue-container">
+              {/* Header */}
               <h1 className="section-title">
                 {stringsView.view.title[theme.lang]}
               </h1>
-              {correctLang(selectedIngredient.names)}
+
+              {selectedIngredient === null ? (
+                <div className="ingredient-searchResults-msg">
+                  {stringsView.view.empty[theme.lang]}
+                </div>
+              ) : (
+                <>
+                  {/* Name */}
+                  <div className="input-section">
+                    <h3 className="input-name">
+                      {stringsView.view.name[theme.lang]}
+                    </h3>
+                    {Object.keys(selectedIngredient.names).map((lang) => (
+                      <div className="ingredient-view-name-container">
+                        <p className="ingredient-view-name-lang">
+                          {lang.toUpperCase()}:
+                        </p>
+                        {selectedIngredient.names[lang]}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Measured by */}
+                  <div className="input-section">
+                    <h3 className="input-name">
+                      {stringsView.view.measuredBy.title[theme.lang]}
+                    </h3>
+                    {
+                      stringsView.view.measuredBy[
+                        selectedIngredient.measuredBy
+                      ][theme.lang]
+                    }
+                  </div>
+
+                  {/* Aditional info */}
+                  <div className="input-section">
+                    <h3 className="input-name">
+                      {stringsView.view.aditionalInfo.title[theme.lang]}
+                    </h3>
+                    {selectedIngredient.aditionalInfo === undefined ||
+                    selectedIngredient.aditionalInfo.length === 0 ? (
+                      <div style={{ opacity: "60%" }}>
+                        {stringsView.view.aditionalInfo.empty[theme.lang]}
+                      </div>
+                    ) : (
+                      selectedIngredient.aditionalInfo.map((info) => (
+                        <div className="ingredient-view-aditionalInfo-container">
+                          <p className="ingredient-view-aditionalInfo-bullet">
+                            •
+                          </p>
+                          {stringsView.view.aditionalInfo[info][theme.lang]}
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* States */}
+                  <div className="input-section">
+                    <h3 className="input-name">
+                      {stringsView.view.states.title[theme.lang]}
+                    </h3>
+                    <div className="ingredient-states-container">
+                      {selectedIngredient.states.map((state) => {
+                        const index = selectedIngredient.states.indexOf(state);
+                        return (
+                          <div
+                            className={`ingredient-view-state-name`}
+                            className={`ingredient-state-container ${
+                              index === viewSelectedStateIndex ? "btn" : ""
+                            }`}
+                            onClick={() => setViewSelectedStateIndex(index)}
+                          >
+                            {capitilize(correctLang(state.name))}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* NutriValues */}
+                    <>
+                      <h3 className="input-name">
+                        {stringsView.view.states.nutriValues.title[theme.lang]}
+                      </h3>
+
+                      {/* Cuantity */}
+                      <>
+                        <p className="createRecipe-timeType">
+                          {strings.quantity.title[theme.lang]}
+                        </p>
+                        <div
+                          className="createRecepy-quantity-input-container"
+                          style={{ marginBottom: 20 }}
+                        >
+                          <div
+                            className="createRecepy-add-btn btn"
+                            onClick={() =>
+                              handleCuantityChange("substraction", true)
+                            }
+                          >
+                            <MdRemove />
+                          </div>
+                          <input
+                            className="createRecipe-cuantity-input"
+                            value={cuantityForDisplay}
+                            style={{ fontSize: 18 }}
+                            onChange={(event) =>
+                              cuantitySetter(event.target.value, true)
+                            }
+                          />
+                          <div
+                            className="createRecepy-add-btn btn"
+                            onClick={() => handleCuantityChange("sum", true)}
+                          >
+                            <MdAdd />
+                          </div>
+                        </div>
+                        <p
+                          className="createRecipe-timeType"
+                          style={{ marginTop: -20 }}
+                        >
+                          {
+                            strings.quantity.unit[
+                              selectedIngredient.measuredBy
+                            ][theme.lang]
+                          }
+                        </p>
+                      </>
+
+                      {/* NutriValues */}
+                      <>
+                        <div
+                          className="recipe-recipeSection-recipe-nutrivalues-container"
+                          style={{ width: "100%" }}
+                        >
+                          {/* Calories */}
+                          <div className="recipe-recipeSection-recipe-nutrivalues-row-container">
+                            <p
+                              className={
+                                stringsView.view.states.nutriValues.items[0]
+                                  .className
+                              }
+                            >
+                              {
+                                stringsView.view.states.nutriValues.items[0]
+                                  .name[theme.lang]
+                              }
+                            </p>
+                            <p
+                              className={
+                                stringsView.view.states.nutriValues.items[0]
+                                  .className
+                              }
+                            >
+                              {selectedIngredient.states[viewSelectedStateIndex]
+                                .nutriValues[
+                                stringsView.view.states.nutriValues.items[0].key
+                              ] %
+                                1 !==
+                              0
+                                ? selectedIngredient.states[
+                                    viewSelectedStateIndex
+                                  ].nutriValues[
+                                    stringsView.view.states.nutriValues.items[0]
+                                      .key
+                                  ].toFixed(2) * cuantityForDisplay
+                                : selectedIngredient.states[
+                                    viewSelectedStateIndex
+                                  ].nutriValues[
+                                    stringsView.view.states.nutriValues.items[0]
+                                      .key
+                                  ] * cuantityForDisplay}
+                            </p>
+                          </div>
+                          {/* Other nutrivalues */}
+                          {stringsView.view.states.nutriValues.items.map(
+                            (nutrifact) => {
+                              if (
+                                stringsView.view.states.nutriValues.items.indexOf(
+                                  nutrifact
+                                ) !== 0
+                              )
+                                return (
+                                  <div className="recipe-recipeSection-recipe-nutrivalues-row-container">
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                      }}
+                                    >
+                                      <p className={nutrifact.className}>
+                                        {nutrifact.name[theme.lang]}
+                                      </p>
+                                      <p style={{ margin: 0, fontSize: 14 }}>
+                                        {selectedIngredient.states[
+                                          viewSelectedStateIndex
+                                        ].nutriValues[nutrifact.key] %
+                                          1 !==
+                                        0
+                                          ? selectedIngredient.states[
+                                              viewSelectedStateIndex
+                                            ].nutriValues[
+                                              nutrifact.key
+                                            ].toFixed(2) * cuantityForDisplay
+                                          : selectedIngredient.states[
+                                              viewSelectedStateIndex
+                                            ].nutriValues[nutrifact.key] *
+                                            cuantityForDisplay}
+                                        {nutrifact.unit}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      {nutrifact.dailyValue !== null ? (
+                                        <p
+                                          style={{ margin: 0 }}
+                                          className="nutrifact"
+                                        >
+                                          {Math.round(
+                                            (selectedIngredient.states[
+                                              viewSelectedStateIndex
+                                            ].nutriValues[nutrifact.key] *
+                                              100 *
+                                              cuantityForDisplay) /
+                                              nutrifact.dailyValue
+                                          )}{" "}
+                                          %
+                                        </p>
+                                      ) : null}
+                                    </div>
+                                  </div>
+                                );
+                              else return null;
+                            }
+                          )}
+                        </div>
+                        <p className="dailyvalue">
+                          {
+                            stringsView.view.states.nutriValues.dailyValue[
+                              theme.lang
+                            ]
+                          }
+                        </p>
+                      </>
+                    </>
+                  </div>
+
+                  {/* Edit btn */}
+                  <div
+                    className="viewIngredient-editBtn btn"
+                    onClick={navigateToEditIngredient}
+                  >
+                    {stringsView.view.edit[theme.lang]}
+                  </div>
+
+                  {/* Delete btn */}
+                  <p onClick={deleteIngredient} className="ingredient-delete">
+                    {stringsView.view.delete[theme.lang]}
+                  </p>
+                </>
+              )}
             </div>
           </>
         )}
