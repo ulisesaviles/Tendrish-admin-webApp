@@ -666,22 +666,21 @@ function Createingredient() {
     // Ingredients
     let tempIngredients = [];
     let tempIngredientInputs = [];
-    // Sort recipe.prep.ingredients
-    recipe.prep.ingredients.sort((a, b) =>
-      correctLang(a.name).localeCompare(correctLang(b.name))
-    );
+    console.log(recipe.prep.ingredients);
     for (let i = 0; i < recipe.prep.ingredients.length; i++) {
-      tempIngredients.push({
-        ...recipe.prep.ingredients[i],
-        cuantity: {
-          ...recipe.prep.ingredients[i].cuantity,
-          denominator: parseInt(
-            recipe.prep.ingredients[i].cuantity.denominator /
-              recipe.prep.servings
-          ),
-        },
-      });
-      tempIngredientInputs.push(correctLang(recipe.prep.ingredients[i].name));
+      if (recipe.prep.ingredients[i] != null) {
+        tempIngredients.push({
+          ...recipe.prep.ingredients[i],
+          cuantity: {
+            ...recipe.prep.ingredients[i].cuantity,
+            denominator: parseInt(
+              recipe.prep.ingredients[i].cuantity.denominator /
+                recipe.prep.servings
+            ),
+          },
+        });
+        tempIngredientInputs.push(correctLang(recipe.prep.ingredients[i].name));
+      }
     }
     setIngredients(tempIngredients);
     setIngredientsInputs(tempIngredientInputs);
@@ -1093,33 +1092,38 @@ function Createingredient() {
                     </div>
 
                     {/* States */}
-                    <div style={{ width: "100%", marginBottom: 10 }}>
-                      <p className="input-lang">{`${
-                        strings.prep.ingredients.states[theme.lang]
-                      }: `}</p>
-                      <div style={{ marginLeft: 15 }}>
-                        {ingredient.id != null
-                          ? ingredient.availableStates.map((state) => (
-                              <div
-                                className="ingredient-lang-container"
-                                onClick={() => {
-                                  handleIngredientStateChange(index, state);
-                                }}
-                                key={index}
-                              >
-                                {state === ingredient.state ? (
-                                  <MdCheckBox className="ingredient-lang-checkbox" />
-                                ) : (
-                                  <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                                )}
-                                <p className="ingredient-lang">
-                                  {state[theme.lang]}
-                                </p>
-                              </div>
-                            ))
-                          : null}
-                      </div>
-                    </div>
+                    <>
+                      {ingredient.id != null &&
+                      ingredient.availableStates != null ? (
+                        <div style={{ width: "100%", marginBottom: 10 }}>
+                          <p className="input-lang">{`${
+                            strings.prep.ingredients.states[theme.lang]
+                          }: `}</p>
+                          <div style={{ marginLeft: 15 }}>
+                            {ingredient.id != null
+                              ? ingredient.availableStates.map((state) => (
+                                  <div
+                                    className="ingredient-lang-container"
+                                    onClick={() => {
+                                      handleIngredientStateChange(index, state);
+                                    }}
+                                    key={index}
+                                  >
+                                    {state === ingredient.state ? (
+                                      <MdCheckBox className="ingredient-lang-checkbox" />
+                                    ) : (
+                                      <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                                    )}
+                                    <p className="ingredient-lang">
+                                      {state[theme.lang]}
+                                    </p>
+                                  </div>
+                                ))
+                              : null}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
 
                     {/* Cuantity */}
                     <div className="createRecipe-cuantity-container">
