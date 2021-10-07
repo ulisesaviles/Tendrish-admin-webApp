@@ -1236,12 +1236,12 @@ export const viewRecipe = {
         },
         volume: {
           teaspoon: {
-            es: "cda",
-            en: "tspn",
+            es: "cdta",
+            en: "tsp",
           },
           tablespoon: {
-            es: "cdta",
-            en: "Tblsp",
+            es: "cda",
+            en: "tbsp",
           },
           cup: {
             es: "tazas",
@@ -1254,7 +1254,7 @@ export const viewRecipe = {
         },
         piece: {
           piece: {
-            es: "pzs",
+            es: "pza",
             en: "pcs",
           },
         },

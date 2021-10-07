@@ -508,6 +508,8 @@ function Createingredient() {
     if (selectedIngredient !== null && ingredient.id === selectedIngredient.id)
       return;
 
+    setViewSelectedStateIndex(0);
+
     let temp = { ...ingredient };
     if (temp.states === undefined) {
       temp.states = [];
