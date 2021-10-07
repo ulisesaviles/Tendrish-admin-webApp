@@ -307,6 +307,11 @@ function Createingredient() {
     }
   };
 
+  const handleGoToCreateIngredientTab = () => {
+    resetTab();
+    setSelectedTab("create");
+  };
+
   const handleGoToViewTab = () => {
     if (window.confirm(strings.general.backConfirmation[theme.lang])) {
       setIsEditing(false);
@@ -404,6 +409,7 @@ function Createingredient() {
       ingredient.aditionalInfo === undefined ? [] : ingredient.aditionalInfo
     );
     setStates(parseStates(ingredient.states, ingredient.measuredBy));
+    setSelectedMonths(ingredient.seasonsAvailable);
   };
 
   const namesAreValid = () => {
@@ -496,6 +502,7 @@ function Createingredient() {
         cuantity: defaultCuantity,
       },
     ]);
+    setSelectedMonths(strings.general.seasons.items.map((month) => month.key));
   };
 
   const search = async () => {
@@ -830,7 +837,7 @@ function Createingredient() {
                 ({stringsView.search.or[theme.lang]})
                 <div
                   className="viewIngredient-search-header-create btn"
-                  onClick={() => setSelectedTab("create")}
+                  onClick={() => handleGoToCreateIngredientTab()}
                 >
                   {stringsView.search.create[theme.lang]}
                 </div>
@@ -948,6 +955,31 @@ function Createingredient() {
                         </div>
                       ))
                     )}
+                  </div>
+
+                  {/* Seasons */}
+                  <div className="input-section">
+                    <h3 className="input-name">
+                      {strings.general.seasons.title[theme.lang]}
+                    </h3>
+                    {selectedIngredient.seasonsAvailable === undefined ||
+                    selectedIngredient.seasonsAvailable.length === 0
+                      ? strings.general.seasons.items.map((month) => (
+                          <div className="ingredient-view-aditionalInfo-container">
+                            <p className="ingredient-view-aditionalInfo-bullet">
+                              •
+                            </p>
+                            {stringsView.view.seasons[month.key][theme.lang]}
+                          </div>
+                        ))
+                      : selectedIngredient.seasonsAvailable.map((month) => (
+                          <div className="ingredient-view-aditionalInfo-container">
+                            <p className="ingredient-view-aditionalInfo-bullet">
+                              •
+                            </p>
+                            {stringsView.view.seasons[month][theme.lang]}
+                          </div>
+                        ))}
                   </div>
 
                   {/* States */}

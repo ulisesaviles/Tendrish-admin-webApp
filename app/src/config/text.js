@@ -583,6 +583,20 @@ export const viewIngredient = {
       volume: { es: "Volumen", en: "Volume" },
       piece: { es: "Pieza", en: "Piece" },
     },
+    seasons: {
+      jan: { es: "Enero", en: "January" },
+      feb: { es: "Febrero", en: "February" },
+      mar: { es: "Marzo", en: "March" },
+      apr: { es: "Abril", en: "April" },
+      may: { es: "Mayo", en: "May" },
+      jun: { es: "Junio", en: "June" },
+      jul: { es: "Julio", en: "July" },
+      aug: { es: "Agosto", en: "August" },
+      sep: { es: "Septiembre", en: "September" },
+      oct: { es: "Octubre", en: "October" },
+      nov: { es: "Noviembre", en: "November" },
+      dec: { es: "Diciembre", en: "December" },
+    },
     aditionalInfo: {
       title: {
         es: "Información dicional",
