@@ -30,6 +30,7 @@ function Createingredient() {
   const [queriedIndexes, setQueriedIndexes] = useState([]);
   const [loading, setLoading] = useState(false);
   const limitPerSearch = 10;
+  const [loadingMore, setLoadingMore] = useState(false);
   // Recipe
   const [currentRecipe, setCurrentRecipe] = useState(null);
   const [loadingRecipe, setLoadingRecipe] = useState(false);
@@ -237,9 +238,7 @@ function Createingredient() {
     setCurrentRecipe(recipe);
   };
 
-  const search = async (loadMore) => {
-    const tempSearchResults =
-      searchResults === null ? null : [...searchResults];
+  const search = async () => {
     setLoading(true);
     setValuesToDefault();
     const response = await axios({
@@ -255,20 +254,45 @@ function Createingredient() {
           tags: [],
           includedIngredients: [],
         },
-        start: loadMore ? tempSearchResults.length : 0,
-        end: loadMore
-          ? tempSearchResults.length + limitPerSearch
-          : limitPerSearch,
+        start: 0,
+        end: limitPerSearch,
       },
     });
     setCurrentRecipe(null);
     if (response.status === 200) {
-      console.log(loadMore);
-      setSearchResults(
-        loadMore ? [...tempSearchResults, ...response.data] : response.data
-      );
+      setSearchResults(response.data);
     }
     setLoading(false);
+  };
+
+  const searchMore = async () => {
+    const tempSearchResults =
+      searchResults === null ? null : [...searchResults];
+    setLoadingMore(true);
+    setCurrentRecipe(null);
+    setCurrentRecipeIndex(null);
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "recipesSearch",
+        filters: {
+          lang: theme.lang,
+          name: inputValue.toLowerCase(),
+          published: !searchHidden,
+          category: null,
+          tags: [],
+          includedIngredients: [],
+        },
+        start: tempSearchResults.length,
+        end: tempSearchResults.length + limitPerSearch,
+      },
+    });
+    setCurrentRecipe(null);
+    if (response.status === 200) {
+      setSearchResults([...tempSearchResults, ...response.data]);
+    }
+    setLoadingMore(false);
   };
 
   const setValuesToDefault = () => {
@@ -277,8 +301,6 @@ function Createingredient() {
     setSearchResults(null);
     setQueriedIndexes([]);
   };
-
-  console.log(currentRecipe);
 
   // Render
   return (
@@ -379,13 +401,21 @@ function Createingredient() {
                     </div>
                   </div>
                 ))}
-                {searchResults.length % limitPerSearch === 0 ? (
+                {searchResults.length % limitPerSearch === 0 && !loadingMore ? (
                   <div
                     className="btn recipe-loadMore"
-                    onClick={() => search(true)}
+                    onClick={() => searchMore()}
                   >
                     {strings.search.loadMore[theme.lang](limitPerSearch)}
                   </div>
+                ) : loadingMore ? (
+                  <>
+                    {
+                      <p style={{ width: "100%", textAlign: "center" }}>
+                        {strings.search.loading[theme.lang]}
+                      </p>
+                    }
+                  </>
                 ) : null}
               </>
             )}
