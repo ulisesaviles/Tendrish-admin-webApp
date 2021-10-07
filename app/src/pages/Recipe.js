@@ -286,7 +286,6 @@ function Createingredient() {
         end: tempSearchResults.length + limitPerSearch,
       },
     });
-    setCurrentRecipe(null);
     if (response.status === 200) {
       setSearchResults([...tempSearchResults, ...response.data]);
     }
