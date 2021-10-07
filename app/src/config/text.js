@@ -282,6 +282,30 @@ export const createIngredient = {
         },
       ],
     },
+    seasons: {
+      title: {
+        es: "Meses disponible",
+        en: "Months available",
+      },
+      toolTip: {
+        es: "Selecciona las estaciones en las que está disponible el ingrediente. Ej: mangos en verano.",
+        en: "Select the seasons when the ingredient is available. Ex: mangoes in summer.",
+      },
+      items: [
+        { key: "jan", name: { es: "Enero", en: "January" } },
+        { key: "feb", name: { es: "Febrero", en: "February" } },
+        { key: "mar", name: { es: "Marzo", en: "March" } },
+        { key: "apr", name: { es: "Abril", en: "April" } },
+        { key: "may", name: { es: "Mayo", en: "May" } },
+        { key: "jun", name: { es: "Junio", en: "June" } },
+        { key: "jul", name: { es: "Julio", en: "July" } },
+        { key: "aug", name: { es: "Agosto", en: "August" } },
+        { key: "sep", name: { es: "Septiembre", en: "September" } },
+        { key: "oct", name: { es: "Octubre", en: "October" } },
+        { key: "nov", name: { es: "Noviembre", en: "November" } },
+        { key: "dec", name: { es: "Diciembre", en: "December" } },
+      ],
+    },
   },
   nutritionalInfo: [
     {

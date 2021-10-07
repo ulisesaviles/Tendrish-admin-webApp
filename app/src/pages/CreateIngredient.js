@@ -69,6 +69,9 @@ function Createingredient() {
   const defaultCuantity =
     measuredBy === "mass" || measuredBy === "volume" ? 100 : 1;
   const [selectedAditionalInfo, setSelectedAditionalInfo] = useState([]);
+  const [selectedMonths, setSelectedMonths] = useState(
+    strings.general.seasons.items.map((month) => month.key)
+  );
   const [states, setStates] = useState([
     {
       name: strings.states.default,
@@ -144,6 +147,7 @@ function Createingredient() {
         states: formatStates(),
         measuredBy,
         aditionalInfo: selectedAditionalInfo,
+        seasons: selectedMonths,
       },
     });
 
@@ -229,6 +233,7 @@ function Createingredient() {
           states: formatStates(),
           measuredBy,
           aditionalInfo: selectedAditionalInfo,
+          seasons: selectedMonths,
         },
       });
       if (response.status === 200) {
@@ -348,6 +353,16 @@ function Createingredient() {
   const handleMeasureChange = (key) => {
     setMeasuredBy(key);
     cuantitySetter(key === "mass" || key === "volume" ? 100 : 1);
+  };
+
+  const handleMonthClick = (key) => {
+    let temp = [...selectedMonths];
+    if (temp.includes(key)) {
+      temp.splice(temp.indexOf(key), 1);
+    } else {
+      temp.push(key);
+    }
+    setSelectedMonths(temp);
   };
 
   const handleNewState = () => {
@@ -627,7 +642,7 @@ function Createingredient() {
                     className="ingredient-lang-container"
                     onClick={() => handleAditionalInfoClick(item.key)}
                     data-tip
-                    data-for={`toolTip_${item.key}`}
+                    data-for={`aditionalInto_toolTip_${item.key}`}
                   >
                     {selectedAditionalInfo.includes(item.key) ? (
                       <MdCheckBox className="ingredient-lang-checkbox" />
@@ -636,12 +651,43 @@ function Createingredient() {
                     )}
                     <p className="ingredient-lang">{item.title[theme.lang]}</p>
                     <ReactTooltip
-                      id={`toolTip_${item.key}`}
+                      id={`aditionalInto_toolTip_${item.key}`}
                       place="right"
                       effect="float"
                     >
                       {item.toolTip[theme.lang]}
                     </ReactTooltip>
+                  </div>
+                ))}
+              </div>
+
+              {/* Seasons */}
+              <div className="input-section">
+                <h3
+                  className="input-name"
+                  data-tip
+                  data-for={"seasons_toolTip"}
+                >
+                  {strings.general.seasons.title[theme.lang]}
+                </h3>
+                <ReactTooltip
+                  id={"seasons_toolTip"}
+                  place="right"
+                  effect="float"
+                >
+                  {strings.general.seasons.toolTip[theme.lang]}
+                </ReactTooltip>
+                {strings.general.seasons.items.map((item) => (
+                  <div
+                    className="ingredient-lang-container"
+                    onClick={() => handleMonthClick(item.key)}
+                  >
+                    {selectedMonths.includes(item.key) ? (
+                      <MdCheckBox className="ingredient-lang-checkbox" />
+                    ) : (
+                      <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                    )}
+                    <p className="ingredient-lang">{item.name[theme.lang]}</p>
                   </div>
                 ))}
               </div>
@@ -757,8 +803,10 @@ function Createingredient() {
                   />
                 </div>
               ))}
+
               {/* Error display */}
               <p className="ingredient-error">{error}</p>
+
               {/* Create btn */}
               <div
                 className="btn create-ingredient-btn"
