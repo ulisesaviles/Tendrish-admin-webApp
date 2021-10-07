@@ -195,7 +195,7 @@ function Createingredient() {
           : admin.id,
         accompaniments: formatAccompaniments([...accompaniments]),
       },
-      aditionalInfo: getRecipeAditionalInfo(),
+      // aditionalInfo: getRecipeAditionalInfo(),
     };
     console.log({ method: "createRecipe", recipe, publish });
 
@@ -303,22 +303,6 @@ function Createingredient() {
       accompaniments[i] = accompaniments[i].id;
     }
     return accompaniments;
-  };
-
-  const getRecipeAditionalInfo = () => {
-    let res = [];
-    for (let i = 0; i < ingredients.length; i++) {
-      const ingredient = ingredients[i];
-      if (ingredient.aditionalInfo != null) {
-        for (let j = 0; j < ingredient.aditionalInfo.length; j++) {
-          const info = ingredient.aditionalInfo[j];
-          if (!res.includes(info)) {
-            res.push(info);
-          }
-        }
-      }
-    }
-    return res;
   };
 
   const getSuggestions = (ingredientIndex) => {
