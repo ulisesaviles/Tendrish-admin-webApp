@@ -269,8 +269,6 @@ function Createingredient() {
     const tempSearchResults =
       searchResults === null ? null : [...searchResults];
     setLoadingMore(true);
-    setCurrentRecipe(null);
-    setCurrentRecipeIndex(null);
     const response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
