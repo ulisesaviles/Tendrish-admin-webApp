@@ -311,7 +311,7 @@ function Createingredient() {
 
   const handleInfoTriggers = (addition, key, infoArray) => {
     if (addition) {
-      if (["redMeat", "whiteMeat", "seafood", "lactose"].includes(key)) {
+      if (["redMeat", "chicken", "seafood", "lactose", "egg"].includes(key)) {
         infoArray = arrayWith(infoArray, ["animalOrigin"]);
       }
       infoArray.push(key);
@@ -319,9 +319,10 @@ function Createingredient() {
       if (key === "animalOrigin") {
         infoArray = arrayWithout(infoArray, [
           "redMeat",
-          "whiteMeat",
+          "chicken",
           "seafood",
           "lactose",
+          "egg",
         ]);
       }
       infoArray.splice(infoArray.indexOf(key), 1);

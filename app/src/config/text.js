@@ -215,14 +215,14 @@ export const createIngredient = {
           },
         },
         {
-          key: "whiteMeat",
+          key: "chicken",
           title: {
-            es: "Es carne blanca",
-            en: "It's white meat",
+            es: "Es pollo",
+            en: "It's chicken",
           },
           toolTip: {
-            es: "Por ejemplo: jamón de pechuga de pavo, pavo entero, pavo molido, pechuga de pollo, piernas de pollo, pollo entero, etc.",
-            en: "For example: turkey breast ham, whole turkey, ground turkey, chicken breast, chicken legs, whole chicken, etc.",
+            es: "Por ejemplo: pechuga de pollo, piernas de pollo, pollo entero, etc.",
+            en: "For example: chicken breast, chicken legs, whole chicken, etc.",
           },
         },
         {
@@ -232,8 +232,8 @@ export const createIngredient = {
             en: "It contains gluten",
           },
           toolTip: {
-            es: "Contiene gluten.",
-            en: "It contains gluten.",
+            es: "Por ejemplo: pan molido, bangles, pan de barra, harina de trigo, etc.",
+            en: "For example: breadcrumbs, bangles, loaf bread, wheat flour, etc.",
           },
         },
         {
@@ -256,6 +256,28 @@ export const createIngredient = {
           toolTip: {
             es: "Por ejemplo: leche, queso, crema, etc.",
             en: "For example: milk, cheese, cream, etc.",
+          },
+        },
+        {
+          key: "egg",
+          title: {
+            es: "Contiene huevo",
+            en: "Contains egg",
+          },
+          toolTip: {
+            es: "Por ejemplo: huevo, mayonesa, claras de huevo, etc.",
+            en: "For example: egg, mayonnaise, egg whites, etc.",
+          },
+        },
+        {
+          key: "soy",
+          title: {
+            es: "Contiene soya",
+            en: "Contains soy",
+          },
+          toolTip: {
+            es: "Por ejemplo: edamames, salsa soya, tofu, etc.",
+            en: "For example: edamames, soy sauce, tofu, etc.",
           },
         },
       ],
@@ -554,9 +576,9 @@ export const viewIngredient = {
         es: "Es marisco",
         en: "It's seafood",
       },
-      whiteMeat: {
-        es: "Es carne blanca",
-        en: "It's white meat",
+      chicken: {
+        es: "Es pollo",
+        en: "It's chicken",
       },
       gluten: {
         es: "Contiene gluten",
@@ -569,6 +591,14 @@ export const viewIngredient = {
       lactose: {
         es: "Contiene lactosa",
         en: "It contains lactose",
+      },
+      egg: {
+        es: "Contiene huevo",
+        en: "Contains egg",
+      },
+      soy: {
+        es: "Contiene soya",
+        en: "Contains soy",
       },
     },
     states: {
