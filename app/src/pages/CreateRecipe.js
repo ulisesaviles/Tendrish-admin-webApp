@@ -195,7 +195,6 @@ function Createingredient() {
           : admin.id,
         accompaniments: formatAccompaniments([...accompaniments]),
       },
-      // aditionalInfo: getRecipeAditionalInfo(),
     };
     console.log({ method: "createRecipe", recipe, publish });
 
@@ -337,7 +336,7 @@ function Createingredient() {
       measuredBy,
       availableStates,
       aditionalInfo,
-      state: availableStates !== null ? availableStates[0] : null,
+      state: null,
       unit:
         measuredBy !== null
           ? strings.prep.ingredients.unit.suggestions[measuredBy][0].key
@@ -415,7 +414,7 @@ function Createingredient() {
 
   const handleIngredientStateChange = (index, state) => {
     let temp = [...ingredients];
-    temp[index].state = state;
+    temp[index].state = temp[index].state === state ? null : state;
     setIngredients(temp);
   };
 
@@ -488,7 +487,6 @@ function Createingredient() {
     temp.ingredients.sort((a, b) =>
       correctLang(a.name).localeCompare(correctLang(b.name))
     );
-    console.log(temp);
     setDefaultValues(temp);
     setAccompanimentsSuggestions(response.data.accompaniments);
 
@@ -606,9 +604,25 @@ function Createingredient() {
     }
   };
 
-  const loadRecipeToInputs = async (recipe, defaultValues) => {
-    console.log(recipe.general.name.en);
+  const ingredientsWithStates = (ingredients, defaultValues) => {
+    for (let i = 0; i < defaultValues.ingredients.length; i++) {
+      const ingredient = defaultValues.ingredients[i];
+      for (let j = 0; j < ingredients.length; j++) {
+        const recipeIngredient = ingredients[j];
+        if (recipeIngredient.id === ingredient.id) {
+          console.log("Found ingredient in defualtValues!");
+          console.log(ingredient);
+          ingredients[j] = {
+            ...recipeIngredient,
+            availableStates: ingredient.states,
+          };
+        }
+      }
+    }
+    return ingredients;
+  };
 
+  const loadRecipeToInputs = async (recipe, defaultValues) => {
     // usedLangs
     setUsedLangs(recipe.general.langs);
 
@@ -670,7 +684,6 @@ function Createingredient() {
     // Ingredients
     let tempIngredients = [];
     let tempIngredientInputs = [];
-    console.log(recipe.prep.ingredients);
     for (let i = 0; i < recipe.prep.ingredients.length; i++) {
       if (recipe.prep.ingredients[i] != null) {
         tempIngredients.push({
@@ -686,6 +699,8 @@ function Createingredient() {
         tempIngredientInputs.push(correctLang(recipe.prep.ingredients[i].name));
       }
     }
+    tempIngredients = ingredientsWithStates(tempIngredients, defaultValues);
+    console.log(tempIngredients);
     setIngredients(tempIngredients);
     setIngredientsInputs(tempIngredientInputs);
 
@@ -759,6 +774,7 @@ function Createingredient() {
       handleSetupQuery();
     }
   });
+  console.log(ingredients);
 
   // Render
   return (
@@ -1113,7 +1129,8 @@ function Createingredient() {
                                     }}
                                     key={index}
                                   >
-                                    {state === ingredient.state ? (
+                                    {JSON.stringify(state) ===
+                                    JSON.stringify(ingredient.state) ? (
                                       <MdCheckBox className="ingredient-lang-checkbox" />
                                     ) : (
                                       <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
