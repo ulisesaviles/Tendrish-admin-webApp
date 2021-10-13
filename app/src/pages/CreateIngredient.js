@@ -409,7 +409,11 @@ function Createingredient() {
       ingredient.aditionalInfo === undefined ? [] : ingredient.aditionalInfo
     );
     setStates(parseStates(ingredient.states, ingredient.measuredBy));
-    setSelectedMonths(ingredient.seasonsAvailable);
+    setSelectedMonths(
+      ingredient.seasonsAvailable !== undefined
+        ? ingredient.seasonsAvailable
+        : strings.general.seasons.items.map((month) => month.key)
+    );
   };
 
   const namesAreValid = () => {
