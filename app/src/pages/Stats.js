@@ -146,13 +146,14 @@ function Stats() {
   const getUsersByDays = (data, limit) => {
     let res = [];
     let keys = [];
-    let day = new Date(Date.now()).getDate() - 1;
+    let day = new Date(Date.now()).getDate();
     let month = new Date(Date.now()).getMonth();
     console.log(data);
     while (res.length < limit) {
+      console.log(res.length);
       if (data[month] === undefined) {
         // Theres no data this month
-        while (day >= 0) {
+        while (day > 0) {
           // Fill empty days with zeros
           res.unshift(0);
           keys.unshift(day + 1);
@@ -169,12 +170,13 @@ function Stats() {
         day = daysInMonth(month) - 1;
       } else {
         // Theres data
-        if (day < 0) {
+        if (day <= 0) {
           // Reset days
           month--;
           day = daysInMonth(month) - 1;
         }
-        if (data[month][day] === undefined) {
+        if (data[month] === undefined || data[month][day] === undefined) {
+          console.log(`No data in ${day}/${month}`);
           // No data that day
           res.unshift(0);
         } else {
@@ -185,6 +187,13 @@ function Stats() {
         day--;
       }
     }
+
+    console.log(
+      JSON.stringify({
+        keys,
+        data: res,
+      })
+    );
     return {
       keys,
       data: res,
