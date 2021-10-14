@@ -148,9 +148,7 @@ function Stats() {
     let keys = [];
     let day = new Date(Date.now()).getDate();
     let month = new Date(Date.now()).getMonth();
-    console.log(data);
     while (res.length < limit) {
-      console.log(res.length);
       if (data[month] === undefined) {
         // Theres no data this month
         while (day > 0) {
@@ -183,17 +181,11 @@ function Stats() {
           // Theres data that day
           res.unshift(data[month][day]);
         }
-        keys.unshift(day + 1);
+        keys.unshift(day);
         day--;
       }
     }
 
-    console.log(
-      JSON.stringify({
-        keys,
-        data: res,
-      })
-    );
     return {
       keys,
       data: res,
