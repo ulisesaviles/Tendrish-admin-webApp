@@ -239,8 +239,8 @@ export const createIngredient = {
         {
           key: "animalOrigin",
           title: {
-            es: "Es un alimento de origen animal",
-            en: "It is a food of animal origin",
+            es: "Es un ingrediente de origen animal",
+            en: "It’s an animal origin ingredient",
           },
           toolTip: {
             es: "Por ejemplo: leche, carne, huevo, etc.",
