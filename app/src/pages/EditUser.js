@@ -481,7 +481,6 @@ const EditUser = () => {
       },
     });
     if (response.status === 200) {
-      console.log("searchUserByName: success");
       setUsers(response.data);
     }
     setLoadingUser(false);
