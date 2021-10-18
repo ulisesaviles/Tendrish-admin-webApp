@@ -1819,6 +1819,10 @@ export const editUser = {
       es: (userName) => `No hay usuarios llamados '${userName}'`,
       en: (userName) => `There are no users called '${userName}'`,
     },
+    loading: {
+      es: "Cargando...",
+      en: "Loading...",
+    },
   },
   userPlan: {
     title: {
@@ -1862,6 +1866,14 @@ export const editUser = {
     notesBtn: {
       es: "Notas del usuario",
       en: "User's notes",
+    },
+    empty: {
+      es: "Vacío",
+      en: "Empty",
+    },
+    dateIsNotValid: {
+      es: "La fecha seleccionada no es válida",
+      en: "The selected date is not valid",
     },
   },
   recipeFinder: {

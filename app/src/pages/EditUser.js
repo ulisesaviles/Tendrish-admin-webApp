@@ -27,6 +27,7 @@ const EditUser = () => {
   // Constants
   // Global
   const theme = getTheme();
+  const mealPlanLength = 30;
 
   // User finder
   const [userSearchInput, setUserSearchInput] = useState("");
@@ -36,6 +37,7 @@ const EditUser = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedUserName, setSelectedUserName] = useState(null);
   const admin = JSON.parse(localStorage.getItem("user"));
+  const [loadingUser, setLoadingUser] = useState(false);
 
   // User plan
   const getTodaysDate = () => {
@@ -72,6 +74,7 @@ const EditUser = () => {
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [selectedMealType, setSelectedMealType] = useState(null);
   const meals = ["breakfast", "snack1", "lunch", "snack2", "dinner"];
+  const [dateIsValid, setDateIsValid] = useState(true);
 
   // Third section
   const [thirdSection, setThirdSection] = useState(null);
@@ -91,6 +94,7 @@ const EditUser = () => {
   const [createExclusionError, setCreateExclusionError] = useState(null);
   const [ingredientsForExclusions, setIngredientsForExclusions] =
     useState(null);
+  const [loadingRecipe, setLoadingRecipe] = useState(false);
 
   // Functions
   const capitilize = (string) => {
@@ -267,7 +271,7 @@ const EditUser = () => {
       },
     });
     if (response.status === 200) {
-      console.log("getUserMealPlan: success");
+      console.log(response.data);
       setMealPlan(response.data);
     }
   };
@@ -316,6 +320,7 @@ const EditUser = () => {
   };
 
   const handleDateChange = async (date, month, year) => {
+    // If invalid date, display it
     setSelectedMeal(null);
     setSelectedMealType(null);
     setMealPlan(null);
@@ -329,6 +334,21 @@ const EditUser = () => {
     };
     setSelectedDay(tempSelectedDay);
     putWeek(date, month, year);
+    const timestamp = new Date(`${month + 1}/${date}/${year}`).getTime();
+    const todaysTimestamp = new Date(
+      `${todaysDate.month + 1}/${todaysDate.date}/${todaysDate.year}`
+    ).getTime();
+    const milisecondsInADay = 1000 * 60 * 60 * 24;
+    if (
+      todaysTimestamp > timestamp ||
+      Math.round((timestamp - todaysTimestamp) / milisecondsInADay + 0.5) >=
+        mealPlanLength
+    ) {
+      setDateIsValid(false);
+      return;
+    } else {
+      setDateIsValid(true);
+    }
     await getUserMealPlan(tempSelectedDay, selectedUserId);
   };
 
@@ -402,6 +422,7 @@ const EditUser = () => {
   const handleRecipeSwap = async (index) => {
     const selectedRecipe = searchResults[index];
     if (
+      selectedMeal.id != null &&
       !window.confirm(
         `Change '${capitilize(
           correctLang(selectedMeal.name)
@@ -450,6 +471,7 @@ const EditUser = () => {
 
   const handleUserSeach = async (userName) => {
     setErrorName(userName);
+    setLoadingUser(true);
     const response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -462,6 +484,7 @@ const EditUser = () => {
       console.log("searchUserByName: success");
       setUsers(response.data);
     }
+    setLoadingUser(false);
   };
 
   const handleUserSelection = async (userId, name) => {
@@ -573,6 +596,7 @@ const EditUser = () => {
     // If lunch or dinner, make two requests
     let res = [];
     console.log(selectedMeal.category);
+    setLoadingRecipe(true);
     if (
       selectedMeal.category === "dinners" ||
       selectedMeal.category === "lunches"
@@ -585,6 +609,7 @@ const EditUser = () => {
     } else {
       res = await getRecipesByCategory(selectedMeal.category);
     }
+    setLoadingRecipe(false);
     setSearchResults(res);
   };
 
@@ -676,6 +701,13 @@ const EditUser = () => {
                 {strings.userFinder[users === null ? "null" : "empty"][
                   theme.lang
                 ](errorName)}
+              </div>
+            ) : loadingUser ? (
+              <div
+                className="editUser-userFinder-empty-container"
+                style={{ opacity: "50%" }}
+              >
+                {strings.userFinder.loading[theme.lang]}
               </div>
             ) : (
               // Map users
@@ -801,7 +833,14 @@ const EditUser = () => {
 
                 {/* Meals */}
                 <>
-                  {mealPlan === null ? (
+                  {!dateIsValid ? (
+                    <div
+                      className="editUser-userFinder-empty-container"
+                      style={{ opacity: "50%" }}
+                    >
+                      {strings.userPlan.dateIsNotValid[theme.lang]}
+                    </div>
+                  ) : mealPlan === null ? (
                     <div
                       className="editUser-userFinder-empty-container"
                       style={{ opacity: "50%" }}
@@ -829,10 +868,23 @@ const EditUser = () => {
                                   : ""
                               }`}
                             >
-                              {correctLang(strings.userPlan.meals[meal])}
+                              {mealPlan[meal].id == null
+                                ? ""
+                                : correctLang(strings.userPlan.meals[meal])}
                             </p>
-                            <p className="editUSer-userFinder-meal-name">
-                              {capitilize(correctLang(mealPlan[meal].name))}
+                            <p
+                              className="editUSer-userFinder-meal-name"
+                              style={{
+                                opacity:
+                                  mealPlan[meal].id != null ||
+                                  selectedMealType === meal
+                                    ? "100%"
+                                    : "50%",
+                              }}
+                            >
+                              {mealPlan[meal].id == null
+                                ? strings.userPlan.empty[theme.lang]
+                                : capitilize(correctLang(mealPlan[meal].name))}
                             </p>
                           </div>
                           {selectedMealType === meal ? (
@@ -923,6 +975,13 @@ const EditUser = () => {
                     style={{ opacity: "50%" }}
                   >
                     {strings.recipeFinder.states.undone[theme.lang]}
+                  </div>
+                ) : loadingRecipe ? (
+                  <div
+                    className="editUser-userFinder-empty-container"
+                    style={{ opacity: "50%" }}
+                  >
+                    {strings.userFinder.loading[theme.lang]}
                   </div>
                 ) : typeof searchResults === "object" &&
                   searchResults.length === 0 ? (
