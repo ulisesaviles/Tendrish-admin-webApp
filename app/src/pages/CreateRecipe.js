@@ -60,6 +60,7 @@ function Createingredient() {
   const [newCategory, setNewCategory] = useState({});
   const [createCategoryWasClicked, setCreateCategoryWasClicked] =
     useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Prep
   const [servings, setServings] = useState(1);
@@ -155,6 +156,7 @@ function Createingredient() {
       return;
     }
     setError(null);
+    setLoading(true);
 
     // Manage image uploads or substitution
     let imgUrl;
@@ -227,6 +229,7 @@ function Createingredient() {
           data: { method: "createRecipe", recipe, publish },
         });
       }
+      setLoading(false);
 
       // If success:
       if (response.status === 200) {
@@ -1483,18 +1486,25 @@ function Createingredient() {
 
           {/* Create recipe */}
           <>
-            {}
-            <div
-              className="btn createRecipe-btn"
-              onClick={() => {
-                createRecipe(adminTypes.super.includes(admin.personalInfo.rol));
-              }}
-            >
-              {adminTypes.super.includes(admin.personalInfo.rol)
-                ? strings.Opc.submit.publish[theme.lang]
-                : strings.Opc.submit.saveDraft[theme.lang]}
-            </div>
-            {adminTypes.super.includes(admin.personalInfo.rol) ? (
+            {loading ? (
+              <div style={{ alignSelf: "center" }}>
+                {strings.Opc.submit.loading[theme.lang]}
+              </div>
+            ) : (
+              <div
+                className="btn createRecipe-btn"
+                onClick={() => {
+                  createRecipe(
+                    adminTypes.super.includes(admin.personalInfo.rol)
+                  );
+                }}
+              >
+                {adminTypes.super.includes(admin.personalInfo.rol)
+                  ? strings.Opc.submit.publish[theme.lang]
+                  : strings.Opc.submit.saveDraft[theme.lang]}
+              </div>
+            )}
+            {!loading && adminTypes.super.includes(admin.personalInfo.rol) ? (
               <p
                 className="createCat-title-container"
                 onClick={() => {

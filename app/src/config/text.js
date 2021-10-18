@@ -1070,6 +1070,10 @@ export const createRecipe = {
           en: "Invalid inputs",
         },
       },
+      loading: {
+        es: "Cargando...",
+        en: "Loading...",
+      },
     },
   },
   messages: {
