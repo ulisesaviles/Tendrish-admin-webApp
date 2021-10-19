@@ -22,6 +22,7 @@
   --popUp-background: rgba(255, 255, 255, 0.8);
   /* Fonts */
   --primary-font-color: rgb(148, 32, 84);
+  --primary-font-color-lowOpacity: rgba(148, 32, 84, 0.5);
   --secondary-font-color: rgb(190, 130, 55);
   --bold: 600;
   --non-bold: 400;
@@ -43,6 +44,7 @@
 /* Global */
 .app-dark {
   --primary-font-color: rgb(255, 231, 242);
+  --primary-font-color-lowOpacity: rgba(255, 231, 242, 0.5);
   --container-background: rgb(15, 15, 15);
   --subcontainer-background: rgb(30, 30, 30);
   --background: rgb(0, 0, 0);
@@ -493,15 +495,14 @@ body {
   position: absolute;
 }
 .ingredient-state-delete {
-  color: var(--errors);
+  color: var(--errors-nonHover);
   margin-left: 5px;
   font-size: 14px;
   transition: var(--animation-short);
-  opacity: 50%;
 }
 .ingredient-state-delete:hover {
   transform: scale(1.3);
-  opacity: 100%;
+  color: var(--errors);
 }
 .viewIngredient-search-header-container {
   display: flex;
@@ -1815,7 +1816,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* opacity: 50%; */
   text-align: center;
 }
 .editUser-userFinder-seach-container {
@@ -1964,7 +1964,7 @@ body {
   margin: 0;
 }
 .editUser-notes-note-date {
-  opacity: 60%;
+  color: var(--primary-font-color-lowOpacity);
   font-size: 13px;
   font-weight: 300;
   margin: 0 0 0 5px;
@@ -1983,9 +1983,9 @@ body {
   width: 100%;
 }
 .editUser-exlusion-length {
-  opacity: 50%;
   font-weight: 300;
   margin: 0 0 0 5px;
+  color: var(--primary-font-color-lowOpacity);
 }
 .editUser-exlusion-view {
   color: var(--secondary);
