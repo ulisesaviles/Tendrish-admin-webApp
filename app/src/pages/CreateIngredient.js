@@ -29,7 +29,7 @@ import axios from "axios";
 // Tooltips
 import ReactTooltip from "react-tooltip";
 
-function Createingredient() {
+const Createingredient = () => {
   // Constants
   // General
   const theme = getTheme();
@@ -82,6 +82,7 @@ function Createingredient() {
   const [selectedStateIndex, setSelectedStateIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [editingIngredientId, setEditingIngredientId] = useState(null);
+  const [loadingCreate, setLoadingCreate] = useState(false);
 
   // Functions
   const arrayWith = (originalArr, itemsToAdd) => {
@@ -278,11 +279,13 @@ function Createingredient() {
   };
 
   const handleCreateOrEdit = async () => {
+    setLoadingCreate(true);
     if (isEditing) {
       await editIngredient();
     } else {
       await createIngredient();
     }
+    setLoadingCreate(false);
   };
 
   const handleCuantityChange = (type, view) => {
@@ -819,14 +822,22 @@ function Createingredient() {
               <p className="ingredient-error">{error}</p>
 
               {/* Create btn */}
-              <div
-                className="btn create-ingredient-btn"
-                onClick={handleCreateOrEdit}
-              >
-                {isEditing
-                  ? strings.editBtn[theme.lang]
-                  : strings.createBtn[theme.lang]}
-              </div>
+              <>
+                {!loadingCreate ? (
+                  <div
+                    className="btn create-ingredient-btn"
+                    onClick={handleCreateOrEdit}
+                  >
+                    {isEditing
+                      ? strings.editBtn[theme.lang]
+                      : strings.createBtn[theme.lang]}
+                  </div>
+                ) : (
+                  <div className="create-ingredient-loading">
+                    {stringsView.search.states.loading[theme.lang]}
+                  </div>
+                )}
+              </>
             </div>
           </>
         ) : (
@@ -1194,6 +1205,6 @@ function Createingredient() {
       </div>
     </div>
   );
-}
+};
 
 export default Createingredient;

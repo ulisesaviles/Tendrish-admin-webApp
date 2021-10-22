@@ -598,6 +598,10 @@ body {
 .ingredient-delete:hover {
   transform: scale(1.1);
 }
+.create-ingredient-loading {
+  align-self: center;
+  margin: 20px 0;
+}
 
 /* Create recipe */
 .createRecipe-general-container {
