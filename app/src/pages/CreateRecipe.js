@@ -113,6 +113,7 @@ function Createingredient() {
   };
 
   const correctLang = (multiLangObj) => {
+    console.log(multiLangObj);
     if (multiLangObj[theme.lang] === undefined) {
       return multiLangObj[langs.default];
     }
@@ -186,7 +187,7 @@ function Createingredient() {
       prep: {
         servings,
         time,
-        ingredients,
+        ingredients: formatIngredients(ingredients),
         instructions,
       },
       opc: {
@@ -307,6 +308,16 @@ function Createingredient() {
     return accompaniments;
   };
 
+  const formatIngredients = (ingredients) => {
+    for (let i = 0; i < ingredients.length; i++) {
+      ingredients[i].measuredBy = ingredients[i].measuredByDisplay;
+      if (ingredients[i].state != null) {
+        ingredients[i].state = ingredients[i].state.name;
+      }
+    }
+    return ingredients;
+  };
+
   const getSuggestions = (ingredientIndex) => {
     let ingredientName = ingredientsInputs[ingredientIndex];
     let suggestions = [];
@@ -315,6 +326,7 @@ function Createingredient() {
     let measuredBy = null;
     let availableStates = null;
     let aditionalInfo = null;
+    let measuredByDisplay = null;
     for (let i = 0; i < defaultValues.ingredients.length; i++) {
       if (
         correctLang(defaultValues.ingredients[i].name)
@@ -329,6 +341,7 @@ function Createingredient() {
       ) {
         id = defaultValues.ingredients[i].id;
         measuredBy = defaultValues.ingredients[i].measuredBy;
+        measuredByDisplay = measuredBy;
         availableStates = defaultValues.ingredients[i].states;
         aditionalInfo = defaultValues.ingredients[i].aditionalInfo;
       }
@@ -339,6 +352,7 @@ function Createingredient() {
       measuredBy,
       availableStates,
       aditionalInfo,
+      measuredByDisplay,
       state: null,
       unit:
         measuredBy !== null
@@ -418,6 +432,15 @@ function Createingredient() {
   const handleIngredientStateChange = (index, state) => {
     let temp = [...ingredients];
     temp[index].state = temp[index].state === state ? null : state;
+    if (temp[index].state) {
+      temp[index].measuredByDisplay = temp[index].state.measuredBy;
+    } else {
+      temp[index].measuredByDisplay = temp[index].measuredBy;
+    }
+    temp[index].unit =
+      strings.prep.ingredients.unit.suggestions[
+        temp[index].measuredByDisplay
+      ][0].key;
     setIngredients(temp);
   };
 
@@ -618,6 +641,7 @@ function Createingredient() {
           ingredients[j] = {
             ...recipeIngredient,
             availableStates: ingredient.states,
+            measuredBy: ingredient.measuredBy,
           };
         }
       }
@@ -689,6 +713,7 @@ function Createingredient() {
     let tempIngredientInputs = [];
     for (let i = 0; i < recipe.prep.ingredients.length; i++) {
       if (recipe.prep.ingredients[i] != null) {
+        console.log(recipe.prep.ingredients[i]);
         tempIngredients.push({
           ...recipe.prep.ingredients[i],
           cuantity: {
@@ -698,12 +723,13 @@ function Createingredient() {
                 recipe.prep.servings
             ),
           },
+          measuredByDisplay: recipe.prep.ingredients[i].measuredBy,
+          state: recipe.prep.ingredients[i].state,
         });
         tempIngredientInputs.push(correctLang(recipe.prep.ingredients[i].name));
       }
     }
     tempIngredients = ingredientsWithStates(tempIngredients, defaultValues);
-    console.log(tempIngredients);
     setIngredients(tempIngredients);
     setIngredientsInputs(tempIngredientInputs);
 
@@ -1029,6 +1055,7 @@ function Createingredient() {
             </h3>
             {ingredients.map((ingredient) => {
               const index = ingredients.indexOf(ingredient);
+              console.log(ingredient);
               return (
                 <div className="createRecipe-ingredient-container" key={index}>
                   {/* Bullets */}
@@ -1085,7 +1112,7 @@ function Createingredient() {
                       <div style={{ marginLeft: 15 }}>
                         {ingredient.id != null
                           ? strings.prep.ingredients.unit.suggestions[
-                              ingredient.measuredBy
+                              ingredient.measuredByDisplay
                             ].map((suggestion) => (
                               <div
                                 className="ingredient-lang-container"
@@ -1096,7 +1123,7 @@ function Createingredient() {
                                   );
                                 }}
                                 key={strings.prep.ingredients.unit.suggestions[
-                                  ingredient.measuredBy
+                                  ingredient.measuredByDisplay
                                 ].indexOf(suggestion)}
                               >
                                 {suggestion.key === ingredient.unit ? (
@@ -1131,14 +1158,17 @@ function Createingredient() {
                                     }}
                                     key={index}
                                   >
-                                    {JSON.stringify(state) ===
-                                    JSON.stringify(ingredient.state) ? (
+                                    {ingredient.state !== null &&
+                                    (JSON.stringify(state) ===
+                                      JSON.stringify(ingredient.state) ||
+                                      correctLang(ingredient.state) ==
+                                        correctLang(state.name)) ? (
                                       <MdCheckBox className="ingredient-lang-checkbox" />
                                     ) : (
                                       <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
                                     )}
                                     <p className="ingredient-lang">
-                                      {state[theme.lang]}
+                                      {correctLang(state.name)}
                                     </p>
                                   </div>
                                 ))
