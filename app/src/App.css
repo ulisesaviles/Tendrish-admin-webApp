@@ -1249,6 +1249,10 @@ body {
   margin: 15px 0;
   text-align: center;
 }
+.profiles-row-text-name {
+  padding: 0 10px;
+  width: 180px;
+}
 .profiles-row-index {
   color: var(--secondary);
   width: 10px;

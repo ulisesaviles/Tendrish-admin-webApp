@@ -529,7 +529,13 @@ function Profiles() {
                   <h4 className="profiles-row-index">{adminIndex + 1}</h4>
                   <div className="profiles-row-container">
                     {strings.headers.map((column) => (
-                      <p className="profiles-row-text">
+                      <p
+                        className={`profiles-row-text ${
+                          column.key === "name"
+                            ? "profiles-row-text-name"
+                            : null
+                        }`}
+                      >
                         {admins[adminIndex][column.key]}
                       </p>
                     ))}
