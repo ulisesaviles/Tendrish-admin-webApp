@@ -49,7 +49,6 @@ const Createingredient = () => {
   let tempNames = {};
   tempNames[langs.default] = "";
   const [names, setNames] = useState(tempNames);
-  const [measuredBy, setMeasuredBy] = useState("piece");
   const initialNutriValues = {
     calories: "0",
     totalFat: "0",
@@ -66,23 +65,36 @@ const Createingredient = () => {
     vitaminD: "0",
   };
   const [error, setError] = useState(null);
-  const defaultCuantity =
-    measuredBy === "mass" || measuredBy === "volume" ? 100 : 1;
+  const cuantity = { piece: 1, volume: 100, mass: 100 };
   const [selectedAditionalInfo, setSelectedAditionalInfo] = useState([]);
   const [selectedMonths, setSelectedMonths] = useState(
     strings.general.seasons.items.map((month) => month.key)
   );
-  const [states, setStates] = useState([
-    {
-      name: strings.states.default,
+  const sampleState = (measuredBy) => {
+    return {
+      name: {},
       nutriValues: initialNutriValues,
-      cuantity: defaultCuantity,
-    },
+      cuantity: measuredBy === "volume" || measuredBy === "mass" ? 100 : 1,
+      measuredBy: measuredBy,
+      equivalence: {
+        numerator: 1,
+        denominator: 1,
+      },
+    };
+  };
+  const [states, setStates] = useState([
+    { ...sampleState("piece"), name: strings.states.default },
   ]);
   const [selectedStateIndex, setSelectedStateIndex] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [editingIngredientId, setEditingIngredientId] = useState(null);
   const [loadingCreate, setLoadingCreate] = useState(false);
+  const stringUnits = {
+    mass: { es: "gramos", en: "grams" },
+    volume: { es: "mililitros", en: "milliliters" },
+    piece: { es: "pieza(s)", en: "piece(s)" },
+  };
+  const [updater, update] = useState(0);
 
   // Functions
   const arrayWith = (originalArr, itemsToAdd) => {
@@ -139,14 +151,13 @@ const Createingredient = () => {
       return;
     }
 
-    let response = await axios({
+    const response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
       data: {
         method: "createIngredient",
         names,
         states: formatStates(),
-        measuredBy,
         aditionalInfo: selectedAditionalInfo,
         seasons: selectedMonths,
       },
@@ -223,29 +234,30 @@ const Createingredient = () => {
   };
 
   const editIngredient = async () => {
-    if (nutriValuesAreValid() && namesAreValid()) {
-      let response = await axios({
-        method: "post",
-        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-        data: {
-          method: "editIngredient",
-          id: editingIngredientId,
-          names,
-          states: formatStates(),
-          measuredBy,
-          aditionalInfo: selectedAditionalInfo,
-          seasons: selectedMonths,
-        },
-      });
-      if (response.status === 200) {
-        alert(strings.responses.editSuccess[theme.lang]);
-        resetTab();
-        setIsEditing(false);
-        setSelectedTab("view");
-      } else {
-        alert(strings.responses.error[theme.lang]);
-      }
+    if (!nutriValuesAreValid() || !namesAreValid()) {
+      return;
     }
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "editIngredient",
+        id: editingIngredientId,
+        names,
+        states: formatStates(),
+        aditionalInfo: selectedAditionalInfo,
+        seasons: selectedMonths,
+      },
+    });
+    if (response.status === 200) {
+      alert(strings.responses.editSuccess[theme.lang]);
+      resetTab();
+      setIsEditing(false);
+      setSelectedTab("view");
+      return;
+    }
+
+    alert(strings.responses.error[theme.lang]);
   };
 
   const formatStates = () => {
@@ -310,6 +322,25 @@ const Createingredient = () => {
     }
   };
 
+  const handleEquivalencyChange = (stateIndex, isNumerator, value) => {
+    if (value === "") value = 0;
+    if (isNaN(value)) return;
+    if (value < 0) value = 0;
+    let temp = states;
+    temp[stateIndex].equivalence[isNumerator ? "numerator" : "denominator"] =
+      value;
+    setStates(temp);
+    updateDom();
+  };
+
+  const handleEquivalencyChangeBy1 = (stateIndex, isNumerator, isSum) => {
+    const value =
+      states[stateIndex].equivalence[
+        isNumerator ? "numerator" : "denominator"
+      ] + (isSum ? 1 : -1);
+    handleEquivalencyChange(stateIndex, isNumerator, value);
+  };
+
   const handleGoToCreateIngredientTab = () => {
     resetTab();
     setSelectedTab("create");
@@ -359,7 +390,9 @@ const Createingredient = () => {
   };
 
   const handleMeasureChange = (key) => {
-    setMeasuredBy(key);
+    let temp = states;
+    states[selectedStateIndex].measuredBy = key;
+    setStates(temp);
     cuantitySetter(key === "mass" || key === "volume" ? 100 : 1);
   };
 
@@ -375,10 +408,7 @@ const Createingredient = () => {
 
   const handleNewState = () => {
     // Create new state
-    setStates([
-      ...states,
-      { name: {}, nutriValues: initialNutriValues, cuantity: defaultCuantity },
-    ]);
+    setStates([...states, sampleState(states[0].measuredBy)]);
     // Make it current
     setSelectedStateIndex(states.length);
   };
@@ -400,18 +430,26 @@ const Createingredient = () => {
 
   const handleStateNames = async (lang, value) => {
     let temp = [...states];
-    temp[selectedStateIndex].name[lang] = value;
+    temp[selectedStateIndex].name[lang] = value.toLowerCase();
     setStates(temp);
   };
 
   const loadIngredientToInputs = (ingredient) => {
     setUsedLangs(Object.keys(ingredient.names));
     setNames(ingredient.names);
-    setMeasuredBy(ingredient.measuredBy);
     setSelectedAditionalInfo(
       ingredient.aditionalInfo === undefined ? [] : ingredient.aditionalInfo
     );
-    setStates(parseStates(ingredient.states, ingredient.measuredBy));
+    for (let i = 0; i < ingredient.states.length; i++) {
+      if (ingredient.states[i].equivalence == null) {
+        ingredient.states[i].equivalence = {
+          numerator: cuantity[ingredient.states[i].measuredBy],
+          denominator: 1,
+        };
+      }
+      ingredient.states[i].cuantity = cuantity[ingredient.states[i].measuredBy];
+    }
+    setStates(parseStates(ingredient.states));
     setSelectedMonths(
       ingredient.seasonsAvailable !== undefined
         ? ingredient.seasonsAvailable
@@ -448,6 +486,7 @@ const Createingredient = () => {
   };
 
   const navigateToEditIngredient = () => {
+    setSelectedStateIndex(0);
     setEditingIngredientId(selectedIngredient.id);
     loadIngredientToInputs(selectedIngredient);
     setIsEditing(true);
@@ -482,7 +521,8 @@ const Createingredient = () => {
     return res;
   };
 
-  const parseStates = (states, measuredBy) => {
+  const parseStates = (states) => {
+    console.log(states);
     const cuantity = {
       piece: 1,
       mass: 100,
@@ -492,8 +532,8 @@ const Createingredient = () => {
       const keys = Object.keys(states[i].nutriValues);
       for (let j = 0; j < keys.length; j++) {
         const nutriFact = keys[j];
-        states[i].nutriValues[nutriFact] *= cuantity[measuredBy];
-        states[i].cuantity = cuantity[measuredBy];
+        states[i].nutriValues[nutriFact] *= cuantity[states[i].measuredBy];
+        states[i].cuantity = cuantity[states[i].measuredBy];
       }
     }
     return states;
@@ -502,13 +542,7 @@ const Createingredient = () => {
   const resetTab = () => {
     cleanNameInputs();
     setSelectedStateIndex(0);
-    setStates([
-      {
-        name: strings.states.default,
-        nutriValues: initialNutriValues,
-        cuantity: defaultCuantity,
-      },
-    ]);
+    setStates([{ ...sampleState("piece"), name: strings.states.default }]);
     setSelectedMonths(strings.general.seasons.items.map((month) => month.key));
   };
 
@@ -526,7 +560,6 @@ const Createingredient = () => {
     setLoading(false);
     if (response.status === 200) {
       let temp = response.data;
-      console.log(temp);
       temp.sort((a, b) =>
         correctLang(a.names).localeCompare(correctLang(b.names))
       );
@@ -556,11 +589,20 @@ const Createingredient = () => {
     delete temp.nutriValues;
     delete temp["searchName-es"];
     delete temp["searchName-en"];
+    for (let i = 0; i < temp.states.length; i++) {
+      if (temp.states[i].measuredBy == null) {
+        temp.states[i].measuredBy = ingredient.measuredBy;
+      }
+    }
 
     setSelectedIngredient(temp);
     setCuantityforDisplay(
       temp.measuredBy === "mass" || temp.measuredBy === "volume" ? 100 : 1
     );
+  };
+
+  const updateDom = () => {
+    update(updater + 1);
   };
 
   // Render
@@ -626,26 +668,6 @@ const Createingredient = () => {
                 </div>
               </div>
 
-              {/* Measured by */}
-              <div className="input-section">
-                <h3 className="input-name">
-                  {strings.general.measuredBy.title[theme.lang]}
-                </h3>
-                {strings.general.measuredBy.options.map((option) => (
-                  <div
-                    className="ingredient-lang-container"
-                    onClick={() => handleMeasureChange(option.key)}
-                  >
-                    {measuredBy === option.key ? (
-                      <MdCheckBox className="ingredient-lang-checkbox" />
-                    ) : (
-                      <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                    )}
-                    <p className="ingredient-lang">{option[theme.lang]}</p>
-                  </div>
-                ))}
-              </div>
-
               {/* Aditional info */}
               <div className="input-section">
                 <h3 className="input-name">
@@ -653,7 +675,7 @@ const Createingredient = () => {
                 </h3>
                 {strings.general.aditionalInfo.items.map((item) => (
                   <div
-                    className="ingredient-lang-container"
+                    className="ingredient-info-container"
                     onClick={() => handleAditionalInfoClick(item.key)}
                     data-tip
                     data-for={`aditionalInto_toolTip_${item.key}`}
@@ -705,12 +727,15 @@ const Createingredient = () => {
                   </div>
                 ))}
               </div>
+              <div style={{ fontSize: 1, color: "rgba(0,0,0,0)" }}>
+                {updater}
+              </div>
             </div>
 
             {/* Nutrivalues */}
             <div className="subsection ingredient-nutrivalue-container">
               <h1 className="section-title">
-                {strings.nutritionalInfoTitle[theme.lang]}
+                {strings.statesTitle[theme.lang]}
               </h1>
               {/* States */}
               <div>
@@ -748,75 +773,234 @@ const Createingredient = () => {
               </div>
 
               {/* Name */}
-              {selectedStateIndex !== 0 ? (
-                <div className="ingredient-state-name-container">
-                  <h3 className="input-name">
-                    {strings.states.name.title[theme.lang]}
-                  </h3>
-                  {usedLangs.map((lang) => (
-                    <div className="input-container">
-                      <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
-                      <input
-                        className="input"
-                        placeholder={strings.states.name.placeholder[lang]}
-                        value={states[selectedStateIndex].name[lang]}
-                        onChange={(e) => handleStateNames(lang, e.target.value)}
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : null}
-
-              {/* Cuantity */}
               <>
-                <p className="createRecipe-timeType">
-                  {strings.quantity.title[theme.lang]}
-                </p>
-                <div
-                  className="createRecepy-quantity-input-container"
-                  style={{ marginBottom: 20 }}
-                >
-                  <div
-                    className="createRecepy-add-btn btn"
-                    onClick={() => handleCuantityChange("substraction")}
-                  >
-                    <MdRemove />
+                {selectedStateIndex !== 0 ? (
+                  <div className="ingredient-state-name-container">
+                    <h3 className="input-name">
+                      {strings.states.name.title[theme.lang]}
+                    </h3>
+                    {usedLangs.map((lang) => (
+                      <div className="input-container">
+                        <p className="input-lang">{`${lang.toUpperCase()}: `}</p>
+                        <input
+                          className="input"
+                          placeholder={strings.states.name.placeholder[lang]}
+                          value={states[selectedStateIndex].name[lang]}
+                          onChange={(e) =>
+                            handleStateNames(lang, e.target.value)
+                          }
+                        />
+                      </div>
+                    ))}
                   </div>
-                  <input
-                    className="createRecipe-cuantity-input"
-                    value={states[selectedStateIndex].cuantity}
-                    style={{ fontSize: 18 }}
-                    onChange={(event) => cuantitySetter(event.target.value)}
-                  />
-                  <div
-                    className="createRecepy-add-btn btn"
-                    onClick={() => handleCuantityChange("sum")}
-                  >
-                    <MdAdd />
-                  </div>
-                </div>
-                <p className="createRecipe-timeType" style={{ marginTop: -20 }}>
-                  {strings.quantity.unit[measuredBy][theme.lang]}
-                </p>
+                ) : null}
               </>
 
-              {/* Nutrivalues inputs */}
-              {strings.nutritionalInfo.map((nutriFact) => (
-                <div>
-                  <h3 className="input-name">{nutriFact.name[theme.lang]}</h3>
-                  <input
-                    className="input"
-                    placeholder={nutriFact.placeholder[theme.lang]}
-                    type={"number"}
-                    value={
-                      states[selectedStateIndex].nutriValues[nutriFact.key]
+              {/* Measured by */}
+              <div className="input-section">
+                <h3 className="input-name">
+                  {strings.general.measuredBy.title[theme.lang]}
+                </h3>
+                {strings.general.measuredBy.options.map((option) => (
+                  <div
+                    className="ingredient-lang-container"
+                    onClick={() => handleMeasureChange(option.key)}
+                  >
+                    {states[selectedStateIndex].measuredBy === option.key ? (
+                      <MdCheckBox className="ingredient-lang-checkbox" />
+                    ) : (
+                      <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                    )}
+                    <p className="ingredient-lang">{option[theme.lang]}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Equivalence */}
+              <>
+                {selectedStateIndex > 0 ? (
+                  <div className="input-section">
+                    <h3 className="input-name">
+                      {strings.equivalence.title[theme.lang]}
+                    </h3>
+                    <>
+                      <p className="createRecipe-timeType">
+                        {strings.equivalence.string.top[theme.lang](
+                          cuantity[states[selectedStateIndex].measuredBy],
+                          stringUnits[states[selectedStateIndex].measuredBy][
+                            theme.lang
+                          ].toLowerCase(),
+                          correctLang(names).toLowerCase(),
+                          correctLang(states[selectedStateIndex].name)
+                        )}
+                      </p>
+                      <div
+                        className="createRecepy-quantity-input-container"
+                        style={{ marginBottom: 20 }}
+                      >
+                        <div className="fraction-container">
+                          <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                            <div
+                              className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                              onClick={() =>
+                                handleEquivalencyChangeBy1(
+                                  selectedStateIndex,
+                                  true,
+                                  false
+                                )
+                              }
+                            >
+                              <MdRemove />
+                            </div>
+                            <input
+                              className="createRecipe-cuantity-input"
+                              value={
+                                states[selectedStateIndex].equivalence.numerator
+                              }
+                              onChange={(event) =>
+                                handleEquivalencyChange(
+                                  selectedStateIndex,
+                                  true,
+                                  event.target.value
+                                )
+                              }
+                            />
+                            <div
+                              className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                              onClick={() =>
+                                handleEquivalencyChangeBy1(
+                                  selectedStateIndex,
+                                  true,
+                                  true
+                                )
+                              }
+                            >
+                              <MdAdd />
+                            </div>
+                          </div>
+                          <div className="dividedBy" />
+                          <div className="createRecepy-quantity-input-container createRecepy-quantity-input-container-mini">
+                            <div
+                              className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                              onClick={() =>
+                                handleEquivalencyChangeBy1(
+                                  selectedStateIndex,
+                                  false,
+                                  false
+                                )
+                              }
+                            >
+                              <MdRemove />
+                            </div>
+                            <input
+                              className="createRecipe-cuantity-input"
+                              value={
+                                states[selectedStateIndex].equivalence
+                                  .denominator
+                              }
+                              onChange={(event) =>
+                                handleEquivalencyChange(
+                                  selectedStateIndex,
+                                  false,
+                                  event.target.value
+                                )
+                              }
+                            />
+                            <div
+                              className="createRecepy-add-btn btn createRecepy-add-btn-mini"
+                              onClick={() =>
+                                handleEquivalencyChangeBy1(
+                                  selectedStateIndex,
+                                  false,
+                                  true
+                                )
+                              }
+                            >
+                              <MdAdd />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <p
+                        className="createRecipe-timeType"
+                        style={{ marginTop: -20 }}
+                      >
+                        {strings.equivalence.string.bottom[theme.lang](
+                          stringUnits[states[0].measuredBy][theme.lang],
+                          correctLang(names).toLowerCase()
+                        )}
+                      </p>
+                    </>
+                  </div>
+                ) : null}
+              </>
+
+              <div className="input-section">
+                <h3 className="input-name">
+                  {strings.nutrivaluesTitle[theme.lang]}
+                </h3>
+
+                {/* Cuantity */}
+                <>
+                  <p className="createRecipe-timeType">
+                    {strings.quantity.title[theme.lang]}
+                  </p>
+                  <div
+                    className="createRecepy-quantity-input-container"
+                    style={{ marginBottom: 20 }}
+                  >
+                    <div
+                      className="createRecepy-add-btn btn"
+                      onClick={() => handleCuantityChange("substraction")}
+                    >
+                      <MdRemove />
+                    </div>
+                    <input
+                      className="createRecipe-cuantity-input"
+                      value={states[selectedStateIndex].cuantity}
+                      style={{ fontSize: 18 }}
+                      onChange={(event) => cuantitySetter(event.target.value)}
+                    />
+                    <div
+                      className="createRecepy-add-btn btn"
+                      onClick={() => handleCuantityChange("sum")}
+                    >
+                      <MdAdd />
+                    </div>
+                  </div>
+                  <p
+                    className="createRecipe-timeType"
+                    style={{ marginTop: -20 }}
+                  >
+                    {
+                      strings.quantity.unit[
+                        states[selectedStateIndex].measuredBy
+                      ][theme.lang]
                     }
-                    onChange={(event) =>
-                      handleChangeNutriValue(nutriFact.key, event.target.value)
-                    }
-                  />
-                </div>
-              ))}
+                  </p>
+                </>
+
+                {/* Nutrivalues inputs */}
+                {strings.nutritionalInfo.map((nutriFact) => (
+                  <div>
+                    <h3 className="input-name">{nutriFact.name[theme.lang]}</h3>
+                    <input
+                      className="input"
+                      placeholder={nutriFact.placeholder[theme.lang]}
+                      type={"number"}
+                      value={
+                        states[selectedStateIndex].nutriValues[nutriFact.key]
+                      }
+                      onChange={(event) =>
+                        handleChangeNutriValue(
+                          nutriFact.key,
+                          event.target.value
+                        )
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
 
               {/* Error display */}
               <p className="ingredient-error">{error}</p>
@@ -938,18 +1122,6 @@ const Createingredient = () => {
                     ))}
                   </div>
 
-                  {/* Measured by */}
-                  <div className="input-section">
-                    <h3 className="input-name">
-                      {stringsView.view.measuredBy.title[theme.lang]}
-                    </h3>
-                    {
-                      stringsView.view.measuredBy[
-                        selectedIngredient.measuredBy
-                      ][theme.lang]
-                    }
-                  </div>
-
                   {/* Aditional info */}
                   <div className="input-section">
                     <h3 className="input-name">
@@ -1018,6 +1190,22 @@ const Createingredient = () => {
                       })}
                     </div>
 
+                    {/* Measured by */}
+                    <div className="input-section">
+                      <h3 className="input-name">
+                        {stringsView.view.measuredBy.title[theme.lang]}
+                      </h3>
+                      {
+                        stringsView.view.measuredBy[
+                          selectedIngredient.states[viewSelectedStateIndex]
+                            .measuredBy !== undefined
+                            ? selectedIngredient.states[viewSelectedStateIndex]
+                                .measuredBy
+                            : selectedIngredient.measuredBy
+                        ][theme.lang]
+                      }
+                    </div>
+
                     {/* NutriValues */}
                     <>
                       <h3 className="input-name">
@@ -1062,7 +1250,8 @@ const Createingredient = () => {
                         >
                           {
                             strings.quantity.unit[
-                              selectedIngredient.measuredBy
+                              selectedIngredient.states[viewSelectedStateIndex]
+                                .measuredBy
                             ][theme.lang]
                           }
                         </p>

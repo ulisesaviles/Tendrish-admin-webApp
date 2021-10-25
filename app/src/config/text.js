@@ -452,10 +452,14 @@ export const createIngredient = {
       },
     },
   ],
+  nutrivaluesTitle: {
+    es: "Valor nutricional",
+    en: "Nutritional values",
+  },
   states: {
     title: {
-      es: "Estados del ingrediente",
-      en: "Ingredient states",
+      es: "Estados creados",
+      en: "Created states",
     },
     toolTip: {
       es: "Cada estado en que se puede encontrar el ingrediente. Ej: congelado, molido, cocido, etc.",
@@ -480,9 +484,9 @@ export const createIngredient = {
       en: (name) => `Are you sure you want to remove the "${name}" state?`,
     },
   },
-  nutritionalInfoTitle: {
-    es: "Valor nutricional",
-    en: "Nutritional value",
+  statesTitle: {
+    es: "Estados del ingrediente",
+    en: "Ingredient states",
   },
   createBtn: {
     es: "Crear ingrediente",
@@ -513,6 +517,26 @@ export const createIngredient = {
       piece: {
         es: "Piezas",
         en: "Pieces",
+      },
+    },
+  },
+  equivalence: {
+    title: {
+      es: "Equivalencia al estado inicial",
+      en: "Equivalence to the initial state",
+    },
+    string: {
+      top: {
+        es: (stateCuantity, stateUnit, ingredientName, stateName) =>
+          `Cada ${stateCuantity} ${stateUnit} de ${ingredientName} ${stateName} equivalen a:`,
+        en: (stateCuantity, stateUnit, ingredientName, stateName) =>
+          `Each ${stateCuantity} ${stateUnit} of ${stateName} ${ingredientName} is equivalent to:`,
+      },
+      bottom: {
+        es: (defaultUnit, ingredientName) =>
+          `${defaultUnit} de ${ingredientName} (en su estado inicial)`,
+        en: (defaultUnit, ingredientName) =>
+          `${defaultUnit} of ${ingredientName} (in its initial state)`,
       },
     },
   },
