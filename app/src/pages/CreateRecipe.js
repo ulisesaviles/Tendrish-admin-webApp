@@ -1161,7 +1161,7 @@ function Createingredient() {
                                     {ingredient.state !== null &&
                                     (JSON.stringify(state) ===
                                       JSON.stringify(ingredient.state) ||
-                                      correctLang(ingredient.state) ==
+                                      correctLang(ingredient.state) ===
                                         correctLang(state.name)) ? (
                                       <MdCheckBox className="ingredient-lang-checkbox" />
                                     ) : (
