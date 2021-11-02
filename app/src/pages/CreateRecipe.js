@@ -113,7 +113,6 @@ function Createingredient() {
   };
 
   const correctLang = (multiLangObj) => {
-    console.log(multiLangObj);
     if (multiLangObj[theme.lang] === undefined) {
       return multiLangObj[langs.default];
     }
@@ -526,6 +525,7 @@ function Createingredient() {
       return;
     }
 
+    console.log("Hola4");
     tempRecipeToEdit = { ...JSON.parse(tempRecipeToEdit) };
     await loadRecipeToInputs(tempRecipeToEdit, response.data);
     localStorage.setItem("wantsToEdit", "false");
@@ -636,8 +636,6 @@ function Createingredient() {
       for (let j = 0; j < ingredients.length; j++) {
         const recipeIngredient = ingredients[j];
         if (recipeIngredient.id === ingredient.id) {
-          console.log("Found ingredient in defualtValues!");
-          console.log(ingredient);
           ingredients[j] = {
             ...recipeIngredient,
             availableStates: ingredient.states,
@@ -650,6 +648,7 @@ function Createingredient() {
   };
 
   const loadRecipeToInputs = async (recipe, defaultValues) => {
+    console.log(JSON.stringify(recipe));
     // usedLangs
     setUsedLangs(recipe.general.langs);
 
@@ -682,6 +681,7 @@ function Createingredient() {
     setSelectedTagsIds(tempTags);
 
     // Accompaniments
+    console.log(recipe);
     let tempAccompaniments = [];
     for (let i = 0; i < defaultValues.accompaniments.length; i++) {
       for (let j = 0; j < recipe.opc.accompaniments.length; j++) {
@@ -1143,7 +1143,8 @@ function Createingredient() {
                     {/* States */}
                     <>
                       {ingredient.id != null &&
-                      ingredient.availableStates != null ? (
+                      ingredient.availableStates != null &&
+                      ingredient.availableStates.length > 0 ? (
                         <div style={{ width: "100%", marginBottom: 10 }}>
                           <p className="input-lang">{`${
                             strings.prep.ingredients.states[theme.lang]
@@ -1158,7 +1159,7 @@ function Createingredient() {
                                     }}
                                     key={index}
                                   >
-                                    {ingredient.state !== null &&
+                                    {ingredient.state != null &&
                                     (JSON.stringify(state) ===
                                       JSON.stringify(ingredient.state) ||
                                       correctLang(ingredient.state) ===
