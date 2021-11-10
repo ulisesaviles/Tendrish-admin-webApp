@@ -648,7 +648,7 @@ export const viewIngredient = {
       },
       animalOrigin: {
         es: "Es un alimento de origen animal",
-        en: "It is a food of animal origin",
+        en: "It’s an animal origin ingredient",
       },
       lactose: {
         es: "Contiene lactosa",
