@@ -800,7 +800,6 @@ function Createingredient() {
       handleSetupQuery();
     }
   });
-  console.log(ingredients);
 
   // Render
   return (
