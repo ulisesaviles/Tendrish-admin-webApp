@@ -310,8 +310,11 @@ function Createingredient() {
   const formatIngredients = (ingredients) => {
     for (let i = 0; i < ingredients.length; i++) {
       ingredients[i].measuredBy = ingredients[i].measuredByDisplay;
+      console.log(ingredients[i]);
       if (ingredients[i].state != null) {
-        ingredients[i].state = ingredients[i].state.name;
+        ingredients[i].state = ingredients[i].state[langs.default]
+          ? ingredients[i].state
+          : ingredients[i].state.name;
       }
     }
     return ingredients;
@@ -358,9 +361,7 @@ function Createingredient() {
           ? strings.prep.ingredients.unit.suggestions[measuredBy][0].key
           : null,
     };
-    if (JSON.stringify(tempIngredients) !== JSON.stringify(ingredients)) {
-      setIngredients(tempIngredients);
-    }
+    setIngredients(tempIngredients);
     return suggestions;
   };
 
@@ -525,7 +526,6 @@ function Createingredient() {
       return;
     }
 
-    console.log("Hola4");
     tempRecipeToEdit = { ...JSON.parse(tempRecipeToEdit) };
     await loadRecipeToInputs(tempRecipeToEdit, response.data);
     localStorage.setItem("wantsToEdit", "false");
@@ -648,7 +648,6 @@ function Createingredient() {
   };
 
   const loadRecipeToInputs = async (recipe, defaultValues) => {
-    console.log(JSON.stringify(recipe));
     // usedLangs
     setUsedLangs(recipe.general.langs);
 
@@ -681,7 +680,6 @@ function Createingredient() {
     setSelectedTagsIds(tempTags);
 
     // Accompaniments
-    console.log(recipe);
     let tempAccompaniments = [];
     for (let i = 0; i < defaultValues.accompaniments.length; i++) {
       for (let j = 0; j < recipe.opc.accompaniments.length; j++) {
@@ -713,7 +711,6 @@ function Createingredient() {
     let tempIngredientInputs = [];
     for (let i = 0; i < recipe.prep.ingredients.length; i++) {
       if (recipe.prep.ingredients[i] != null) {
-        console.log(recipe.prep.ingredients[i]);
         tempIngredients.push({
           ...recipe.prep.ingredients[i],
           cuantity: {
@@ -803,6 +800,7 @@ function Createingredient() {
       handleSetupQuery();
     }
   });
+  console.log(ingredients);
 
   // Render
   return (
@@ -1055,7 +1053,6 @@ function Createingredient() {
             </h3>
             {ingredients.map((ingredient) => {
               const index = ingredients.indexOf(ingredient);
-              console.log(ingredient);
               return (
                 <div className="createRecipe-ingredient-container" key={index}>
                   {/* Bullets */}

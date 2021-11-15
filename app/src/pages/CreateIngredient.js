@@ -328,12 +328,13 @@ const Createingredient = () => {
     if (value < 0) value = 0;
     let temp = states;
     temp[stateIndex].equivalence[isNumerator ? "numerator" : "denominator"] =
-      value;
+      parseInt(value);
     setStates(temp);
     updateDom();
   };
 
   const handleEquivalencyChangeBy1 = (stateIndex, isNumerator, isSum) => {
+    console.log(states[stateIndex].equivalence);
     const value =
       states[stateIndex].equivalence[
         isNumerator ? "numerator" : "denominator"
@@ -534,6 +535,10 @@ const Createingredient = () => {
         const nutriFact = keys[j];
         states[i].nutriValues[nutriFact] *= cuantity[states[i].measuredBy];
         states[i].cuantity = cuantity[states[i].measuredBy];
+        states[i].equivalence = {
+          numerator: parseInt(states[i].equivalence.numerator),
+          denominator: parseInt(states[i].equivalence.denominator),
+        };
       }
     }
     return states;
