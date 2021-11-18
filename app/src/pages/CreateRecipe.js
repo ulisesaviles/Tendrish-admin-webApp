@@ -101,6 +101,7 @@ function Createingredient() {
       id: "",
     },
   ]);
+  const [suggestions, setSuggestions] = useState([]);
 
   // Functions
   const addIngredient = () => {
@@ -320,8 +321,7 @@ function Createingredient() {
     return ingredients;
   };
 
-  const getSuggestions = (ingredientIndex) => {
-    let ingredientName = ingredientsInputs[ingredientIndex];
+  const getSuggestions = (ingredientIndex, ingredientName) => {
     let suggestions = [];
     let tempIngredients = [...ingredients];
     let id = null;
@@ -333,13 +333,17 @@ function Createingredient() {
       if (
         correctLang(defaultValues.ingredients[i].name)
           .substring(0, ingredientName.length)
-          .toLowerCase() === ingredientName.toLowerCase()
+          .toLowerCase()
+          .trim() === ingredientName.toLowerCase().trim()
       ) {
-        suggestions.push(correctLang(defaultValues.ingredients[i].name));
+        suggestions.push({
+          name: correctLang(defaultValues.ingredients[i].name),
+          ingredientIndex: i,
+        });
       }
       if (
-        correctLang(defaultValues.ingredients[i].name).toLowerCase() ===
-        ingredientName.toLowerCase()
+        correctLang(defaultValues.ingredients[i].name).toLowerCase().trim() ===
+        ingredientName.toLowerCase().trim()
       ) {
         id = defaultValues.ingredients[i].id;
         measuredBy = defaultValues.ingredients[i].measuredBy;
@@ -427,6 +431,7 @@ function Createingredient() {
     let tempIngredientInputs = [...ingredientsInputs];
     tempIngredientInputs[index] = value;
     setIngredientsInputs(tempIngredientInputs);
+    setSuggestions(getSuggestions(index, value));
   };
 
   const handleIngredientStateChange = (index, state) => {
@@ -531,9 +536,29 @@ function Createingredient() {
     localStorage.setItem("wantsToEdit", "false");
   };
 
-  const handleSuggestionClick = (suggestion) => {
+  const handleSuggestionClick = (suggestion, ingredientIndex) => {
+    let measuredBy =
+      defaultValues.ingredients[suggestion.ingredientIndex].measuredBy;
+    let tempIngredients = [...ingredients];
+    tempIngredients[ingredientIndex] = {
+      ...tempIngredients[ingredientIndex],
+      id: defaultValues.ingredients[suggestion.ingredientIndex].id,
+      measuredBy,
+      measuredByDisplay: measuredBy,
+      availableStates:
+        defaultValues.ingredients[suggestion.ingredientIndex].states,
+      aditionalInfo:
+        defaultValues.ingredients[suggestion.ingredientIndex].aditionalInfo,
+      state: null,
+      unit:
+        measuredBy !== null
+          ? strings.prep.ingredients.unit.suggestions[measuredBy][0].key
+          : null,
+    };
+    setIngredients(tempIngredients);
+
     let tempIngredientsInputs = [...ingredientsInputs];
-    tempIngredientsInputs[focusedInputIndex] = suggestion;
+    tempIngredientsInputs[focusedInputIndex] = suggestion.name;
     setIngredientsInputs(tempIngredientsInputs);
   };
 
@@ -1077,7 +1102,11 @@ function Createingredient() {
                         onChange={(event) =>
                           handleIngredientsChange(index, event.target.value)
                         }
-                        onFocus={() => setFocusedInputIndex(index)}
+                        onFocus={() => {
+                          setFocusedInputIndex(index);
+                          if (ingredientsInputs[index] === "")
+                            handleIngredientsChange(index, "");
+                        }}
                         onBlur={() =>
                           setTimeout(() => setFocusedInputIndex(null), 300)
                         }
@@ -1085,14 +1114,15 @@ function Createingredient() {
                       {focusedInputIndex === index ? (
                         <div className="hide-overflow-y">
                           <div className="suggestions-container">
-                            {getSuggestions(index).map((suggestion) => (
+                            {suggestions.map((suggestion) => (
                               <div
+                                key={suggestion}
                                 className="suggestion-container"
                                 onClick={() =>
-                                  handleSuggestionClick(suggestion)
+                                  handleSuggestionClick(suggestion, index)
                                 }
                               >
-                                {suggestion}
+                                {suggestion.name}
                               </div>
                             ))}
                           </div>
