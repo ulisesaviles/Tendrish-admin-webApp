@@ -1887,6 +1887,20 @@ export const editUser = {
       es: "Cambiar",
       en: "Switch",
     },
+    add: {
+      es: "Agregar",
+      en: "Add",
+    },
+    removeRecipe: {
+      es: "Remover",
+      en: "Remove",
+    },
+    removeConfirmation: {
+      es: (recipeName) =>
+        `¿Estás seguro(a) de que quieres remover ${recipeName} del meal plan?`,
+      en: (recipeName) =>
+        `Are you sure you want to remove ${recipeName} from the meal plan?`,
+    },
     settingsBtn: {
       es: "Ajustes de usuario",
       en: "User's settings",

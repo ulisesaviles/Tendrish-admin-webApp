@@ -70,7 +70,6 @@ const EditUser = () => {
   ]);
   const [selectedDay, setSelectedDay] = useState(todaysDate);
   const [mealPlan, setMealPlan] = useState(null);
-  const [mealHovered, setMealHovered] = useState(null);
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [selectedMealType, setSelectedMealType] = useState(null);
   const meals = ["breakfast", "snack1", "lunch", "snack2", "dinner"];
@@ -574,6 +573,37 @@ const EditUser = () => {
     );
   };
 
+  const removeRecipe = async (meal, recipeName) => {
+    if (
+      !window.confirm(
+        strings.userPlan.removeConfirmation[theme.lang](recipeName)
+      )
+    )
+      return;
+
+    let temp = mealPlan;
+    temp[meal].id = null;
+    setMealPlan(temp);
+    updateDom();
+
+    const response = await axios({
+      method: "post",
+      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+      data: {
+        method: "editUserMealPlan",
+        userId: selectedUserId,
+        date: { ...selectedDay, month: selectedDay.month + 1 },
+        dishToChange: meal,
+        newRecipe: {
+          id: null,
+        },
+      },
+    });
+    if (response.status === 200) {
+      console.log(response.data);
+    }
+  };
+
   const resetMealPlan = () => {
     setSelectedMeal(null);
     setSelectedMealType(null);
@@ -850,14 +880,11 @@ const EditUser = () => {
                     <div>
                       {meals.map((meal) => (
                         <div
-                          onClick={() => startMealChange(meal)}
                           className={`editUSer-userFinder-meal-container ${
                             selectedMealType === meal
                               ? "editUSer-userFinder-meal-container-selected"
                               : ""
                           }`}
-                          onMouseEnter={() => setMealHovered(meal)}
-                          onMouseLeave={() => setMealHovered(null)}
                         >
                           <div className="editUSer-userFinder-meal-text-container">
                             <p
@@ -889,15 +916,31 @@ const EditUser = () => {
                           {selectedMealType === meal ? (
                             <RightArrow className="editUSer-userFinder-meal-arrow" />
                           ) : (
-                            <p
-                              className={`editUSer-userFinder-meal-switchBtn ${
-                                mealHovered === meal
-                                  ? "editUSer-userFinder-meal-switchBtn-hovered"
-                                  : ""
-                              }`}
-                            >
-                              {strings.userPlan.switchBtn[theme.lang]}
-                            </p>
+                            <div>
+                              <p
+                                className="editUSer-userFinder-meal-switchBtn"
+                                onClick={() => startMealChange(meal)}
+                              >
+                                {mealPlan[meal].id != null
+                                  ? strings.userPlan.switchBtn[theme.lang]
+                                  : strings.userPlan.add[theme.lang]}
+                              </p>
+                              {mealPlan[meal].id != null ? (
+                                <p
+                                  className="editUSer-userFinder-meal-switchBtn"
+                                  onClick={() =>
+                                    removeRecipe(
+                                      meal,
+                                      capitilize(
+                                        correctLang(mealPlan[meal].name)
+                                      )
+                                    )
+                                  }
+                                >
+                                  {strings.userPlan.removeRecipe[theme.lang]}
+                                </p>
+                              ) : null}
+                            </div>
                           )}
                         </div>
                       ))}

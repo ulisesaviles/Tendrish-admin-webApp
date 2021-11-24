@@ -1919,8 +1919,9 @@ body {
   font-weight: 500;
   padding: 1px 10px;
   border-radius: var(--div-border-radius);
+  text-align: center;
 }
-.editUSer-userFinder-meal-switchBtn-hovered {
+.editUSer-userFinder-meal-switchBtn:hover {
   box-shadow: var(--shadow);
   background-image: var(--gradient);
   color: white;
