@@ -692,10 +692,17 @@ const Agenda = () => {
               {/* Phone */}
               <div className="agenda-appintmentSection-field-container">
                 <p className="agenda-appintmentSection-fieldName">
-                  {strings.appointment.phone[theme.lang]}
+                  {strings.appointment.phone.title[theme.lang]}
                 </p>
-                <p className="agenda-appointmentSection-field">
-                  {currentAppointment.userData.phoneNumber}
+                <p
+                  className="agenda-appointmentSection-field"
+                  style={{
+                    opacity: currentAppointment.userData.phoneNumber ? 1 : 0.5,
+                  }}
+                >
+                  {currentAppointment.userData.phoneNumber
+                    ? currentAppointment.userData.phoneNumber
+                    : strings.appointment.phone.empty[theme.lang]}
                 </p>
               </div>
               {/* AppointmentNum */}
@@ -703,8 +710,18 @@ const Agenda = () => {
                 <p className="agenda-appintmentSection-fieldName">
                   {strings.appointment.appointmentNum[theme.lang]}
                 </p>
-                <p className="agenda-appointmentSection-field">
-                  {currentAppointment.userData.appointmentsData.counter}
+                <p
+                  className="agenda-appointmentSection-field"
+                  style={{
+                    opacity: currentAppointment.userData.appointmentsData
+                      .counter
+                      ? 1
+                      : 0.5,
+                  }}
+                >
+                  {currentAppointment.userData.appointmentsData.counter
+                    ? currentAppointment.userData.appointmentsData.counter
+                    : strings.appointment.lastAppointment.empty[theme.lang]}
                 </p>
               </div>
               {/* Las appointment */}
@@ -712,28 +729,40 @@ const Agenda = () => {
                 <p className="agenda-appintmentSection-fieldName">
                   {strings.appointment.lastAppointment.title[theme.lang]}
                 </p>
-                <div className="agenda-appointmentSection-field-horizontal-container">
-                  <p className="agenda-appointmentSection-field agenda-appointmentSection-field-subName">
-                    {strings.appointment.lastAppointment.admin[theme.lang]}
+                {currentAppointment.userData.appointmentsData
+                  .lastAppointment ? (
+                  <>
+                    <div className="agenda-appointmentSection-field-horizontal-container">
+                      <p className="agenda-appointmentSection-field agenda-appointmentSection-field-subName">
+                        {strings.appointment.lastAppointment.admin[theme.lang]}
+                      </p>
+                      <p className="agenda-appointmentSection-field">
+                        {
+                          currentAppointment.userData.appointmentsData
+                            .lastAppointment.admin
+                        }
+                      </p>
+                    </div>
+                    <div className="agenda-appointmentSection-field-horizontal-container">
+                      <p className="agenda-appointmentSection-field agenda-appointmentSection-field-subName">
+                        {strings.appointment.lastAppointment.date[theme.lang]}
+                      </p>
+                      <p className="agenda-appointmentSection-field">
+                        {timestampToDateStr(
+                          currentAppointment.userData.appointmentsData
+                            .lastAppointment.date
+                        )}
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  <p
+                    className="agenda-appointmentSection-field"
+                    style={{ opacity: 0.5 }}
+                  >
+                    {strings.appointment.lastAppointment.empty[theme.lang]}
                   </p>
-                  <p className="agenda-appointmentSection-field">
-                    {
-                      currentAppointment.userData.appointmentsData
-                        .lastAppointment.admin
-                    }
-                  </p>
-                </div>
-                <div className="agenda-appointmentSection-field-horizontal-container">
-                  <p className="agenda-appointmentSection-field agenda-appointmentSection-field-subName">
-                    {strings.appointment.lastAppointment.date[theme.lang]}
-                  </p>
-                  <p className="agenda-appointmentSection-field">
-                    {timestampToDateStr(
-                      currentAppointment.userData.appointmentsData
-                        .lastAppointment.date
-                    )}
-                  </p>
-                </div>
+                )}
               </div>
               {/* Zoom link */}
               <div className="agenda-appintmentSection-field-container">

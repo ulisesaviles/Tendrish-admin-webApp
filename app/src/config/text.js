@@ -1793,8 +1793,14 @@ export const agenda = {
       en: "Appointment's time",
     },
     phone: {
-      es: "Número telefónico",
-      en: "Phone number",
+      title: {
+        es: "Número telefónico",
+        en: "Phone number",
+      },
+      empty: {
+        es: "No ha registrado su número telefónico",
+        en: "Has not registered his (her) phone number",
+      },
     },
     appointmentNum: {
       es: "Número de cita",
@@ -1816,6 +1822,10 @@ export const agenda = {
       title: {
         es: "Datos de la última cita",
         en: "Last appointment data",
+      },
+      empty: {
+        es: "Nunca ha tenido una cita (esta será su primera)",
+        en: "Has never had an appointment (this will be his (her)'s first one)",
       },
     },
     empty: {
