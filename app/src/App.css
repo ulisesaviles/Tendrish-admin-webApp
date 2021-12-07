@@ -943,10 +943,7 @@ body {
   align-items: center;
 }
 .recipe-search-recipe-img {
-  width: fit-content;
-  height: fit-content;
-  min-height: 100%;
-  min-width: 100%;
+  max-width: 100%;
 }
 .recipe-search-recipe-img-container {
   border-radius: 20px 20px 0 0;
@@ -973,6 +970,7 @@ body {
 }
 .recipe-search-recipe-txt-container {
   padding: 5px 15px;
+  overflow-x: hidden;
 }
 .recipe-search-recipe-name {
   margin: 0;

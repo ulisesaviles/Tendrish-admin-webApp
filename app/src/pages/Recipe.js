@@ -17,7 +17,7 @@ import axios from "axios";
 // Navigation
 import { useHistory } from "react-router-dom";
 
-function Createingredient() {
+function ViewRecipe() {
   // Constants
   const theme = getTheme();
   const admin = JSON.parse(localStorage.getItem("user"));
@@ -184,19 +184,25 @@ function Createingredient() {
   };
 
   const getRecipeAccompaniments = async (accompanimentsList) => {
+    let accompaniments = [];
     for (let i = 0; i < accompanimentsList.length; i++) {
-      accompanimentsList[i] = (
-        await axios({
-          method: "post",
-          url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-          data: {
-            method: "getRecipeById",
-            recipeId: accompanimentsList[i],
-          },
-        })
-      ).data;
+      try {
+        const recipe = (
+          await axios({
+            method: "post",
+            url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+            data: {
+              method: "getRecipeById",
+              recipeId: accompanimentsList[i],
+            },
+          })
+        ).data;
+        if (!recipe) continue;
+        accompaniments.push(recipe);
+      } catch (e) {}
     }
-    return accompanimentsList;
+    console.log(accompaniments);
+    return accompaniments;
   };
 
   const getRecipeIngredients = async (ingredientsList) => {
@@ -773,4 +779,4 @@ function Createingredient() {
   );
 }
 
-export default Createingredient;
+export default ViewRecipe;
