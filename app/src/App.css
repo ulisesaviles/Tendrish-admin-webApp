@@ -447,6 +447,7 @@ body {
   color: var(--secondary);
   margin-right: 5px;
   cursor: pointer;
+  min-width: 16px;
 }
 .ingredient-lang {
   margin: 0 0 2px 0;
@@ -828,12 +829,14 @@ body {
   padding: 1px 15px;
   margin: 5px 0;
   text-align: center;
+  overflow: hidden;
 }
 .accompaniment-selected:hover {
   transform: translateY(0);
 }
 .remove-accompaniment {
   transition: var(--animation-short);
+  min-width: 16px;
 }
 .remove-accompaniment:hover {
   transform: scale(1.2);
@@ -916,6 +919,8 @@ body {
   box-shadow: none;
   max-height: 100%;
   overflow: hidden;
+  display: flex;
+  justify-content: space-between;
 }
 .recipe-search-container {
   display: flex;
@@ -950,7 +955,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 150px;
+  max-height: 150px;
   overflow-y: hidden;
   overflow-x: hidden;
   width: calc((82vw * 0.95 * 0.45 - 40px) * 0.4 + 1);
@@ -1077,6 +1082,7 @@ body {
   display: flex;
   align-items: center;
   flex-direction: column;
+  padding-bottom: 20px;
 }
 .recipe-recipeSection-recipe-details-container {
   display: flex;
@@ -1110,7 +1116,6 @@ body {
 .recipe-recipeSection-recipe-ingredient-container {
   display: flex;
   flex-direction: row;
-  align-items: center;
   width: 90%;
   margin: 2px 0 2px 10px;
 }
@@ -1129,7 +1134,7 @@ body {
 }
 .recipe-recipeSection-recipe-accompaniment-container {
   width: 100px;
-  height: 120px;
+  min-height: 120px;
   border-radius: var(--div-border-radius);
   box-shadow: var(--shadow);
   display: flex;
@@ -1145,6 +1150,7 @@ body {
 .recipe-recipeSection-recipe-accompaniment-name {
   margin: 0 10px;
   text-align: center;
+  overflow-y: hidden;
 }
 .recipe-recipeSection-recipe-accompaniments-container {
   overflow-x: scroll;
