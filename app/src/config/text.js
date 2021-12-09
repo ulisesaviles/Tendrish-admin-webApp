@@ -1685,6 +1685,10 @@ export const stats = {
     es: "Usuarios por rango de edades",
     en: "Users per age range",
   },
+  loading: {
+    es: "Cargando...",
+    en: "Loading...",
+  },
 };
 
 export const adminTypes = {

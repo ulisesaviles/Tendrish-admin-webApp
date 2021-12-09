@@ -1498,6 +1498,10 @@ body {
   background-color: var(--separators-color);
   margin: 15px 0;
 }
+.stats-loading {
+  opacity: 0.5;
+  margin: 15px 0;
+}
 
 /* Agenda */
 .agenda-monthsSection-container {

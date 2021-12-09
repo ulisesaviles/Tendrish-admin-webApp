@@ -30,12 +30,12 @@ function Stats() {
       { key: "activeUsers", num: null },
       { key: "recipesCreated", num: null },
     ],
-    newUsers: {},
-    favoriteRecipes: [],
-    usersPerGender: [],
-    usersPerCountry: [],
-    usersPerBirthYear: {},
-    usersPerAgeRange: [],
+    newUsers: null,
+    favoriteRecipes: null,
+    usersPerGender: null,
+    usersPerCountry: null,
+    usersPerBirthYear: null,
+    usersPerAgeRange: null,
   });
   const [graphData, setGraphData] = useState({
     labels: [],
@@ -266,9 +266,13 @@ function Stats() {
                 <h5 className="stats-header-item-name">
                   {strings.header[headerStat.key][theme.lang]}
                 </h5>
-                <h1 className="stats-header-item">
-                  {formatNum(headerStat.num)}
-                </h1>
+                {headerStat.num !== null ? (
+                  <h1 className="stats-header-item">
+                    {formatNum(headerStat.num)}
+                  </h1>
+                ) : (
+                  <p className="stats-loading">{strings.loading[theme.lang]}</p>
+                )}
               </div>
               {stats.header.indexOf(headerStat) < stats.header.length - 1 ? (
                 <div className="stats-header-separator" />
@@ -310,50 +314,66 @@ function Stats() {
               <p className="stats-section-title">
                 {strings.favoriteRecipes[theme.lang]}
               </p>
-              {stats.favoriteRecipes.map((row) => {
-                let index = stats.favoriteRecipes.indexOf(row);
-                return (
-                  <>
-                    <div className="stats-row-container">
-                      <div className="stats-row-leftSection-container">
-                        <p className="stats-row-index">{index + 1}</p>
-                        <p className="stats-row-text">
-                          {correctLang(row.name)}
-                        </p>
-                      </div>
-                      <p className="stats-row-text">{row.likes}</p>
-                    </div>
-                    {index < stats.favoriteRecipes.length - 1 ? (
-                      <div className="stats-row-separator" />
-                    ) : null}
-                  </>
-                );
-              })}
+              {stats.favoriteRecipes === null ? (
+                <p className="stats-loading">{strings.loading[theme.lang]}</p>
+              ) : (
+                <>
+                  {stats.favoriteRecipes.map((row) => {
+                    let index = stats.favoriteRecipes.indexOf(row);
+                    return (
+                      <>
+                        <div className="stats-row-container">
+                          <div className="stats-row-leftSection-container">
+                            <p className="stats-row-index">{index + 1}</p>
+                            <p className="stats-row-text">
+                              {correctLang(row.name)}
+                            </p>
+                          </div>
+                          <p className="stats-row-text">{row.likes}</p>
+                        </div>
+                        {index < stats.favoriteRecipes.length - 1 ? (
+                          <div className="stats-row-separator" />
+                        ) : null}
+                      </>
+                    );
+                  })}
+                </>
+              )}
             </div>
             {/* Users per gender */}
             <div className="stats-content-section-container">
               <p className="stats-section-title">
                 {strings.usersPerGender[theme.lang]}
               </p>
-              {stats.usersPerGender.map((row) => {
-                let index = stats.usersPerGender.indexOf(row);
-                return (
-                  <>
-                    <div className="stats-row-container">
-                      <div className="stats-row-leftSection-container">
-                        <p className="stats-row-index">{index + 1}</p>
-                        <p className="stats-row-text">
-                          {strings.usersPerGender.genders[row.key][theme.lang]}
-                        </p>
-                      </div>
-                      <p className="stats-row-text">{row.users}</p>
-                    </div>
-                    {index < stats.usersPerGender.length - 1 ? (
-                      <div className="stats-row-separator" />
-                    ) : null}
-                  </>
-                );
-              })}
+              {stats.favoriteRecipes === null ? (
+                <p className="stats-loading">{strings.loading[theme.lang]}</p>
+              ) : (
+                <>
+                  {stats.usersPerGender.map((row) => {
+                    let index = stats.usersPerGender.indexOf(row);
+                    return (
+                      <>
+                        <div className="stats-row-container">
+                          <div className="stats-row-leftSection-container">
+                            <p className="stats-row-index">{index + 1}</p>
+                            <p className="stats-row-text">
+                              {
+                                strings.usersPerGender.genders[row.key][
+                                  theme.lang
+                                ]
+                              }
+                            </p>
+                          </div>
+                          <p className="stats-row-text">{row.users}</p>
+                        </div>
+                        {index < stats.usersPerGender.length - 1 ? (
+                          <div className="stats-row-separator" />
+                        ) : null}
+                      </>
+                    );
+                  })}
+                </>
+              )}
             </div>
           </div>
           {/* Right section */}
@@ -363,48 +383,60 @@ function Stats() {
               <p className="stats-section-title">
                 {strings.usersPerCountry[theme.lang]}
               </p>
-              {stats.usersPerCountry.map((row) => {
-                let index = stats.usersPerCountry.indexOf(row);
-                return (
-                  <>
-                    <div className="stats-row-container">
-                      <div className="stats-row-leftSection-container">
-                        <p className="stats-row-index">{index + 1}</p>
-                        <p className="stats-row-text">
-                          {correctLang(row.country.name)}
-                        </p>
-                      </div>
-                      <p className="stats-row-text">{row.users}</p>
-                    </div>
-                    {index < stats.usersPerCountry.length - 1 ? (
-                      <div className="stats-row-separator" />
-                    ) : null}
-                  </>
-                );
-              })}
+              {stats.favoriteRecipes === null ? (
+                <p className="stats-loading">{strings.loading[theme.lang]}</p>
+              ) : (
+                <>
+                  {stats.usersPerCountry.map((row) => {
+                    let index = stats.usersPerCountry.indexOf(row);
+                    return (
+                      <>
+                        <div className="stats-row-container">
+                          <div className="stats-row-leftSection-container">
+                            <p className="stats-row-index">{index + 1}</p>
+                            <p className="stats-row-text">
+                              {correctLang(row.country.name)}
+                            </p>
+                          </div>
+                          <p className="stats-row-text">{row.users}</p>
+                        </div>
+                        {index < stats.usersPerCountry.length - 1 ? (
+                          <div className="stats-row-separator" />
+                        ) : null}
+                      </>
+                    );
+                  })}
+                </>
+              )}
             </div>
             {/* Users per age range */}
             <div className="stats-content-section-container">
               <p className="stats-section-title">
                 {strings.usersPerAgeRange[theme.lang]}
               </p>
-              {stats.usersPerAgeRange.map((row) => {
-                let index = stats.usersPerAgeRange.indexOf(row);
-                return (
-                  <>
-                    <div className="stats-row-container">
-                      <div className="stats-row-leftSection-container">
-                        <p className="stats-row-index">{index + 1}</p>
-                        <p className="stats-row-text">{row.range}</p>
-                      </div>
-                      <p className="stats-row-text">{row.users}</p>
-                    </div>
-                    {index < stats.usersPerAgeRange.length - 1 ? (
-                      <div className="stats-row-separator" />
-                    ) : null}
-                  </>
-                );
-              })}
+              {stats.favoriteRecipes === null ? (
+                <p className="stats-loading">{strings.loading[theme.lang]}</p>
+              ) : (
+                <>
+                  {stats.usersPerAgeRange.map((row) => {
+                    let index = stats.usersPerAgeRange.indexOf(row);
+                    return (
+                      <>
+                        <div className="stats-row-container">
+                          <div className="stats-row-leftSection-container">
+                            <p className="stats-row-index">{index + 1}</p>
+                            <p className="stats-row-text">{row.range}</p>
+                          </div>
+                          <p className="stats-row-text">{row.users}</p>
+                        </div>
+                        {index < stats.usersPerAgeRange.length - 1 ? (
+                          <div className="stats-row-separator" />
+                        ) : null}
+                      </>
+                    );
+                  })}
+                </>
+              )}
             </div>
           </div>
         </div>
