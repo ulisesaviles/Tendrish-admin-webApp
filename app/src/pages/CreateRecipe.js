@@ -199,15 +199,11 @@ function Createingredient() {
         accompaniments: formatAccompaniments([...accompaniments]),
       },
     };
-    console.log({ method: "createRecipe", recipe, publish });
 
     // If it is an edit
     try {
       let response;
-      if (
-        recipeToEdit !== null &&
-        name[langs.default].toLowerCase() !== recipeToEdit.id
-      ) {
+      if (recipeToEdit !== null) {
         response = await axios({
           method: "post",
           url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -311,7 +307,6 @@ function Createingredient() {
   const formatIngredients = (ingredients) => {
     for (let i = 0; i < ingredients.length; i++) {
       ingredients[i].measuredBy = ingredients[i].measuredByDisplay;
-      console.log(ingredients[i]);
       if (ingredients[i].state != null) {
         ingredients[i].state = ingredients[i].state[langs.default]
           ? ingredients[i].state
@@ -709,11 +704,10 @@ function Createingredient() {
     for (let i = 0; i < defaultValues.accompaniments.length; i++) {
       for (let j = 0; j < recipe.opc.accompaniments.length; j++) {
         if (
-          defaultValues.accompaniments[i].id ===
-          recipe.opc.accompaniments[j].general.name.en.toLowerCase()
+          defaultValues.accompaniments[i].id === recipe.opc.accompaniments[j].id
         ) {
           tempAccompaniments.push({
-            id: recipe.opc.accompaniments[j].general.name.en.toLowerCase(),
+            id: defaultValues.accompaniments[i].id,
             img: recipe.opc.accompaniments[j].general.img,
             name: recipe.opc.accompaniments[j].general.name,
           });
