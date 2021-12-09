@@ -30,6 +30,7 @@ function Profiles() {
   const [adminToEditIndex, setAdminToEditIndex] = useState(0);
   const [newAdmin, setNewAdmin] = useState({
     name: "",
+    videoCallLink: "",
     email: "",
     password: {
       hidden: true,
@@ -47,9 +48,11 @@ function Profiles() {
     langs: ["es"],
   });
   const [admins, setAdmins] = useState([]);
+  const [creating, setCreating] = useState(false);
 
   // Functions
   const createAdmin = async () => {
+    setCreating(true);
     const requestOffset = new Date().getTimezoneOffset();
     let response = await axios({
       method: "post",
@@ -61,6 +64,7 @@ function Profiles() {
         requestOffset,
       },
     });
+    setCreating(false);
     if (response.status === 200) {
       alert("Success");
       setPopupIsDisplayed(false);
@@ -148,6 +152,7 @@ function Profiles() {
     else
       setNewAdmin({
         name: "",
+        videoCallLink: "",
         email: "",
         password: {
           hidden: true,
@@ -291,6 +296,27 @@ function Profiles() {
                   value={newAdmin.name}
                   onChange={(event) =>
                     setNewAdmin({ ...newAdmin, name: event.target.value })
+                  }
+                />
+              </>
+              {/* Video call link */}
+              <>
+                <h4 className="profiles-popup-input-name">
+                  {strings.popups[popupType].videoCallLink.title[theme.lang]}
+                </h4>
+                <input
+                  className="input profiles-popup-input"
+                  placeholder={
+                    strings.popups[popupType].videoCallLink.placeHolder[
+                      theme.lang
+                    ]
+                  }
+                  value={newAdmin.videoCallLink}
+                  onChange={(event) =>
+                    setNewAdmin({
+                      ...newAdmin,
+                      videoCallLink: event.target.value,
+                    })
                   }
                 />
               </>
@@ -488,9 +514,18 @@ function Profiles() {
               </>
               {/* Submit */}
               <>
-                <p className="btn profiles-popup-submit" onClick={createAdmin}>
-                  {strings.popups[popupType].submit[theme.lang]}
-                </p>
+                {!creating ? (
+                  <p
+                    className="btn profiles-popup-submit"
+                    onClick={createAdmin}
+                  >
+                    {strings.popups[popupType].submit[theme.lang]}
+                  </p>
+                ) : (
+                  <p className="profiles-popup-loading">
+                    {strings.loading[theme.lang]}
+                  </p>
+                )}
               </>
             </div>
           </div>

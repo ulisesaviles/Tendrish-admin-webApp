@@ -1398,6 +1398,10 @@ body {
   align-items: center;
   height: 70%;
 }
+.profiles-popup-loading {
+  opacity: 0.5;
+  margin: 15px 0 0 0;
+}
 
 /* Stats */
 .stats-container {

@@ -1418,6 +1418,13 @@ export const profiles = {
           en: "Enter the admin's new name",
         },
       },
+      videoCallLink: {
+        title: { es: "Enlace de video llamada", en: "Video call link" },
+        placeHolder: {
+          es: "Ingresa el enlace de video llamada del administrador",
+          en: "Enter the admin's video call link",
+        },
+      },
       password: {
         title: {
           es: "Contraseña",
@@ -1514,6 +1521,13 @@ export const profiles = {
         placeHolder: {
           es: "Ingresa el nombre del nuevo administrador",
           en: "Enter the new admin's name",
+        },
+      },
+      videoCallLink: {
+        title: { es: "Enlace de video llamada", en: "Video call link" },
+        placeHolder: {
+          es: "Ingresa el enlace de video llamada del administrador",
+          en: "Enter the admin's video call link",
         },
       },
       password: {
@@ -1832,10 +1846,24 @@ export const agenda = {
       es: "Selecciona una cita",
       en: "Select an appointment",
     },
+    lang: {
+      es: "Idioma que habla el usuario",
+      en: "Language spoken by the user",
+    },
   },
   factorDate: {
     es: (day, date, month, year) => `${day} ${date} de ${month} de ${year}`,
     en: (day, date, month, year) => `${day}, ${month} ${date} of ${year}`,
+  },
+  langs: {
+    es: {
+      es: "Español",
+      en: "Spanish",
+    },
+    en: {
+      es: "Inglés",
+      en: "English",
+    },
   },
 };
 
