@@ -2,7 +2,12 @@
 import { useState } from "react";
 
 // Local imports
-import { adminTypes, langs, viewRecipe as strings } from "../config/text";
+import {
+  adminTypes,
+  langs,
+  viewRecipe as strings,
+  categoryNames,
+} from "../config/text";
 
 // Icons
 import { MdSearch } from "react-icons/md";
@@ -376,9 +381,7 @@ function ViewRecipe() {
                       </p>
                       <p className="recipe-search-recipe-category">
                         {capitilize(
-                          recipe[`search-category-${theme.lang}`] !== undefined
-                            ? recipe[`search-category-${theme.lang}`]
-                            : recipe[`search-category-${langs.default}`]
+                          categoryNames[recipe.general.category][theme.lang]
                         )}
                       </p>
                       <div className="recipe-search-recipe-view-container">
@@ -449,10 +452,9 @@ function ViewRecipe() {
                     <div className="recipe-recipeSection-recipe-details-container">
                       <p className="recipe-recipeSection-recipe-category">
                         {capitilize(
-                          currentRecipe[`search-category-${theme.lang}`] !==
-                            undefined
-                            ? currentRecipe[`search-category-${theme.lang}`]
-                            : currentRecipe[`search-category-${langs.default}`]
+                          categoryNames[currentRecipe.general.category][
+                            theme.lang
+                          ]
                         )}
                       </p>
                       <p className="recipe-recipeSection-recipe-name">

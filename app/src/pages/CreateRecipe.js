@@ -2,7 +2,12 @@
 import { useState, useRef, useEffect } from "react";
 
 // Local imports
-import { adminTypes, createRecipe as strings, langs } from "../config/text";
+import {
+  adminTypes,
+  createRecipe as strings,
+  langs,
+  categoryNames,
+} from "../config/text";
 
 // Icons
 import {
@@ -111,6 +116,10 @@ function Createingredient() {
 
   const addInstruction = () => {
     setInstructions([...instructions, {}]);
+  };
+
+  const capitilize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
   const correctLang = (multiLangObj) => {
@@ -943,7 +952,13 @@ function Createingredient() {
                 ) : (
                   <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
                 )}
-                <p className="ingredient-lang">{category.name[theme.lang]}</p>
+                <p className="ingredient-lang">
+                  {capitilize(
+                    categoryNames[category.name[langs.default].toLowerCase()][
+                      theme.lang
+                    ]
+                  )}
+                </p>
               </div>
             ))}
             <div

@@ -2086,3 +2086,26 @@ export const editUser = {
     },
   },
 };
+
+export const categoryNames = {
+  accompaniments: {
+    es: "Acompañamientos",
+    en: "Side dishes",
+  },
+  breakfasts: {
+    es: "Desayunos",
+    en: "Breakfasts",
+  },
+  dinners: {
+    es: "Cenas",
+    en: "Dinners",
+  },
+  lunches: {
+    es: "Comidas",
+    en: "Lunches",
+  },
+  snacks: {
+    es: "Snacks",
+    en: "Snacks",
+  },
+};
