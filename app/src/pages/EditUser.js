@@ -581,7 +581,7 @@ const EditUser = () => {
     setMealPlan(temp);
     updateDom();
 
-    const response = await axios({
+    await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
       data: {
