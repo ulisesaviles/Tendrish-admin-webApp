@@ -252,6 +252,7 @@ const Agenda = () => {
 
   const handleDateChange = async (date, month, year) => {
     if (date === " ") return;
+    setCurrentAppointment(null);
     let weekDayIndex = new Date(`${month + 1}/${date}/${year}`).getDay();
     const tempSelectedDay = {
       date,
@@ -373,8 +374,11 @@ const Agenda = () => {
   };
 
   const readableHour = (hour, minutes) => {
+    if (typeof minutes === "number") minutes = minutes.toString();
     return `${hour > 12 ? hour - 12 : hour}${
-      minutes !== undefined ? `:${minutes}` : ""
+      minutes !== undefined
+        ? `:${minutes.length === 1 ? `0${minutes}` : minutes}`
+        : ""
     } ${hour >= 12 ? "p" : "a"}m`;
   };
 
@@ -766,6 +770,15 @@ const Agenda = () => {
                 </p>
                 <p className="agenda-appointmentSection-field">
                   {currentAppointment.videoCallLink}
+                </p>
+              </div>
+              {/* Lang */}
+              <div className="agenda-appintmentSection-field-container">
+                <p className="agenda-appintmentSection-fieldName">
+                  {strings.appointment.lang[theme.lang]}
+                </p>
+                <p className="agenda-appointmentSection-field">
+                  {strings.langs[currentAppointment.lang][theme.lang]}
                 </p>
               </div>
             </div>
