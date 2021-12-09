@@ -334,7 +334,6 @@ const Createingredient = () => {
   };
 
   const handleEquivalencyChangeBy1 = (stateIndex, isNumerator, isSum) => {
-    console.log(states[stateIndex].equivalence);
     const value =
       states[stateIndex].equivalence[
         isNumerator ? "numerator" : "denominator"
@@ -523,7 +522,6 @@ const Createingredient = () => {
   };
 
   const parseStates = (states) => {
-    console.log(states);
     const cuantity = {
       piece: 1,
       mass: 100,
