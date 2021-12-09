@@ -52,7 +52,6 @@ const Login = () => {
           personalInfo: response.data.personalInfo,
         };
         localStorage.setItem("user", JSON.stringify(storedUser));
-        console.log(JSON.stringify(localStorage.getItem("user")));
         navigateToDefaultTab(storedUser.personalInfo.rol);
         return;
       }
@@ -62,7 +61,6 @@ const Login = () => {
     } catch (error) {
       setError(strings.error[theme.lang]);
       setSubmited(false);
-      console.log(`Error: ${error}`);
     }
   };
 

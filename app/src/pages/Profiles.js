@@ -83,7 +83,6 @@ function Profiles() {
     });
     if (response.status === 200) {
       setAdmins(response.data);
-      console.log(response.data);
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }

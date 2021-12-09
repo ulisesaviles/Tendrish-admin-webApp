@@ -84,9 +84,6 @@ const Agenda = () => {
         minute: parseInt(key.split("_")[1].split(":")[1]),
       };
       if (start.hour === hour) {
-        console.log(
-          `Get user identity of ${appointments[key].userId} at ${start.hour}`
-        );
         res.push({
           ...appointments[key],
           userData: await getUserData(appointments[key].userId),
@@ -175,7 +172,6 @@ const Agenda = () => {
       },
     });
     if (response.status === 200) {
-      //console.log(response.data);
       await putAppointmentsInAgenda(
         response.data.schedule,
         response.data.appointments
@@ -223,7 +219,6 @@ const Agenda = () => {
         response.data.schedule,
         response.data.appointments
       );
-      // console.log(response.data);
     } else {
       alert("Error de la base de datos, vuelve a intentarlo más tarde.");
     }

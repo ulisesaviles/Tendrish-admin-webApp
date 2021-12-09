@@ -188,7 +188,6 @@ const EditUser = () => {
       }
     }
     if (selectedNewIngredients.length === 0) {
-      console.log("Not selcted ingredients");
       return false;
     }
     return true;
@@ -227,7 +226,6 @@ const EditUser = () => {
       },
     });
     if (response.status === 200) {
-      console.log("Get user notes: success");
       return response.data;
     }
     return [];
@@ -270,7 +268,6 @@ const EditUser = () => {
       },
     });
     if (response.status === 200) {
-      console.log(response.data);
       setMealPlan(response.data);
     }
   };
@@ -285,7 +282,6 @@ const EditUser = () => {
       },
     });
     if (response.status === 200) {
-      console.log(response.data);
       setExclusions(response.data.exclusions);
       setServings(response.data.servings);
     }
@@ -377,7 +373,6 @@ const EditUser = () => {
   };
 
   const handleNewExclusionNameChange = (lang, name) => {
-    console.log(`${lang}: ${name}`);
     let temp = { ...newExclusionName };
     temp[lang] = name;
     setNewExclusionName(temp);
@@ -599,9 +594,6 @@ const EditUser = () => {
         },
       },
     });
-    if (response.status === 200) {
-      console.log(response.data);
-    }
   };
 
   const resetMealPlan = () => {
@@ -624,13 +616,11 @@ const EditUser = () => {
   const searchForRecipe = async () => {
     // If lunch or dinner, make two requests
     let res = [];
-    console.log(selectedMeal.category);
     setLoadingRecipe(true);
     if (
       selectedMeal.category === "dinners" ||
       selectedMeal.category === "lunches"
     ) {
-      console.log("Fusion");
       res = [
         ...(await getRecipesByCategory("dinners")),
         ...(await getRecipesByCategory("lunches")),
@@ -677,7 +667,6 @@ const EditUser = () => {
         ids.push(exclusion.id);
       }
     }
-    console.log(ids);
     // Make request
     const response = await axios({
       method: "post",

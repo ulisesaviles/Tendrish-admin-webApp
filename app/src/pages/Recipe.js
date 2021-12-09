@@ -52,7 +52,7 @@ function ViewRecipe() {
           email: admin.id,
           password: admin.personalInfo.password,
         },
-        recipeId: currentRecipe.general.name.en.toLowerCase(),
+        recipeId: currentRecipe.id,
         published: visibility,
       },
     }).then((response) => {
@@ -83,14 +83,11 @@ function ViewRecipe() {
           email: admin.id,
           password: admin.personalInfo.password,
         },
-        recipeId: currentRecipe.general.name.en.toLowerCase(),
+        recipeId: currentRecipe.id,
         free: isFree,
       },
     }).then((response) => {
       if (response.status === 200) {
-        console.log(
-          `The server succesfully changed recipe's free to ${isFree}`
-        );
         let temp = searchResults;
         temp[currentRecipeIndex] = {
           ...temp[currentRecipeIndex],
@@ -129,11 +126,11 @@ function ViewRecipe() {
             email: admin.id,
             password: admin.personalInfo.password,
           },
-          recipeId: currentRecipe.general.name.en.toLowerCase(),
+          recipeId: currentRecipe.id,
         },
       });
       setValuesToDefault();
-    } else console.log("Cancelled");
+    }
   };
 
   const editRecipe = () => {
@@ -163,9 +160,7 @@ function ViewRecipe() {
       recipe.opc.accompaniments
     );
     // Get nutrivalues
-    recipe.nutrivalues = await getNutrivalues(
-      recipe.general.name.en.toLowerCase()
-    );
+    recipe.nutrivalues = await getNutrivalues(recipe.id);
     setLoadingRecipe(false);
     return recipe;
   };
@@ -201,7 +196,6 @@ function ViewRecipe() {
         accompaniments.push(recipe);
       } catch (e) {}
     }
-    console.log(accompaniments);
     return accompaniments;
   };
 

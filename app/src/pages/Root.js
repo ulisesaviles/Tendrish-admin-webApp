@@ -39,7 +39,6 @@ const Root = ({ location }) => {
     if (tempUser !== null) {
       tempUser = JSON.parse(tempUser);
       if (user === null || tempUser.id !== user.id) {
-        console.log("Setting user");
         setUser(tempUser);
       }
     }

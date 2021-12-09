@@ -131,7 +131,6 @@ function Stats() {
         admin,
       },
     });
-    console.log("Got stats");
     if (response.status === 200) {
       setStats({
         ...response.data,
@@ -174,7 +173,6 @@ function Stats() {
           day = daysInMonth(month) - 1;
         }
         if (data[month] === undefined || data[month][day] === undefined) {
-          console.log(`No data in ${day}/${month}`);
           // No data that day
           res.unshift(0);
         } else {
