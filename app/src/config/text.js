@@ -1821,8 +1821,8 @@ export const agenda = {
       },
     },
     appointmentNum: {
-      es: "Número de cita",
-      en: "Appointment number",
+      es: "Citas que el usuario ha tenido en el pasado",
+      en: "Appointments the user has had in the past",
     },
     link: {
       es: "Link de Zoom",
