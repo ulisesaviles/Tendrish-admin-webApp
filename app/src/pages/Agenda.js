@@ -75,6 +75,7 @@ const Agenda = () => {
     let res = [];
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
+      if (!appointments[key]) continue;
       const start = {
         hour: parseInt(key.split("_")[0].split(":")[0]),
         minute: parseInt(key.split("_")[0].split(":")[1]),
