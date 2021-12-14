@@ -314,7 +314,7 @@ const EditUser = () => {
     }
   };
 
-  const handleDateChange = async (date, month, year) => {
+  const handleDateChange = async (date, month, year, userId) => {
     // If invalid date, display it
     setSelectedMeal(null);
     setSelectedMealType(null);
@@ -344,7 +344,7 @@ const EditUser = () => {
     } else {
       setDateIsValid(true);
     }
-    await getUserMealPlan(tempSelectedDay, selectedUserId);
+    await getUserMealPlan(tempSelectedDay, userId ? userId : selectedUserId);
   };
 
   const handleDisplayCreateExclusion = async () => {
@@ -481,10 +481,16 @@ const EditUser = () => {
   };
 
   const handleUserSelection = async (userId, name) => {
-    putWeek(todaysDate.date, todaysDate.month, todaysDate.year);
+    // putWeek(todaysDate.date, todaysDate.month, todaysDate.year);
+    handleDateChange(
+      todaysDate.date,
+      todaysDate.month,
+      todaysDate.year,
+      userId
+    );
     setSelectedUserId(userId);
     setSelectedUserName(name);
-    await getUserMealPlan(todaysDate, userId);
+    // await getUserMealPlan(todaysDate, userId);
   };
 
   const handleViewExclusion = (exclusionIndex) => {
@@ -883,7 +889,8 @@ const EditUser = () => {
                                   : ""
                               }`}
                             >
-                              {mealPlan[meal].id == null
+                              {mealPlan[meal] == null ||
+                              mealPlan[meal].id == null
                                 ? ""
                                 : correctLang(strings.userPlan.meals[meal])}
                             </p>
@@ -891,13 +898,15 @@ const EditUser = () => {
                               className="editUSer-userFinder-meal-name"
                               style={{
                                 opacity:
-                                  mealPlan[meal].id != null ||
+                                  (mealPlan[meal] &&
+                                    mealPlan[meal].id != null) ||
                                   selectedMealType === meal
                                     ? "100%"
                                     : "50%",
                               }}
                             >
-                              {mealPlan[meal].id == null
+                              {mealPlan[meal] == null ||
+                              mealPlan[meal].id == null
                                 ? strings.userPlan.empty[theme.lang]
                                 : capitilize(correctLang(mealPlan[meal].name))}
                             </p>
@@ -910,11 +919,11 @@ const EditUser = () => {
                                 className="editUSer-userFinder-meal-switchBtn"
                                 onClick={() => startMealChange(meal)}
                               >
-                                {mealPlan[meal].id != null
+                                {mealPlan[meal] && mealPlan[meal].id != null
                                   ? strings.userPlan.switchBtn[theme.lang]
                                   : strings.userPlan.add[theme.lang]}
                               </p>
-                              {mealPlan[meal].id != null ? (
+                              {mealPlan[meal] && mealPlan[meal].id != null ? (
                                 <p
                                   className="editUSer-userFinder-meal-switchBtn"
                                   onClick={() =>
