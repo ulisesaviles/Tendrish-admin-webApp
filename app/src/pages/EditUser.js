@@ -12,7 +12,6 @@ import {
   MdRemove,
   MdCheckBoxOutlineBlank,
   MdCheckBox,
-  MdKeyboardArrowDown,
 } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 
@@ -35,7 +34,6 @@ const EditUser = () => {
   const [errorName, setErrorName] = useState("");
   const [hoveredUSer, setHoveredUSer] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const [selectedUserName, setSelectedUserName] = useState(null);
   const admin = JSON.parse(localStorage.getItem("user"));
   const [loadingUser, setLoadingUser] = useState(false);
 
@@ -83,17 +81,11 @@ const EditUser = () => {
   const [notes, setNotes] = useState(null);
   const [newNote, setNewNote] = useState("");
   const [servings, setServings] = useState(null);
-  const [exclusions, setExclusions] = useState(null);
-  const [openedExclusions, setOpenedExclusions] = useState([]);
   const [updater, setUpdater] = useState(0);
-  const [displayCreateExclusion, setDisplayCreateExclusion] = useState(false);
-  const [newExclusionName, setNewExclusionName] = useState({});
-  const [newExclusionIsExclusive, setNewExclusionIsExclusive] = useState(false);
-  const [selectedNewIngredients, setSelectedNewIngredients] = useState([]);
-  const [createExclusionError, setCreateExclusionError] = useState(null);
   const [ingredientsForExclusions, setIngredientsForExclusions] =
     useState(null);
   const [loadingRecipe, setLoadingRecipe] = useState(false);
+  const [excludedIngredients, setExcludedIngredients] = useState(null);
 
   // Functions
   const capitilize = (string) => {
@@ -177,45 +169,6 @@ const EditUser = () => {
       return new Date(Date.now()).getFullYear % 4 === 0 ? 29 : 28;
   };
 
-  const exclusionInputsAreValid = () => {
-    for (let i = 0; i < langs.available.length; i++) {
-      const lang = langs.available[i].key;
-      if (
-        newExclusionName[lang] === undefined ||
-        newExclusionName[lang].length < 1
-      ) {
-        return false;
-      }
-    }
-    if (selectedNewIngredients.length === 0) {
-      return false;
-    }
-    return true;
-  };
-
-  const getExclusions = async () => {
-    const response = await axios({
-      method: "post",
-      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-      data: {
-        method: "getAvailableExclusions",
-        userId: selectedUserId,
-      },
-    });
-    if (response.status === 200) {
-      setExclusions(response.data);
-    }
-  };
-
-  const getIngredientsToExclude = () => {
-    let res = [];
-    for (let i = 0; i < selectedNewIngredients.length; i++) {
-      const newIngredientIndex = selectedNewIngredients[i];
-      res.push(ingredientsForExclusions[newIngredientIndex].id);
-    }
-    return res;
-  };
-
   const getNotes = async (userId) => {
     const response = await axios({
       method: "post",
@@ -273,6 +226,7 @@ const EditUser = () => {
   };
 
   const getUserSettings = async (userId) => {
+    if (!ingredientsForExclusions) getIngredientsToExclude();
     const response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -282,35 +236,12 @@ const EditUser = () => {
       },
     });
     if (response.status === 200) {
-      setExclusions(response.data.exclusions);
-      setServings(response.data.servings);
-    }
-  };
-
-  const handleCreateExclusion = async () => {
-    if (!exclusionInputsAreValid()) {
-      setCreateExclusionError(
-        strings.responses.creation.invalidInputs[theme.lang]
+      setExcludedIngredients(
+        response.data.mealPlanDetails
+          ? response.data.mealPlanDetails.ingredientsToExclude
+          : undefined
       );
-      return;
-    }
-    setCreateExclusionError(null);
-    const response = await axios({
-      method: "post",
-      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-      data: {
-        method: "createExclusion",
-        exclusiveForUser: newExclusionIsExclusive ? selectedUserId : null,
-        name: newExclusionName,
-        ingredientsToExclude: getIngredientsToExclude(),
-      },
-    });
-    if (response.status === 200) {
-      alert(strings.responses.creation.success[theme.lang]);
-      setDisplayCreateExclusion(false);
-      setSelectedNewIngredients([]);
-      await getExclusions();
-      return;
+      setServings(response.data.servings);
     }
   };
 
@@ -347,11 +278,7 @@ const EditUser = () => {
     await getUserMealPlan(tempSelectedDay, userId ? userId : selectedUserId);
   };
 
-  const handleDisplayCreateExclusion = async () => {
-    setDisplayCreateExclusion(!displayCreateExclusion);
-    if (ingredientsForExclusions !== null || displayCreateExclusion) {
-      return;
-    }
+  const getIngredientsToExclude = async () => {
     const response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -365,27 +292,14 @@ const EditUser = () => {
     }
   };
 
-  const handleExclusionClick = (index) => {
-    let temp = exclusions;
-    temp[index].selected = !temp[index].selected;
-    setExclusions(temp);
-    updateDom();
-  };
-
-  const handleNewExclusionNameChange = (lang, name) => {
-    let temp = { ...newExclusionName };
-    temp[lang] = name;
-    setNewExclusionName(temp);
-  };
-
-  const handlenewIngredientSelection = (exclusionIndex) => {
-    let temp = selectedNewIngredients;
-    if (temp.includes(exclusionIndex)) {
-      temp.splice(temp.indexOf(exclusionIndex), 1);
+  const handlenewIngredientSelection = (ingredientId) => {
+    let temp = [...excludedIngredients];
+    if (temp.includes(ingredientId)) {
+      temp.splice(temp.indexOf(ingredientId), 1);
     } else {
-      temp.push(exclusionIndex);
+      temp.push(ingredientId);
     }
-    setSelectedNewIngredients(temp);
+    setExcludedIngredients(temp);
     updateDom();
   };
 
@@ -481,7 +395,6 @@ const EditUser = () => {
   };
 
   const handleUserSelection = async (userId, name) => {
-    // putWeek(todaysDate.date, todaysDate.month, todaysDate.year);
     handleDateChange(
       todaysDate.date,
       todaysDate.month,
@@ -489,19 +402,7 @@ const EditUser = () => {
       userId
     );
     setSelectedUserId(userId);
-    setSelectedUserName(name);
-    // await getUserMealPlan(todaysDate, userId);
-  };
-
-  const handleViewExclusion = (exclusionIndex) => {
-    let temp = openedExclusions;
-    if (temp.includes(exclusionIndex)) {
-      temp.splice(temp.indexOf(exclusionIndex), 1);
-    } else {
-      temp.push(exclusionIndex);
-    }
-    setOpenedExclusions(temp);
-    updateDom();
+    setThirdSection(null);
   };
 
   const putWeek = (centerDate, centerMonth, centerYear) => {
@@ -613,10 +514,6 @@ const EditUser = () => {
 
   const resetSettings = () => {
     setServings(null);
-    setExclusions(null);
-    setDisplayCreateExclusion(false);
-    setNewExclusionName({});
-    setNewExclusionIsExclusive(false);
   };
 
   const searchForRecipe = async () => {
@@ -665,14 +562,8 @@ const EditUser = () => {
   };
 
   const updateUserExclusions = async () => {
-    // Get selected exclusions ids
-    let ids = [];
-    for (let i = 0; i < exclusions.length; i++) {
-      const exclusion = exclusions[i];
-      if (exclusion.selected) {
-        ids.push(exclusion.id);
-      }
-    }
+    let temp = [...excludedIngredients];
+    setExcludedIngredients(null);
     // Make request
     const response = await axios({
       method: "post",
@@ -680,9 +571,14 @@ const EditUser = () => {
       data: {
         method: "updateUserExclusions",
         userId: selectedUserId,
-        exclusions: ids,
+        ingredientsToExclude: excludedIngredients,
+        admin: {
+          ...admin,
+          password: admin.personalInfo.password,
+        },
       },
     });
+    setExcludedIngredients(temp);
     if (response.status === 200) {
       alert(strings.responses.update.success[theme.lang]);
       return;
@@ -1082,7 +978,7 @@ const EditUser = () => {
           ) : thirdSection === "userSettings" ? (
             // User settings
             <>
-              {exclusions === null || servings === null ? (
+              {excludedIngredients === null || servings === null ? (
                 <div
                   className="editUser-userFinder-empty-container"
                   style={{ opacity: "50%" }}
@@ -1170,217 +1066,50 @@ const EditUser = () => {
                   </div>
 
                   {/* Exclusions */}
-                  <div className="input-section">
-                    <p className="input-name">
-                      {strings.userSettings.exclusions.title[theme.lang]}
-                    </p>
-                    {/* Map existing exclusions */}
-                    {exclusions.map((exclusion) => {
-                      const index = exclusions.indexOf(exclusion);
-                      return (
-                        <div className="editUser-exlusion-superContainer">
-                          <div className="editUser-exlusion-container">
-                            {exclusion.selected ? (
-                              <MdCheckBox
-                                className="ingredient-lang-checkbox"
-                                onClick={() => handleExclusionClick(index)}
-                              />
-                            ) : (
-                              <MdCheckBoxOutlineBlank
-                                className="ingredient-lang-checkbox"
-                                onClick={() => handleExclusionClick(index)}
-                              />
-                            )}
-                            {exclusion.name[theme.lang]}
-                            <p className="editUser-exlusion-length">
-                              ({exclusion.ingredientsToExclude.length}{" "}
-                              {
-                                strings.userSettings.exclusions
-                                  .excludedProducts[theme.lang]
-                              }
-                              )
-                            </p>
-                            {exclusion.exclusiveForUser === selectedUserId ? (
-                              <p className="editUser-exlusion-length">
-                                (
-                                {strings.userSettings.exclusions.exclusivity[
-                                  theme.lang
-                                ](selectedUserName)}
-                                )
-                              </p>
-                            ) : null}
-                            <p
-                              className="editUser-exlusion-view"
-                              onClick={() => handleViewExclusion(index)}
+                  {excludedIngredients !== undefined ? (
+                    <div className="input-section">
+                      <p className="input-name">
+                        {strings.userSettings.exclusions.title[theme.lang]}
+                      </p>
+                      <>
+                        {ingredientsForExclusions === null ? (
+                          <>
+                            <div
+                              className="editUser-userFinder-empty-container"
+                              style={{ opacity: "50%" }}
                             >
-                              {strings.userSettings.exclusions.view[theme.lang]}
-                            </p>
-                          </div>
-                          {openedExclusions.includes(index) ? (
-                            <>
-                              {exclusion.ingredientsToExclude.map(
-                                (ingredient) => (
-                                  <div className="editUser-exclusion">
-                                    <p className="editUser-exclusion-bullet">
-                                      •
-                                    </p>
-                                    {correctLang(ingredient.name)}
-                                  </div>
-                                )
+                              {strings.userPlan.loading[theme.lang]}
+                            </div>
+                          </>
+                        ) : (
+                          ingredientsForExclusions.map((ingredient) => (
+                            <div
+                              key={ingredient.id}
+                              className="editUser-exlusion-container"
+                              onClick={() =>
+                                handlenewIngredientSelection(ingredient.id)
+                              }
+                            >
+                              {excludedIngredients.includes(ingredient.id) ? (
+                                <MdCheckBox className="ingredient-lang-checkbox" />
+                              ) : (
+                                <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
                               )}
-                            </>
-                          ) : null}
-                        </div>
-                      );
-                    })}
+                              {capitilize(correctLang(ingredient.name))}
+                            </div>
+                          ))
+                        )}
+                      </>
 
-                    {/* Create exclusion */}
-                    <>
-                      {/* dropdown */}
+                      {/* Save btn */}
                       <div
-                        onClick={() => handleDisplayCreateExclusion()}
-                        className="createCat-title-container"
+                        className="editUSer-exclusions-save-btn btn"
+                        onClick={updateUserExclusions}
                       >
-                        <p className="createCat">
-                          {
-                            strings.userSettings.exclusions.new.title[
-                              theme.lang
-                            ]
-                          }{" "}
-                        </p>
-                        <MdKeyboardArrowDown
-                          className={
-                            displayCreateExclusion
-                              ? "dropdown-icon dropdown-icon-selected"
-                              : "dropdown-icon"
-                          }
-                        />
+                        {strings.userSettings.saveBtn[theme.lang]}
                       </div>
-
-                      {/* createExclusion */}
-                      {displayCreateExclusion ? (
-                        <div className="editUSer-exclusion-createExclusion-container">
-                          {/* Name */}
-                          <>
-                            <p className="input-name">
-                              {
-                                strings.userSettings.exclusions.new.name.title[
-                                  theme.lang
-                                ]
-                              }
-                            </p>
-                            {/* Name input */}
-                            {langs.available.map((lang) => (
-                              <div
-                                className="input-container"
-                                key={langs.available.indexOf(lang)}
-                              >
-                                <p className="input-lang">{`${lang.key.toUpperCase()}: `}</p>
-                                <input
-                                  className="input"
-                                  placeholder={
-                                    strings.userSettings.exclusions.new.name
-                                      .placeholder[lang.key]
-                                  }
-                                  value={newExclusionName[lang.key]}
-                                  onChange={(e) =>
-                                    handleNewExclusionNameChange(
-                                      lang.key,
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </div>
-                            ))}
-                          </>
-
-                          {/* Exclusivity */}
-                          <div
-                            className="editUser-exlusion-container"
-                            onClick={() =>
-                              setNewExclusionIsExclusive(
-                                !newExclusionIsExclusive
-                              )
-                            }
-                          >
-                            {newExclusionIsExclusive ? (
-                              <MdCheckBox className="ingredient-lang-checkbox" />
-                            ) : (
-                              <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                            )}
-                            {strings.userSettings.exclusions.exclusivity[
-                              theme.lang
-                            ](selectedUserName)}
-                          </div>
-
-                          {/* New ingredients */}
-                          <>
-                            <p className="input-name" style={{ marginTop: 10 }}>
-                              {
-                                strings.userSettings.exclusions.new.ingredients[
-                                  theme.lang
-                                ]
-                              }
-                            </p>
-                            {ingredientsForExclusions === null ? (
-                              <>
-                                {" "}
-                                <div
-                                  className="editUser-userFinder-empty-container"
-                                  style={{ opacity: "50%" }}
-                                >
-                                  {strings.userPlan.loading[theme.lang]}
-                                </div>
-                              </>
-                            ) : (
-                              ingredientsForExclusions.map((ingredient) => {
-                                const index =
-                                  ingredientsForExclusions.indexOf(ingredient);
-                                return (
-                                  <div
-                                    className="editUser-exlusion-container"
-                                    onClick={() =>
-                                      handlenewIngredientSelection(index)
-                                    }
-                                  >
-                                    {selectedNewIngredients.includes(index) ? (
-                                      <MdCheckBox className="ingredient-lang-checkbox" />
-                                    ) : (
-                                      <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
-                                    )}
-                                    {capitilize(correctLang(ingredient.name))}
-                                  </div>
-                                );
-                              })
-                            )}
-                          </>
-
-                          {/* Create Btn */}
-                          <div
-                            className="btn editUser-exclusions-createBtn"
-                            onClick={handleCreateExclusion}
-                          >
-                            {
-                              strings.userSettings.exclusions.new.save[
-                                theme.lang
-                              ]
-                            }
-                          </div>
-                          <p className="ingredient-error">
-                            {createExclusionError}
-                          </p>
-                        </div>
-                      ) : null}
-                    </>
-
-                    {/* Save btn */}
-                    <div
-                      className="editUSer-exclusions-save-btn btn"
-                      onClick={updateUserExclusions}
-                    >
-                      {strings.userSettings.saveBtn[theme.lang]}
                     </div>
-                  </div>
+                  ) : null}
                 </>
               )}
             </>
