@@ -332,6 +332,7 @@ body {
   align-items: center;
   margin-bottom: 10px;
   line-height: 16px;
+  min-width: min-content;
 }
 .nav-item:hover {
   box-shadow: var(--shadow);
@@ -2053,6 +2054,53 @@ body {
   margin-top: 15px;
 }
 
+/* Events */
+.events-generalSection-conainer {
+  width: 25%;
+  z-index: 2;
+}
+.events-contentSection-conainer {
+  width: 40%;
+  z-index: 1;
+}
+.events-durationSection-container {
+  width: 35%;
+  z-index: 0;
+}
+.datePicker {
+  display: none;
+}
+.react-datepicker-wrapper {
+  display: none;
+}
+.events-dates-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+.events-dateContainer {
+  max-width: 50%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.dateSelector {
+  padding: 2px 15px;
+}
+.event-publish {
+  font-size: 20px;
+  padding: 4px 40px;
+  width: fit-content;
+  align-self: center;
+  margin-top: 50px;
+}
+.event-error {
+  color: var(--errors);
+  align-self: center;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+
 /* Default */
 .App {
   text-align: center;
@@ -2088,3 +2136,17 @@ body {
     transform: rotate(360deg);
   }
 }
+
+
+/* @media only screen and (max-width: 900px) {
+  .content-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+  }
+  .subsection {
+    min-width: calc(100% - 40px);
+    max-width: calc(100% - 40px);
+    overflow-y: visible;
+  }
+} */

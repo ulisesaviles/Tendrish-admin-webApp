@@ -2141,3 +2141,110 @@ export const categoryNames = {
     en: "Snacks",
   },
 };
+
+export const events = {
+  general: {
+    title: {
+      es: "General",
+      en: "General",
+    },
+    langs: {
+      es: "Idiomas",
+      en: "Languages",
+    },
+    img: {
+      title: {
+        es: "Foto",
+        en: "Photo",
+      },
+      btn: {
+        es: "Agregar foto",
+        en: "Add photo",
+      },
+      placeholder: {
+        es: "(Agrega una foto 2:1)",
+        en: "(Add a photo 2:1)",
+      },
+    },
+  },
+  content: {
+    title: {
+      es: "Contenido",
+      en: "Content",
+    },
+    title_: {
+      title: {
+        es: "Título",
+        en: "Title",
+      },
+      placeHolder: {
+        es: "Ingresa el título del evento",
+        en: "Enter the event title",
+      },
+    },
+    content: {
+      title: {
+        es: "Contenido",
+        en: "Content",
+      },
+      placeHolder: {
+        es: "Ingresa el contenido del evento",
+        en: "Enter the event content",
+      },
+    },
+    link: {
+      title: {
+        es: "Enlace (opcional)",
+        en: "Link (optional)",
+      },
+      placeHolder: {
+        es: "Ingresa el enlace al evento",
+        en: "Enter event the link",
+      },
+    },
+  },
+  duration: {
+    title: {
+      es: "Duración",
+      en: "Duration",
+    },
+    months: [
+      { es: "Enero", en: "January" },
+      { es: "Febrero", en: "February" },
+      { es: "Marzo", en: "March" },
+      { es: "Abril", en: "April" },
+      { es: "Mayo", en: "May" },
+      { es: "Junio", en: "June" },
+      { es: "Julio", en: "July" },
+      { es: "Agosto", en: "August" },
+      { es: "Septiembre", en: "September" },
+      { es: "Octubre", en: "October" },
+      { es: "Noviembre", en: "November" },
+      { es: "Diciembre", en: "December" },
+    ],
+    from: {
+      es: "Del",
+      en: "From",
+    },
+    to: {
+      es: "al",
+      en: "to",
+    },
+    publish: {
+      es: "Publicar evento",
+      en: "Publish event",
+    },
+    invalidInputs: {
+      es: "Rellena todos los campos correctamente",
+      en: "Fill all inputs correctly",
+    },
+  },
+  loading: {
+    es: "Cargando...",
+    en: "Loading...",
+  },
+  success: {
+    es: "¡Creado exitosamente!",
+    en: "Created successfully!",
+  },
+};
