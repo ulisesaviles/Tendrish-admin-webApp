@@ -16,7 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 // Http
 import axios from "axios";
 
-const Createingredient = () => {
+const CreateEvent = () => {
   // Constants
   const [firstLoad, setFirstLoad] = useState(true);
   const theme = getTheme();
@@ -138,7 +138,7 @@ const Createingredient = () => {
     }
     setLoading(false);
     if (response.status === 200) {
-      alert(strings.success);
+      alert(strings.success[theme.lang]);
     }
   };
 
@@ -342,4 +342,4 @@ const Createingredient = () => {
   );
 };
 
-export default Createingredient;
+export default CreateEvent;
