@@ -116,16 +116,6 @@ function Createingredient() {
     setLoading(true);
 
     const img = await uploadImg();
-    console.log({
-      method: "createEvent",
-      title,
-      content,
-      link,
-      img,
-      admin: { email: admin.id, password: admin.personalInfo.password },
-      langs: usedLangs,
-      dates: formatDates(),
-    });
     let response;
     try {
       response = await axios.post(
@@ -148,7 +138,6 @@ function Createingredient() {
     }
     setLoading(false);
     if (response.status === 200) {
-      console.log(response.data);
       alert(strings.success);
     }
   };
