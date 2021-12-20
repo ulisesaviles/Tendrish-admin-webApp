@@ -2248,3 +2248,108 @@ export const events = {
     en: "Created successfully!",
   },
 };
+
+export const ads = {
+  general: {
+    title: {
+      es: "General",
+      en: "General",
+    },
+    langs: {
+      es: "Idiomas",
+      en: "Languages",
+    },
+    img: {
+      title: {
+        es: "Foto",
+        en: "Photo",
+      },
+      btn: {
+        es: "Agregar foto",
+        en: "Add photo",
+      },
+      placeholder: {
+        es: "(Agrega una foto 2:1)",
+        en: "(Add a photo 2:1)",
+      },
+    },
+  },
+  content: {
+    title: {
+      es: "Contenido",
+      en: "Content",
+    },
+    title_: {
+      title: {
+        es: "Título",
+        en: "Title",
+      },
+      placeHolder: {
+        es: "Ingresa el título del anuncio",
+        en: "Enter the ad title",
+      },
+    },
+    content: {
+      title: {
+        es: "Contenido",
+        en: "Content",
+      },
+      placeHolder: {
+        es: "Ingresa el contenido del anuncio",
+        en: "Enter the ad content",
+      },
+    },
+    advertiser: {
+      title: {
+        es: "Anunciante",
+        en: "Advertiser",
+      },
+      placeHolder: {
+        es: "Ingresa el nombre del anunciante",
+        en: "Enter the name of the advertiser",
+      },
+    },
+    link: {
+      title: {
+        es: "Sítio web del anunciante (opcional)",
+        en: "Advertiser website (optional)",
+      },
+      placeHolder: {
+        es: "Ingresa el enlace al sítio web del anunciante",
+        en: "Enter the advertiser's website's link",
+      },
+    },
+  },
+  scope: {
+    title: {
+      es: "Alcance",
+      en: "Scope",
+    },
+    numOfUsers: {
+      title: {
+        es: "Número de usuarios",
+        en: "Number of users",
+      },
+      placeHolder: {
+        es: "Ingresa el número de usuarios",
+        en: "Enter the number of users",
+      },
+    },
+    publish: {
+      es: "Publicar anuncio",
+      en: "Publish ad",
+    },
+    invalidInputs: {
+      es: "Rellena todos los campos correctamente",
+      en: "Fill all inputs correctly",
+    },
+  },
+  loading: {
+    es: "Cargando...",
+    en: "Loading...",
+  },
+  success: {
+    es: "¡Creado exitosamente!",
+    en: "Created successfully!",
+  },
+};
