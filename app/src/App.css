@@ -2070,9 +2070,6 @@ body {
 .datePicker {
   display: none;
 }
-.react-datepicker-wrapper {
-  display: none;
-}
 .events-dates-container {
   display: flex;
   justify-content: space-evenly;
