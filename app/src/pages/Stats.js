@@ -309,6 +309,7 @@ function Stats() {
                 <Line data={graphData} options={graphOptions} />
               </div>
             </div>
+
             {/* Favorite recipes */}
             <div className="stats-content-section-container">
               <p className="stats-section-title">
@@ -340,6 +341,9 @@ function Stats() {
                 </>
               )}
             </div>
+          </div>
+          {/* Right section */}
+          <div className="stats-content-subcontainer">
             {/* Users per gender */}
             <div className="stats-content-section-container">
               <p className="stats-section-title">
@@ -375,11 +379,9 @@ function Stats() {
                 </>
               )}
             </div>
-          </div>
-          {/* Right section */}
-          <div className="stats-content-subcontainer">
+
             {/* Users per country */}
-            <div className="stats-content-section-container">
+            {/* <div className="stats-content-section-container">
               <p className="stats-section-title">
                 {strings.usersPerCountry[theme.lang]}
               </p>
@@ -408,7 +410,8 @@ function Stats() {
                   })}
                 </>
               )}
-            </div>
+            </div> */}
+
             {/* Users per age range */}
             <div className="stats-content-section-container">
               <p className="stats-section-title">
