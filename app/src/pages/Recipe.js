@@ -144,7 +144,7 @@ function ViewRecipe() {
       "recipeToEdit",
       JSON.stringify({
         ...currentRecipe,
-        id: currentRecipe.general.name.en.toLowerCase(),
+        id: currentRecipe.id,
       })
     );
     localStorage.setItem("wantsToEdit", "true");
