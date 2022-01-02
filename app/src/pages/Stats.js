@@ -147,7 +147,7 @@ function Stats() {
     let keys = [];
     let day = new Date(Date.now()).getDate();
     let month = new Date(Date.now()).getMonth();
-    while (res.length < limit) {
+    while (res.length < limit && month > 0) {
       if (data[month] === undefined) {
         // Theres no data this month
         while (day > 0) {
