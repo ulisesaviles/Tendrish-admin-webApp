@@ -1101,8 +1101,20 @@ export const createRecipe = {
     },
   },
   messages: {
-    succes: {},
-    errors: {},
+    succes: {
+      es: "Receta creada exitosamente🎉",
+      en: "Recipe created successfully🎉",
+    },
+    errors: {
+      creating: {
+        es: "Error creando receta",
+        en: "Error while creating recipe",
+      },
+      uploadingImg: {
+        es: "Error al subir la foto",
+        en: "Error while uploading image",
+      },
+    },
   },
 };
 

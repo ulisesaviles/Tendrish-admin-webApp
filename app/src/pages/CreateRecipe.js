@@ -170,17 +170,22 @@ function Createingredient() {
 
     // Manage image uploads or substitution
     let imgUrl;
-    if (recipeToEdit === null) {
-      imgUrl = (await uploadImgs())[0];
-    } else {
-      if (selectedImageObj === null) {
-        imgUrl = {
-          url: recipeToEdit.general.img,
-          imgRef: recipeToEdit.general.imgRef,
-        };
-      } else {
+    try {
+      if (recipeToEdit === null) {
         imgUrl = (await uploadImgs())[0];
+      } else {
+        if (selectedImageObj === null) {
+          imgUrl = {
+            url: recipeToEdit.general.img,
+            imgRef: recipeToEdit.general.imgRef,
+          };
+        } else {
+          imgUrl = (await uploadImgs())[0];
+        }
       }
+    } catch (e) {
+      alert(strings.messages.errors.uploadingImg[theme.lang]);
+      return;
     }
 
     // Create recipe Obj
@@ -239,7 +244,7 @@ function Createingredient() {
 
       // If success:
       if (response.status === 200) {
-        alert("Agregado exitosamente");
+        alert(strings.messages.succes[theme.lang]);
         clearInputs();
         return;
       }
@@ -247,7 +252,7 @@ function Createingredient() {
       // Manage errors
       alert(`${response.status}: ${response.data}`);
     } catch (e) {
-      alert(e);
+      alert(strings.messages.errors.creating[theme.lang]);
     }
   };
 
