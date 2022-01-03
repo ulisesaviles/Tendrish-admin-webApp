@@ -185,6 +185,7 @@ function Createingredient() {
       }
     } catch (e) {
       alert(strings.messages.errors.uploadingImg[theme.lang]);
+      setLoading(false);
       return;
     }
 
@@ -253,6 +254,7 @@ function Createingredient() {
       alert(`${response.status}: ${response.data}`);
     } catch (e) {
       alert(strings.messages.errors.creating[theme.lang]);
+      setLoading(false);
     }
   };
 
