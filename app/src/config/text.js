@@ -280,6 +280,17 @@ export const createIngredient = {
             en: "For example: edamames, soy sauce, tofu, etc.",
           },
         },
+        {
+          key: "vegetarian",
+          title: {
+            es: "Es vegetariano",
+            en: "It's vegetarian",
+          },
+          toolTip: {
+            es: "Por ejemplo: leche, huevos, verduras, etc.",
+            en: "For example: milk, eggs, vegetables, etc.",
+          },
+        },
       ],
     },
     seasons: {
@@ -661,6 +672,10 @@ export const viewIngredient = {
       soy: {
         es: "Contiene soya",
         en: "Contains soy",
+      },
+      vegetarian: {
+        es: "Es vegetariano",
+        en: "Is vegetarian",
       },
     },
     states: {
