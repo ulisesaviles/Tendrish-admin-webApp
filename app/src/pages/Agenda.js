@@ -280,7 +280,9 @@ const Agenda = () => {
 
   const putMonths = () => {
     const limitMonth =
-      todaysDate.month + 6 >= 12 ? todaysDate.month + 6 - 12 : todaysDate.month;
+      todaysDate.month + 6 >= 12
+        ? todaysDate.month + 6 - 12
+        : todaysDate.month + 6;
     let res = [];
     let monthIndex = todaysDate.month;
     let daysInCurrentMonth;
