@@ -20,7 +20,7 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 
 // Icons
-import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
+// import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 
 const Login = () => {
   // Conatants
@@ -29,11 +29,15 @@ const Login = () => {
   const theme = getTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [keepSignedIn, setKeepSignedIn] = useState(false);
+  // const [keepSignedIn, setKeepSignedIn] = useState(false);
   const history = useHistory();
   const [error, setError] = useState(null);
 
   // Functions
+  const handleForgotPass = async () => {
+    alert(strings.forgotPasswordAlert[theme.lang]);
+  };
+
   const handleSignIn = async () => {
     try {
       const response = await axios({
@@ -114,7 +118,9 @@ const Login = () => {
           />
         </div>
         {error !== null ? <p className="sign-in-error">{error}</p> : null}
-        <div
+
+        {/* Keep me signed in */}
+        {/* <div
           onClick={() => {
             setKeepSignedIn(!keepSignedIn);
           }}
@@ -126,7 +132,9 @@ const Login = () => {
             <MdCheckBoxOutlineBlank className="keep-siged-in-icon" />
           )}
           <p className="keep-signed-in">{strings.keepSignedIn[theme.lang]}</p>
-        </div>
+        </div> */}
+
+        {/* Login */}
         <div
           className={submited ? "sign-in-btn btn submited" : "sign-in-btn btn"}
           onClick={() => {
@@ -136,12 +144,15 @@ const Login = () => {
         >
           {strings.btn[theme.lang]}
         </div>
+
+        {/* Forgot pass */}
         <p
           className={
             submited
               ? "submited login-forgot-password"
               : "login-forgot-password"
           }
+          onClick={handleForgotPass}
         >
           {strings.forgotPassword[theme.lang]}
         </p>

@@ -129,6 +129,10 @@ export const login = {
     es: "Olvidé mi contraseña",
     en: "I forgot my password",
   },
+  forgotPasswordAlert: {
+    es: "Contacta al administrador para que restablezca tu contraseña o desbloquee tu perfil",
+    en: "Contact the administrator to reset your password or unlock your profile",
+  },
   error: {
     es: "Error al iniciar sesión, comprueba tu correo y contraseña",
     en: "Login failed, check your email and password",
