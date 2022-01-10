@@ -2193,8 +2193,8 @@ export const events = {
         en: "Add photo",
       },
       placeholder: {
-        es: "(Agrega una foto 2:1)",
-        en: "(Add a photo 2:1)",
+        es: "(Agrega una foto)",
+        en: "(Add a photo)",
       },
     },
   },
@@ -2300,8 +2300,8 @@ export const ads = {
         en: "Add photo",
       },
       placeholder: {
-        es: "(Agrega una foto 2:1)",
-        en: "(Add a photo 2:1)",
+        es: "(Agrega una foto)",
+        en: "(Add a photo)",
       },
     },
   },
