@@ -1179,6 +1179,10 @@ export const viewRecipe = {
         en: "No recipe matches your search",
       },
     },
+    ingredientsMeasuresChanged: {
+      es: "Las medidas de los ingredientes cambiaron",
+      en: "Ingredient measurements changed",
+    },
   },
   recipe: {
     title: {

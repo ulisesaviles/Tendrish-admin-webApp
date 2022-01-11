@@ -1201,6 +1201,9 @@ body {
   padding: 2px 20px;
   margin: 10px;
 }
+.err-txt {
+  color: var(--errors);
+}
 
 /* Profiles */
 .profiles-content-container {

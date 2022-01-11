@@ -376,6 +376,15 @@ function ViewRecipe() {
                       />
                     </div>
                     <div className="recipe-search-recipe-txt-container">
+                      {recipe.ingredientsMeasuresChanged ? (
+                        <p className="recipe-search-recipe-category err-txt">
+                          {
+                            strings.search.ingredientsMeasuresChanged[
+                              theme.lang
+                            ]
+                          }
+                        </p>
+                      ) : null}
                       <p className="recipe-search-recipe-name">
                         {capitilize(correctLang(recipe.general.name))}
                       </p>
