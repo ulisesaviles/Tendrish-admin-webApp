@@ -483,11 +483,13 @@ function ViewRecipe() {
                                 {ingredient.cuantity.denominator === 1
                                   ? ingredient.cuantity.numerator
                                   : `${ingredient.cuantity.numerator}/${ingredient.cuantity.denominator}`}
-                                {
-                                  strings.recipe.recipe.units[
-                                    ingredient.measuredBy
-                                  ][ingredient.unit][theme.lang]
-                                }
+                                {strings.recipe.recipe.units[
+                                  ingredient.measuredBy
+                                ][ingredient.unit]
+                                  ? strings.recipe.recipe.units[
+                                      ingredient.measuredBy
+                                    ][ingredient.unit][theme.lang]
+                                  : ingredient.unit}
                               </p>
                               <p style={{ margin: 0 }}>
                                 {capitilize(correctLang(ingredient.name))}
