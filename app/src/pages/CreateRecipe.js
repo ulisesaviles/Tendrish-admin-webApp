@@ -676,6 +676,7 @@ function Createingredient() {
             ...recipeIngredient,
             availableStates: ingredient.states,
             measuredBy: ingredient.measuredBy,
+            measuredByDisplay: ingredient.measuredBy,
           };
         }
       }
