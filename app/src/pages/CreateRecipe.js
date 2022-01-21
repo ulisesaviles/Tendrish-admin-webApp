@@ -675,8 +675,8 @@ function Createingredient() {
           ingredients[j] = {
             ...recipeIngredient,
             availableStates: ingredient.states,
-            measuredBy: ingredient.measuredBy,
-            measuredByDisplay: ingredient.measuredBy,
+            // measuredBy: ingredient.measuredBy,
+            // measuredByDisplay: ingredient.measuredBy,
           };
         }
       }
@@ -836,6 +836,7 @@ function Createingredient() {
       handleSetupQuery();
     }
   });
+  console.log(ingredients);
 
   // Render
   return (
