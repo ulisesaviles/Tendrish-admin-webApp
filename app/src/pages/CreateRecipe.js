@@ -311,6 +311,7 @@ function Createingredient() {
     setAccompanimentInput("");
     setAccompaniments([]);
     setAccompanimentsSuggestions([...defaultValues.accompaniments]);
+    setRecipeToEdit(null);
   };
 
   const formatAccompaniments = (accompaniments) => {
@@ -836,7 +837,6 @@ function Createingredient() {
       handleSetupQuery();
     }
   });
-  console.log(ingredients);
 
   // Render
   return (
