@@ -34,8 +34,9 @@ function ViewRecipe() {
   const [currentRecipeIndex, setCurrentRecipeIndex] = useState(null);
   const [queriedIndexes, setQueriedIndexes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const limitPerSearch = 10;
+  const limitPerSearch = 30;
   const [loadingMore, setLoadingMore] = useState(false);
+  const [thereAreMore, setThereAreMore] = useState(true);
   // Recipe
   const [currentRecipe, setCurrentRecipe] = useState(null);
   const [loadingRecipe, setLoadingRecipe] = useState(false);
@@ -266,6 +267,7 @@ function ViewRecipe() {
     setCurrentRecipe(null);
     if (response.status === 200) {
       setSearchResults(response.data);
+      setThereAreMore(response.data.length % limitPerSearch === 0);
     }
     setLoading(false);
   };
@@ -292,7 +294,10 @@ function ViewRecipe() {
       },
     });
     if (response.status === 200) {
-      setSearchResults([...tempSearchResults, ...response.data]);
+      const result = [...tempSearchResults, ...response.data];
+      setSearchResults(result);
+      if (result.length % limitPerSearch !== 0) setThereAreMore(false);
+      else setThereAreMore(tempSearchResults.length !== result.length);
     }
     setLoadingMore(false);
   };
@@ -410,7 +415,7 @@ function ViewRecipe() {
                     </div>
                   </div>
                 ))}
-                {searchResults.length % limitPerSearch === 0 && !loadingMore ? (
+                {thereAreMore && !loadingMore ? (
                   <div
                     className="btn recipe-loadMore"
                     onClick={() => searchMore()}
