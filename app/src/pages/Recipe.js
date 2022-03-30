@@ -233,6 +233,7 @@ function ViewRecipe() {
     setCurrentRecipeIndex(index);
     if (queriedIndexes.includes(index)) {
       setCurrentRecipe(searchResults[index]);
+      console.log(searchResults[index]);
       return;
     }
 
@@ -240,6 +241,7 @@ function ViewRecipe() {
     let recipe = await getFullRecipe(searchResults[index]);
     let temp = searchResults;
     temp[index] = recipe;
+    console.log(recipe);
     setSearchResults(temp);
     setCurrentRecipe(recipe);
   };
