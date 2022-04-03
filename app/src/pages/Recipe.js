@@ -397,7 +397,9 @@ function ViewRecipe() {
                       </p>
                       <p className="recipe-search-recipe-category">
                         {capitilize(
-                          categoryNames[recipe.general.category][theme.lang]
+                          categoryNames[recipe.general.category]
+                            ? categoryNames[recipe.general.category][theme.lang]
+                            : recipe[`search-category-${theme.lang}`]
                         )}
                       </p>
                       <div className="recipe-search-recipe-view-container">
@@ -468,9 +470,11 @@ function ViewRecipe() {
                     <div className="recipe-recipeSection-recipe-details-container">
                       <p className="recipe-recipeSection-recipe-category">
                         {capitilize(
-                          categoryNames[currentRecipe.general.category][
-                            theme.lang
-                          ]
+                          categoryNames[currentRecipe.general.category]
+                            ? categoryNames[currentRecipe.general.category][
+                                theme.lang
+                              ]
+                            : currentRecipe[`search-category-${theme.lang}`]
                         )}
                       </p>
                       <p className="recipe-recipeSection-recipe-name">

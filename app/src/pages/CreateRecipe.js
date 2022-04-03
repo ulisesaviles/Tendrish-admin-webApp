@@ -963,9 +963,11 @@ function Createingredient() {
                 )}
                 <p className="ingredient-lang">
                   {capitilize(
-                    categoryNames[category.name[langs.default].toLowerCase()][
-                      theme.lang
-                    ]
+                    categoryNames[category.name[langs.default].toLowerCase()]
+                      ? categoryNames[
+                          category.name[langs.default].toLowerCase()
+                        ][theme.lang]
+                      : category.name[theme.lang].toLowerCase()
                   )}
                 </p>
               </div>
