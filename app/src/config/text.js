@@ -1237,7 +1237,7 @@ export const viewRecipe = {
       accompaniments: {
         title: {
           es: "Acompañamientos",
-          en: "Accompaniments",
+          en: "Side dishes",
         },
         viewBtn: {
           es: "Ver",
