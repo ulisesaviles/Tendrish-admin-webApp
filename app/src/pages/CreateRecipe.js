@@ -73,8 +73,6 @@ function Createingredient() {
   const [description, setDescription] = useState({});
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const [newCategory, setNewCategory] = useState({});
-  const [createCategoryWasClicked, setCreateCategoryWasClicked] =
-    useState(false);
   const [loading, setLoading] = useState(false);
 
   // Prep
@@ -946,7 +944,7 @@ function Createingredient() {
                   )}
                   <ReactTooltip
                     id="category_toolTip"
-                    place="right"
+                    place="bottom"
                     effect="float"
                   >
                     {strings.general.category.create.type.toolTip[theme.lang]}

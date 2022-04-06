@@ -4,7 +4,7 @@
   --primary: rgb(213, 52, 124);
   --secondary: rgb(236, 162, 69);
   /* divs */
-  --background: rgb(245, 245, 245);
+  --background: rgb(252, 252, 252);
   --container-background: rgb(255, 255, 255);
   --subcontainer-background: rgb(230, 230, 230);
   --gradient: linear-gradient(
@@ -31,7 +31,7 @@
   /* Extras */
   --separators-color: rgb(235, 174, 164);
   /* Shadows */
-  --shadow: 0px 4px 10px rgba(0, 0, 0, 0.16);
+  --shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
   --shadow-hover: 0px 7px 13px rgba(0, 0, 0, 0.16);
   /* Animations */
   --animation-short: all 0.1s ease-in-out;
@@ -39,6 +39,9 @@
   --scroll: rgb(230, 230, 230);
   --scroll-hover: rgb(200, 200, 200);
   --scroll-background: var(--container-background);
+  /* Blur */
+  --blur: blur(10px) brightness(1);
+  --blurColor: rgba(255, 255, 255, 0.5);
 }
 
 /* Global */
@@ -55,6 +58,8 @@
   --scroll-hover: rgb(30, 30, 30);
   --scroll-background: var(--container-background);
   --popUp-background: rgba(0, 0, 0, 0.8);
+  --blur: blur(30px) brightness(0.3);
+  --blurColor: rgba(60, 60, 60, 0.3);
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
@@ -1346,6 +1351,9 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 10;
+  background-color: var(--blurColor);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
 }
 .profiles-propup-container {
   width: calc(50% - 60px);
