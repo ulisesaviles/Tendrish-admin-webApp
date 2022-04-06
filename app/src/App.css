@@ -59,7 +59,7 @@
   --scroll-background: var(--container-background);
   --popUp-background: rgba(0, 0, 0, 0.8);
   --blur: blur(30px) brightness(0.3);
-  --blurColor: rgba(60, 60, 60, 0.3);
+  --blurColor: rgba(40, 40, 40, 0.2);
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
