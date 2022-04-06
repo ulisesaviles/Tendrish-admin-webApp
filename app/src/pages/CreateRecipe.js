@@ -27,6 +27,9 @@ import { getTheme } from "../config/theme";
 // Http
 import axios from "axios";
 
+// Tool tips
+import ReactTooltip from "react-tooltip";
+
 function Createingredient() {
   // Constants
   // Global
@@ -53,6 +56,14 @@ function Createingredient() {
   const [recipeToEdit, setRecipeToEdit] = useState(null);
   const [updater, setUpdater] = useState(0);
 
+  // Pop up
+  const [popupIsDisplayed, setPopupIsDisplayed] = useState(true);
+  const [popupType, setPopupType] = useState("loading"); // Can be "loading", "createCategory" or null
+  const [newCategoryTypes, setNewCategoryTypes] = useState([]);
+  const [newCategoryAppearsInHome, setNewCategoryAppearsInHome] = useState(
+    strings.general.category.create.appearsInHome.options[0].key
+  );
+
   // General
   const [usedLangs, setUsedLangs] = useState([langs.default]);
   const imgInputRef = useRef();
@@ -61,7 +72,6 @@ function Createingredient() {
   const [name, setName] = useState({});
   const [description, setDescription] = useState({});
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
-  const [displayCreateCat, setDisplayCreateCat] = useState(false);
   const [newCategory, setNewCategory] = useState({});
   const [createCategoryWasClicked, setCreateCategoryWasClicked] =
     useState(false);
@@ -130,33 +140,33 @@ function Createingredient() {
   };
 
   const createCategory = async () => {
-    if (
-      newCategory.es === undefined ||
-      newCategory.en === undefined ||
-      createCategoryWasClicked
-    ) {
-      return;
-    }
-    if (newCategory.es.length < 2 || newCategory.en.length < 2) {
-      return;
-    }
-    setCreateCategoryWasClicked(true);
-    let response = await axios({
-      method: "post",
-      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-      data: {
-        method: "createCategory",
-        category: newCategory,
-      },
-    });
-    setCreateCategoryWasClicked(false);
-    if (response.status === 200) {
-      setNewCategory({ es: "", en: "" });
-      setDefaultValues({
-        ...defaultValues,
-        categories: response.data.categories,
-      });
-    }
+    // if (
+    //   newCategory.es === undefined ||
+    //   newCategory.en === undefined ||
+    //   createCategoryWasClicked
+    // ) {
+    //   return;
+    // }
+    // if (newCategory.es.length < 2 || newCategory.en.length < 2) {
+    //   return;
+    // }
+    // setCreateCategoryWasClicked(true);
+    // let response = await axios({
+    //   method: "post",
+    //   url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+    //   data: {
+    //     method: "createCategory",
+    //     category: newCategory,
+    //   },
+    // });
+    // setCreateCategoryWasClicked(false);
+    // if (response.status === 200) {
+    //   setNewCategory({ es: "", en: "" });
+    //   setDefaultValues({
+    //     ...defaultValues,
+    //     categories: response.data.categories,
+    //   });
+    // }
   };
 
   const createRecipe = async (publish) => {
@@ -167,6 +177,7 @@ function Createingredient() {
     }
     setError(null);
     setLoading(true);
+    displayPopup("loading");
 
     // Manage image uploads or substitution
     let imgUrl;
@@ -256,6 +267,7 @@ function Createingredient() {
       alert(strings.messages.errors.creating[theme.lang]);
       setLoading(false);
     }
+    closePopup();
   };
 
   const createTag = async () => {
@@ -296,7 +308,6 @@ function Createingredient() {
     setName({ ...multiLangObj });
     setDescription({ ...multiLangObj });
     setSelectedCategoryIndex(0);
-    setDisplayCreateCat(false);
     setNewCategory({ ...multiLangObj });
     setServings(1);
     setTime({ prep: 10, cook: 0 });
@@ -312,6 +323,17 @@ function Createingredient() {
     setAccompaniments([]);
     setAccompanimentsSuggestions([...defaultValues.accompaniments]);
     setRecipeToEdit(null);
+    closePopup();
+  };
+
+  const closePopup = () => {
+    setPopupIsDisplayed(false);
+    setPopupType(null);
+  };
+
+  const displayPopup = (type) => {
+    setPopupType(type);
+    setPopupIsDisplayed(true);
   };
 
   const formatAccompaniments = (accompaniments) => {
@@ -486,10 +508,17 @@ function Createingredient() {
     setName(tempNames);
   };
 
-  const handleNewCategoryChange = (value, lang) => {
+  const handleNewCategoryNameChange = (value, lang) => {
     let tempCategory = { ...newCategory };
     tempCategory[lang] = value;
     setNewCategory(tempCategory);
+  };
+
+  const handleNewCategoryTypeClick = (type) => {
+    let tempTypes = [...newCategoryTypes];
+    if (tempTypes.includes(type)) tempTypes.splice(tempTypes.indexOf(type), 1);
+    else tempTypes.push(type);
+    setNewCategoryTypes(tempTypes);
   };
 
   const handleNewTagChange = (value, lang) => {
@@ -532,6 +561,7 @@ function Createingredient() {
     );
     setDefaultValues(temp);
     setAccompanimentsSuggestions(response.data.accompaniments);
+    closePopup();
 
     let tempRecipeToEdit = localStorage.getItem("recipeToEdit");
     const wantsToEdit = localStorage.getItem("wantsToEdit");
@@ -841,6 +871,130 @@ function Createingredient() {
   // Render
   return (
     <div className="tab-container">
+      {popupIsDisplayed ? (
+        <div className="profiles-propup-background">
+          {popupType === "loading" ? (
+            strings.loading[theme.lang]
+          ) : popupType === "createCategory" ? (
+            <div className="createCategory-popup-container">
+              <button
+                onClick={closePopup}
+                className="createCategory-popup-closeBtn btn"
+              >
+                <MdClose />
+              </button>
+              <div className="createCategory-popup-content-container">
+                {/* Title */}
+                <h2 className="createCategory-popup-title">
+                  {strings.general.category.create.title[theme.lang]}
+                </h2>
+                {/* Name */}
+                <>
+                  <h3 className="input-name">
+                    {strings.general.category.create.name.title[theme.lang]}
+                  </h3>
+                  {langs.available.map((lang) => (
+                    <div
+                      className="input-container"
+                      key={usedLangs.indexOf(lang)}
+                    >
+                      <p className="input-lang">{`${lang.key.toUpperCase()}: `}</p>
+                      <input
+                        className="input"
+                        placeholder={
+                          strings.general.category.create.name.placeholder[
+                            lang.key
+                          ]
+                        }
+                        value={setNewCategory[lang.key]}
+                        onChange={(event) =>
+                          handleNewCategoryNameChange(
+                            event.target.value,
+                            lang.key
+                          )
+                        }
+                      />
+                    </div>
+                  ))}
+                </>
+                {/* Type */}
+                <>
+                  <h3
+                    className="input-name"
+                    data-for="category_toolTip"
+                    data-tip
+                  >
+                    {strings.general.category.create.type.title[theme.lang]}
+                  </h3>
+                  {strings.general.category.create.type.options.map(
+                    (category) => (
+                      <div
+                        key={category.key}
+                        className="ingredient-lang-container"
+                        onClick={() => handleNewCategoryTypeClick(category.key)}
+                      >
+                        {newCategoryTypes.includes(category.key) ? (
+                          <MdCheckBox className="ingredient-lang-checkbox" />
+                        ) : (
+                          <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                        )}
+                        <p className="ingredient-lang">
+                          {capitilize(category.name[theme.lang])}
+                        </p>
+                      </div>
+                    )
+                  )}
+                  <ReactTooltip
+                    id="category_toolTip"
+                    place="right"
+                    effect="float"
+                  >
+                    {strings.general.category.create.type.toolTip[theme.lang]}
+                  </ReactTooltip>
+                  <div style={{ height: 10 }} />
+                </>
+                {/* Appears in home */}
+                <>
+                  <h3 className="input-name">
+                    {
+                      strings.general.category.create.appearsInHome.title[
+                        theme.lang
+                      ]
+                    }
+                  </h3>
+                  {strings.general.category.create.appearsInHome.options.map(
+                    (option) => (
+                      <div
+                        key={option.key}
+                        className="ingredient-lang-container"
+                        onClick={() => setNewCategoryAppearsInHome(option.key)}
+                      >
+                        {newCategoryAppearsInHome === option.key ? (
+                          <MdCheckBox className="ingredient-lang-checkbox" />
+                        ) : (
+                          <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                        )}
+                        <p className="ingredient-lang">
+                          {capitilize(option.name[theme.lang])}
+                        </p>
+                      </div>
+                    )
+                  )}
+                </>
+                {/* Btn */}
+                <>
+                  <button
+                    className="btn createCategory-popup-btn"
+                    onClick={createCategory}
+                  >
+                    {strings.general.category.create.btn[theme.lang]}
+                  </button>
+                </>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
       <div className="content-container">
         {/* General */}
         <div className="subsection createRecipe-general-container">
@@ -973,21 +1127,14 @@ function Createingredient() {
               </div>
             ))}
             <div
-              onClick={() => setDisplayCreateCat(!displayCreateCat)}
-              className="createCat-title-container"
+              onClick={() => displayPopup("createCategory")}
+              className="createCat-btn btn"
             >
               <p className="createCat">
-                {strings.general.category.create.title[theme.lang]}{" "}
+                {strings.general.category.create.title[theme.lang]}
               </p>
-              <MdKeyboardArrowDown
-                className={
-                  displayCreateCat
-                    ? "dropdown-icon dropdown-icon-selected"
-                    : "dropdown-icon"
-                }
-              />
             </div>
-            {displayCreateCat ? (
+            {/* {displayCreateCat ? (
               <div className="createCat-container">
                 {langs.available.map((lang) => (
                   <div
@@ -1016,7 +1163,7 @@ function Createingredient() {
                   {strings.general.category.create.btn[theme.lang]}
                 </div>
               </div>
-            ) : null}
+            ) : null} */}
           </div>
         </div>
 

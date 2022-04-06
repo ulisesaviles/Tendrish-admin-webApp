@@ -73,6 +73,7 @@ body {
   transition: var(--animation-short);
   box-shadow: var(--shadow);
   text-align: center;
+  border: 0;
 }
 .btn:hover {
   box-shadow: var(--shadow-hover);
@@ -615,6 +616,14 @@ body {
 }
 
 /* Create recipe */
+.createRecipePopup {
+  background-color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  padding: 0 20px;
+  height: 100vh;
+  width: calc(82vw * 0.95);
+  z-index: 100;
+}
 .createRecipe-general-container {
   width: 25%;
   z-index: 2;
@@ -631,6 +640,15 @@ body {
 .createRecipe-selected-image {
   width: 50px;
   height: auto;
+}
+.createCat-btn {
+  width: fit-content;
+  padding: 3px 30px;
+  align-self: center;
+  margin-top: 10px;
+}
+.createCat {
+  margin: 0;
 }
 .createCat-title-container {
   display: flex;
@@ -650,6 +668,44 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.createCategory-popup-container {
+  background-color: var(--container-background);
+  width: 60%;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow);
+  border-radius: var(--div-border-radius);
+}
+.createCategory-popup-closeBtn {
+  height: 30px;
+  width: 30px;
+  font-size: 22px;
+  position: relative;
+  align-self: flex-start;
+  left: 20px;
+  top: 20px;
+  margin-bottom: 20px;
+}
+.createCategory-popup-title {
+  color: var(--secondary);
+  align-self: center;
+  font-size: 30px;
+  margin: 0 0 20px;
+}
+.createCategory-popup-content-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0 40px;
+}
+.createCategory-popup-btn {
+  margin-top: 10px;
+  width: fit-content;
+  align-self: center;
+  padding: 5px 30px;
+  font-size: 16px;
+  font-weight: 600;
 }
 .createRecipe-image {
   align-self: center;
@@ -1289,7 +1345,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1;
+  z-index: 10;
 }
 .profiles-propup-container {
   width: calc(50% - 60px);

@@ -860,6 +860,10 @@ export const langs = {
 };
 
 export const createRecipe = {
+  loading: {
+    es: "Cargando...",
+    en: "Loading...",
+  },
   general: {
     title: {
       es: "General",
@@ -913,9 +917,84 @@ export const createRecipe = {
           es: "Crear nueva categoría",
           en: "Create new category",
         },
-        placeholder: {
-          es: "Ingresa la nueva categoría",
-          en: "Enter the new category's name",
+        name: {
+          title: {
+            es: "Nombre",
+            en: "Name",
+          },
+          placeholder: {
+            es: "Ingresa el nombre de la nueva categoría",
+            en: "Enter the new category's name",
+          },
+        },
+        type: {
+          title: {
+            es: "¿Qué tipo de comida es?",
+            en: "What type of meal is it?",
+          },
+          toolTip: {
+            es: "¿En qué categorías del mealplan podrán estar?",
+            en: "What categories of the meal plan can it be in?",
+          },
+          options: [
+            {
+              key: "breakfast",
+              name: {
+                es: "Desayunos",
+                en: "Breakfasts",
+              },
+            },
+            {
+              key: "snacks",
+              name: {
+                es: "Snacks",
+                en: "Snacks",
+              },
+            },
+            {
+              key: "lunches",
+              name: {
+                es: "Almuerzos",
+                en: "Lunches",
+              },
+            },
+            {
+              key: "dinners",
+              name: {
+                es: "Cenas",
+                en: "Dinners",
+              },
+            },
+            {
+              key: "accompaniments",
+              name: {
+                es: "Acompañamientos",
+                en: "Side dishes",
+              },
+            },
+          ],
+        },
+        appearsInHome: {
+          title: {
+            es: "Aparece en la pantalla de inicio de la app",
+            en: "Appears in the app's home screen",
+          },
+          options: [
+            {
+              key: "yes",
+              name: {
+                es: "Sí",
+                en: "Yes",
+              },
+            },
+            {
+              key: "no",
+              name: {
+                es: "No",
+                en: "No",
+              },
+            },
+          ],
         },
         btn: {
           es: "Crear categoría",
