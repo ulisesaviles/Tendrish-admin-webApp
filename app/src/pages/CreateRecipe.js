@@ -7,6 +7,7 @@ import {
   createRecipe as strings,
   langs,
   categoryNames,
+  responses,
 } from "../config/text";
 
 // Icons
@@ -72,7 +73,7 @@ function Createingredient() {
   const [name, setName] = useState({});
   const [description, setDescription] = useState({});
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
-  const [newCategory, setNewCategory] = useState({});
+  const [newCategoryName, setNewCategoryName] = useState({});
   const [loading, setLoading] = useState(false);
 
   // Prep
@@ -138,33 +139,55 @@ function Createingredient() {
   };
 
   const createCategory = async () => {
-    // if (
-    //   newCategory.es === undefined ||
-    //   newCategory.en === undefined ||
-    //   createCategoryWasClicked
-    // ) {
-    //   return;
-    // }
-    // if (newCategory.es.length < 2 || newCategory.en.length < 2) {
-    //   return;
-    // }
-    // setCreateCategoryWasClicked(true);
-    // let response = await axios({
-    //   method: "post",
-    //   url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-    //   data: {
-    //     method: "createCategory",
-    //     category: newCategory,
-    //   },
-    // });
-    // setCreateCategoryWasClicked(false);
-    // if (response.status === 200) {
-    //   setNewCategory({ es: "", en: "" });
-    //   setDefaultValues({
-    //     ...defaultValues,
-    //     categories: response.data.categories,
-    //   });
-    // }
+    // Check inputs
+    if (!newCategoryInputsAreValid()) {
+      alert(responses.enterAllInputs[theme.lang]);
+      return;
+    }
+
+    displayPopup("loading");
+    try {
+      console.log({
+        method: "createCategory",
+        category: {
+          name: newCategoryName,
+          types: newCategoryTypes,
+          appearsInHome: newCategoryAppearsInHome,
+        },
+      });
+      // Make request
+      const response = await axios({
+        method: "post",
+        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+        data: {
+          method: "createCategory",
+          category: {
+            name: newCategoryName,
+            types: newCategoryTypes,
+            appearsInHome: newCategoryAppearsInHome,
+          },
+        },
+      });
+
+      // Reset inputs
+      setNewCategoryName(langs.multiLangObj);
+      setNewCategoryTypes([]);
+      setNewCategoryAppearsInHome(
+        strings.general.category.create.appearsInHome.options[0].key
+      );
+
+      // Place new category to make it available
+      setDefaultValues({
+        ...defaultValues,
+        categories: response.data.categories,
+      });
+
+      closePopup();
+    } catch (e) {
+      console.log(e);
+      displayPopup("createCategory");
+      alert(responses.serverError[theme.lang]);
+    }
   };
 
   const createRecipe = async (publish) => {
@@ -306,7 +329,7 @@ function Createingredient() {
     setName({ ...multiLangObj });
     setDescription({ ...multiLangObj });
     setSelectedCategoryIndex(0);
-    setNewCategory({ ...multiLangObj });
+    setNewCategoryName({ ...multiLangObj });
     setServings(1);
     setTime({ prep: 10, cook: 0 });
     setIngredients([defaultIngredient]);
@@ -507,9 +530,9 @@ function Createingredient() {
   };
 
   const handleNewCategoryNameChange = (value, lang) => {
-    let tempCategory = { ...newCategory };
+    let tempCategory = { ...newCategoryName };
     tempCategory[lang] = value;
-    setNewCategory(tempCategory);
+    setNewCategoryName(tempCategory);
   };
 
   const handleNewCategoryTypeClick = (type) => {
@@ -823,6 +846,27 @@ function Createingredient() {
     updateDom();
   };
 
+  const newCategoryInputsAreValid = () => {
+    // Check name
+    for (let i = 0; i < langs.available.length; i++) {
+      const lang = langs.available[i].key;
+      if (
+        typeof newCategoryName[lang] !== "string" ||
+        newCategoryName[lang].length < 2
+      )
+        return;
+    }
+
+    // Check type
+    if (newCategoryTypes.length === 0) return;
+
+    // Check appears in home
+    if (typeof newCategoryAppearsInHome !== "boolean") return;
+
+    // Return true if is valid
+    return true;
+  };
+
   const removeIngredient = (index) => {
     let tempIngredients = [...ingredients];
     tempIngredients.splice(index, 1);
@@ -904,7 +948,7 @@ function Createingredient() {
                             lang.key
                           ]
                         }
-                        value={setNewCategory[lang.key]}
+                        value={setNewCategoryName[lang.key]}
                         onChange={(event) =>
                           handleNewCategoryNameChange(
                             event.target.value,
@@ -963,7 +1007,7 @@ function Createingredient() {
                   {strings.general.category.create.appearsInHome.options.map(
                     (option) => (
                       <div
-                        key={option.key}
+                        key={JSON.stringify(option.key)}
                         className="ingredient-lang-container"
                         onClick={() => setNewCategoryAppearsInHome(option.key)}
                       >
