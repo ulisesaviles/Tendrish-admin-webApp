@@ -857,6 +857,7 @@ export const langs = {
     { key: "es", name: { es: "Español", en: "Spanish" } },
   ],
   default: "en",
+  multiLangObj: { es: "", en: "" },
 };
 
 export const createRecipe = {
@@ -938,7 +939,7 @@ export const createRecipe = {
           },
           options: [
             {
-              key: "breakfast",
+              key: "breakfasts",
               name: {
                 es: "Desayunos",
                 en: "Breakfasts",
@@ -981,14 +982,14 @@ export const createRecipe = {
           },
           options: [
             {
-              key: "yes",
+              key: true,
               name: {
                 es: "Sí",
                 en: "Yes",
               },
             },
             {
-              key: "no",
+              key: false,
               name: {
                 es: "No",
                 en: "No",
@@ -2465,5 +2466,16 @@ export const ads = {
   success: {
     es: "¡Creado exitosamente!",
     en: "Created successfully!",
+  },
+};
+
+export const responses = {
+  serverError: {
+    es: "Hubo un error en el servidor, contacta a los desarrolladores de Tendrish para solucionar el problema.",
+    en: "There was a server error, contact the Tendrish developers to fix the problem.",
+  },
+  enterAllInputs: {
+    es: "Ingresa toda la información solicitada",
+    en: "Enter all the requested information",
   },
 };
