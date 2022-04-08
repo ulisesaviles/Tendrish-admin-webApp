@@ -939,35 +939,35 @@ export const createRecipe = {
           },
           options: [
             {
-              key: "breakfasts",
+              key: "breakfast",
               name: {
                 es: "Desayunos",
                 en: "Breakfasts",
               },
             },
             {
-              key: "snacks",
+              key: "snack",
               name: {
                 es: "Snacks",
                 en: "Snacks",
               },
             },
             {
-              key: "lunches",
+              key: "lunch",
               name: {
                 es: "Almuerzos",
                 en: "Lunches",
               },
             },
             {
-              key: "dinners",
+              key: "dinner",
               name: {
                 es: "Cenas",
                 en: "Dinners",
               },
             },
             {
-              key: "accompaniments",
+              key: "accompaniment",
               name: {
                 es: "Acompañamientos",
                 en: "Side dishes",
