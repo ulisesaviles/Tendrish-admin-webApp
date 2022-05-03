@@ -156,18 +156,17 @@ function Createingredient() {
         },
       });
       // Make request
-      const response = await axios({
-        method: "post",
-        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-        data: {
+      const response = await axios.post(
+        "https://us-central1-tendrishh.cloudfunctions.net/server",
+        {
           method: "createCategory",
           category: {
             name: newCategoryName,
             types: newCategoryTypes,
             appearsInHome: newCategoryAppearsInHome,
           },
-        },
-      });
+        }
+      );
 
       // Reset inputs
       setNewCategoryName(langs.multiLangObj);
@@ -948,7 +947,7 @@ function Createingredient() {
                             lang.key
                           ]
                         }
-                        value={setNewCategoryName[lang.key]}
+                        value={newCategoryName[lang.key]}
                         onChange={(event) =>
                           handleNewCategoryNameChange(
                             event.target.value,
