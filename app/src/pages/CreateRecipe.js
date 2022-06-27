@@ -1598,7 +1598,7 @@ function Createingredient() {
                     selectedTagsIds.includes(tag.id) ? "" : " unselected-tag"
                   }`}
                 >
-                  {tag.name[theme.lang]}
+                  {capitilize(tag.name[theme.lang])}
                 </div>
               ))}
             </div>
