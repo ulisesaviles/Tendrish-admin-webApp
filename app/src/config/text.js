@@ -1540,6 +1540,16 @@ export const profiles = {
           en: "Enter the admin's video call link",
         },
       },
+      referralCode: {
+        title: {
+          es: "Código de referido",
+          en: "Referral code",
+        },
+        placeHolder: {
+          es: "Ingresa el código de referido",
+          en: "Enter the referral code",
+        },
+      },
       password: {
         title: {
           es: "Contraseña",
@@ -1563,7 +1573,14 @@ export const profiles = {
           es: "Rol",
           en: "Rol",
         },
-        options: ["CEO", "Super admin", "Developer", "Admin", "Marketing"],
+        options: [
+          "CEO",
+          "Super admin",
+          "Developer",
+          "Admin",
+          "Marketing",
+          "Influencer",
+        ],
       },
       lang: {
         title: {
@@ -1645,6 +1662,16 @@ export const profiles = {
           en: "Enter the admin's video call link",
         },
       },
+      referralCode: {
+        title: {
+          es: "Código de referido",
+          en: "Referral code",
+        },
+        placeHolder: {
+          es: "Ingresa el código de referido",
+          en: "Enter the referral code",
+        },
+      },
       password: {
         title: {
           es: "Contraseña",
@@ -1668,7 +1695,14 @@ export const profiles = {
           es: "Rol",
           en: "Rol",
         },
-        options: ["CEO", "Super admin", "Developer", "Admin", "Marketing"],
+        options: [
+          "CEO",
+          "Super admin",
+          "Developer",
+          "Admin",
+          "Marketing",
+          "Influencer",
+        ],
       },
       lang: {
         title: {
