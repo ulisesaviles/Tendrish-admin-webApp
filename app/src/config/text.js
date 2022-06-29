@@ -1747,6 +1747,38 @@ export const profiles = {
       { key: "sat", es: "Sábado", en: "Saturday" },
       { key: "sun", es: "Domingo", en: "Sunday" },
     ],
+    stats: {
+      title: {
+        es: "Estadísticas",
+        en: "Stats",
+      },
+      referralCode: {
+        title: {
+          es: "Código de referido",
+          en: "Referral code",
+        },
+        noUsage: {
+          es: "Sin uso",
+          en: "No usage",
+        },
+        userEmail: {
+          es: "Correo del usuario",
+          en: "User email",
+        },
+        date: {
+          es: "Fecha",
+          en: "Date",
+        },
+        plan: {
+          es: "Plan",
+          en: "Plan",
+        },
+        fullPricePaid: {
+          es: "Precio pagado",
+          en: "Price paid",
+        },
+      },
+    },
   },
 };
 

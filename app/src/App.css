@@ -1470,6 +1470,39 @@ body {
   opacity: 0.5;
   margin: 15px 0 0 0;
 }
+.profiles-handleProfile-secondaryBtn {
+  color: var(--secondary);
+  margin: 0 25px;
+  cursor: pointer;
+  transition: var(--animation-short);
+}
+.profiles-handleProfile-secondaryBtn:hover {
+  transform: scale(1.2);
+}
+.profiles-stats-noUsage {
+  opacity: 0.5;
+  margin: 0;
+}
+.profile-referralCodeUsage-row-container {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+}
+.profile-referralCodeUsage-index {
+  color: var(--secondary);
+  margin: 0 10px 0 20px;
+}
+.profile-referralCodeUsage-data-container {
+  display: flex;
+  flex-direction: row;
+}
+.profile-referralCodeUsage-field {
+  color: var(--secondary);
+  margin: 0 10px 0 0;
+}
+.profile-referralCodeUsage-data {
+  margin: 0;
+}
 
 /* Stats */
 .stats-container {

@@ -33,6 +33,14 @@ function Profiles() {
     name: "",
     videoCallLink: "",
     referralCode: "",
+    referalCodeUsage: [
+      // {
+      //   date: 0,
+      //   userId: "avilesulises1@gmail.com",
+      //   plan: "planKey",
+      //   fullPricePaid: 100,
+      // },
+    ],
     email: "",
     password: {
       hidden: true,
@@ -90,6 +98,13 @@ function Profiles() {
       setCreating(false);
       alert("Server error");
     }
+  };
+
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return theme.lang === "es"
+      ? `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
+      : `${date.getMonth()}-${date.getDate()}-${date.getFullYear()}`;
   };
 
   const getAdmins = async () => {
@@ -156,20 +171,9 @@ function Profiles() {
 
   const handlePopup = (display, type, adminToEditIndex) => {
     setPopupIsDisplayed(display);
+    if (!display) return;
     setPopupType(type);
-    if (type === "edit")
-      setNewAdmin({
-        ...admins[adminToEditIndex],
-        password: {
-          hidden: true,
-          value: "",
-        },
-        langs:
-          admins[adminToEditIndex].langs == null
-            ? []
-            : admins[adminToEditIndex].langs,
-      });
-    else
+    if (type === "add")
       setNewAdmin({
         name: "",
         videoCallLink: "",
@@ -188,6 +192,19 @@ function Profiles() {
         rol: "Admin",
         langs: [],
       });
+    else
+      setNewAdmin({
+        ...admins[adminToEditIndex],
+        password: {
+          hidden: true,
+          value: "",
+        },
+        langs:
+          admins[adminToEditIndex].langs == null
+            ? []
+            : admins[adminToEditIndex].langs,
+      });
+
     setAdminToEditIndex(adminToEditIndex);
   };
 
@@ -590,9 +607,97 @@ function Profiles() {
                     )}
                   </>
                 </>
-              ) : (
-                <>Holi.</>
-              )}
+              ) : popupType === "stats" ? (
+                <>
+                  {/* Title */}
+                  <h2 className="profiles-popup-title">
+                    {strings.popups[popupType].title[theme.lang]}
+                  </h2>
+                  {/* ReferralCode */}
+                  <h4 className="profiles-popup-input-name">
+                    {strings.popups.stats.referralCode.title[theme.lang]}
+                  </h4>
+                  {newAdmin.referalCodeUsage === undefined ||
+                  newAdmin.referalCodeUsage.length === 0 ? (
+                    <p className="profiles-stats-noUsage">
+                      {strings.popups.stats.referralCode.noUsage[theme.lang]}
+                    </p>
+                  ) : (
+                    <>
+                      {newAdmin.referalCodeUsage.map((usage) => {
+                        const index = newAdmin.referalCodeUsage.indexOf(usage);
+                        return (
+                          <div
+                            key={index}
+                            className="profile-referralCodeUsage-row-container"
+                          >
+                            <h2 className="profile-referralCodeUsage-index">
+                              {index + 1}
+                            </h2>
+                            <div>
+                              {/* UserID */}
+                              <div className="profile-referralCodeUsage-data-container">
+                                <p className="profile-referralCodeUsage-field">
+                                  {
+                                    strings.popups.stats.referralCode.userEmail[
+                                      theme.lang
+                                    ]
+                                  }
+                                  :{" "}
+                                </p>
+                                <p className="profile-referralCodeUsage-data">
+                                  {usage.userId}
+                                </p>
+                              </div>
+                              {/* Date */}
+                              <div className="profile-referralCodeUsage-data-container">
+                                <p className="profile-referralCodeUsage-field">
+                                  {
+                                    strings.popups.stats.referralCode.date[
+                                      theme.lang
+                                    ]
+                                  }
+                                  :{" "}
+                                </p>
+                                <p className="profile-referralCodeUsage-data">
+                                  {formatDate(usage.date)}
+                                </p>
+                              </div>
+                              {/* Plan */}
+                              <div className="profile-referralCodeUsage-data-container">
+                                <p className="profile-referralCodeUsage-field">
+                                  {
+                                    strings.popups.stats.referralCode.plan[
+                                      theme.lang
+                                    ]
+                                  }
+                                  :{" "}
+                                </p>
+                                <p className="profile-referralCodeUsage-data">
+                                  {usage.plan}
+                                </p>
+                              </div>
+                              {/* Price */}
+                              <div className="profile-referralCodeUsage-data-container">
+                                <p className="profile-referralCodeUsage-field">
+                                  {
+                                    strings.popups.stats.referralCode
+                                      .fullPricePaid[theme.lang]
+                                  }
+                                  :{" "}
+                                </p>
+                                <p className="profile-referralCodeUsage-data">
+                                  $ {usage.fullPricePaid} dlls
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </>
+                  )}
+                </>
+              ) : null}
             </div>
           </div>
         ) : null}
@@ -640,16 +745,12 @@ function Profiles() {
                       </p>
                     ))}
                   </div>
-                  {/* <div
-                    className="btn profiles-editBtn"
-                    onClick={() => handlePopup(true, "edit", adminIndex)}
-                  >
-                    <p style={{ margin: 0 }}>{strings.editBtn[theme.lang]}</p>
-                  </div> */}
+                  {/* Stats btn */}
                   <IoStatsChart
                     className="profiles-handleProfile-secondaryBtn"
                     onClick={() => handlePopup(true, "stats", adminIndex)}
                   />
+                  {/* Edit btn */}
                   <IoPencil
                     className="profiles-handleProfile-secondaryBtn"
                     onClick={() => handlePopup(true, "edit", adminIndex)}
