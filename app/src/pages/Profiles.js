@@ -746,15 +746,19 @@ function Profiles() {
                     ))}
                   </div>
                   {/* Stats btn */}
-                  <IoStatsChart
-                    className="profiles-handleProfile-secondaryBtn"
-                    onClick={() => handlePopup(true, "stats", adminIndex)}
-                  />
+                  <div className="profiles-handleProfile-secondaryBtn-container">
+                    <IoStatsChart
+                      className="profiles-handleProfile-secondaryBtn"
+                      onClick={() => handlePopup(true, "stats", adminIndex)}
+                    />
+                  </div>
                   {/* Edit btn */}
-                  <IoPencil
-                    className="profiles-handleProfile-secondaryBtn"
-                    onClick={() => handlePopup(true, "edit", adminIndex)}
-                  />
+                  <div className="profiles-handleProfile-secondaryBtn-container">
+                    <IoPencil
+                      className="profiles-handleProfile-secondaryBtn"
+                      onClick={() => handlePopup(true, "edit", adminIndex)}
+                    />
+                  </div>
                 </div>
               );
             })}

@@ -1470,11 +1470,16 @@ body {
   opacity: 0.5;
   margin: 15px 0 0 0;
 }
+.profiles-handleProfile-secondaryBtn-container {
+  width: 20px;
+  height: 20px;
+  margin: 0 25px;
+}
 .profiles-handleProfile-secondaryBtn {
   color: var(--secondary);
-  margin: 0 25px;
   cursor: pointer;
   transition: var(--animation-short);
+  font-size: 15px;
 }
 .profiles-handleProfile-secondaryBtn:hover {
   transform: scale(1.2);
