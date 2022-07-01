@@ -33,7 +33,7 @@ function Profiles() {
     name: "",
     videoCallLink: "",
     referralCode: "",
-    referalCodeUsage: [
+    referralCodeUsage: [
       // {
       //   date: 0,
       //   userId: "avilesulises1@gmail.com",
@@ -617,15 +617,15 @@ function Profiles() {
                   <h4 className="profiles-popup-input-name">
                     {strings.popups.stats.referralCode.title[theme.lang]}
                   </h4>
-                  {newAdmin.referalCodeUsage === undefined ||
-                  newAdmin.referalCodeUsage.length === 0 ? (
+                  {newAdmin.referralCodeUsage === undefined ||
+                  newAdmin.referralCodeUsage.length === 0 ? (
                     <p className="profiles-stats-noUsage">
                       {strings.popups.stats.referralCode.noUsage[theme.lang]}
                     </p>
                   ) : (
                     <>
-                      {newAdmin.referalCodeUsage.map((usage) => {
-                        const index = newAdmin.referalCodeUsage.indexOf(usage);
+                      {newAdmin.referralCodeUsage.map((usage) => {
+                        const index = newAdmin.referralCodeUsage.indexOf(usage);
                         return (
                           <div
                             key={index}
