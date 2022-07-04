@@ -87,7 +87,7 @@ const Agenda = () => {
       if (start.hour === hour) {
         res.push({
           ...appointments[key],
-          userData: await getUserData(appointments[key].userId),
+          userData: await getUserData(appointments[key].userId), // ONLY IF ITS NOT A BREAK
           start,
           end,
         });
@@ -183,6 +183,7 @@ const Agenda = () => {
   };
 
   const getUserData = async (userId) => {
+    if (userId === undefined) return;
     let response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -201,15 +202,13 @@ const Agenda = () => {
 
   const handleAdminsQuery = async () => {
     const requestOffset = new Date().getTimezoneOffset();
+    console.log({ id: admin.id, password: admin.personalInfo.password });
     let response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
       data: {
         method: "agendasQuery",
-        admin: {
-          id: "avilesulises1@gmail.com",
-          password: "123456tendrish",
-        },
+        admin: { id: admin.id, password: admin.personalInfo.password },
         date: { ...selectedDay, month: selectedDay.month + 1 },
         requestOffset,
       },
@@ -590,37 +589,59 @@ const Agenda = () => {
                             {/* Map appointments */}
                             <div className="agenda-daysSection-appointment-superContainer">
                               {hour.appointments.map((appointment) => (
-                                <div
-                                  className={`agenda-daysSection-appointment-container ${
-                                    appointment === currentAppointment
-                                      ? "agenda-daysSection-appointment-container-selected"
-                                      : ""
-                                  }`}
-                                  style={{
-                                    top:
-                                      hour.appointments.indexOf(appointment) *
-                                        -40 +
-                                      (appointment.start.minute / 60) * 80,
-                                  }}
-                                  onClick={() =>
-                                    setCurrentAppointment(appointment)
-                                  }
-                                >
-                                  <div>
-                                    <p className="agenda-daysSection-appointment-name">
-                                      {appointment.userData.name}
-                                    </p>
-                                    <p
-                                      className={`agenda-daysSection-appointment-id ${
+                                <div key={JSON.stringify(appointment)}>
+                                  {appointment.type === "break" ? (
+                                    <div
+                                      className="agenda-daysSection-appointment-container"
+                                      style={{
+                                        top:
+                                          hour.appointments.indexOf(
+                                            appointment
+                                          ) *
+                                            -40 +
+                                          (appointment.start.minute / 60) * 80,
+                                      }}
+                                    >
+                                      <p className="agenda-daysSection-appointment-name">
+                                        Break
+                                      </p>
+                                    </div>
+                                  ) : (
+                                    <div
+                                      className={`agenda-daysSection-appointment-container ${
                                         appointment === currentAppointment
-                                          ? "agenda-daysSection-appointment-id-selected"
+                                          ? "agenda-daysSection-appointment-container-selected"
                                           : ""
                                       }`}
+                                      style={{
+                                        top:
+                                          hour.appointments.indexOf(
+                                            appointment
+                                          ) *
+                                            -40 +
+                                          (appointment.start.minute / 60) * 80,
+                                      }}
+                                      onClick={() =>
+                                        setCurrentAppointment(appointment)
+                                      }
                                     >
-                                      {appointment.userId}
-                                    </p>
-                                  </div>
-                                  <RightArrow className="agenda-daysSection-appointment-arrow" />
+                                      <div>
+                                        <p className="agenda-daysSection-appointment-name">
+                                          {appointment.userData.name}
+                                        </p>
+                                        <p
+                                          className={`agenda-daysSection-appointment-id ${
+                                            appointment === currentAppointment
+                                              ? "agenda-daysSection-appointment-id-selected"
+                                              : ""
+                                          }`}
+                                        >
+                                          {appointment.userId}
+                                        </p>
+                                      </div>
+                                      <RightArrow className="agenda-daysSection-appointment-arrow" />
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                             </div>
