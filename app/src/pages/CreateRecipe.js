@@ -1175,36 +1175,6 @@ function Createingredient() {
                 {strings.general.category.create.title[theme.lang]}
               </p>
             </div>
-            {/* {displayCreateCat ? (
-              <div className="createCat-container">
-                {langs.available.map((lang) => (
-                  <div
-                    className="input-container"
-                    key={langs.available.indexOf(lang)}
-                  >
-                    <p className="input-lang">{`${lang.key.toUpperCase()}: `}</p>
-                    <input
-                      className="input"
-                      placeholder={
-                        strings.general.category.create.placeholder[lang.key]
-                      }
-                      value={newCategory[lang.key]}
-                      onChange={(event) =>
-                        handleNewCategoryChange(event.target.value, lang.key)
-                      }
-                    />
-                  </div>
-                ))}
-                <div
-                  className={`btn create-category-btn${
-                    createCategoryWasClicked ? " submited" : ""
-                  }`}
-                  onClick={createCategory}
-                >
-                  {strings.general.category.create.btn[theme.lang]}
-                </div>
-              </div>
-            ) : null} */}
           </div>
         </div>
 
