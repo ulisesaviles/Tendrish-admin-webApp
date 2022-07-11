@@ -12,6 +12,7 @@ import {
 import {
   MdCheckBoxOutlineBlank,
   MdCheckBox,
+  MdKeyboardArrowDown,
   MdAdd,
   MdRemove,
   MdSearch,
@@ -25,6 +26,7 @@ import { getTheme } from "../config/theme";
 
 // Http
 import axios from "axios";
+import { query } from "../config/queries";
 
 // Tooltips
 import ReactTooltip from "react-tooltip";
@@ -95,6 +97,14 @@ const Createingredient = () => {
     piece: { es: "pieza(s)", en: "piece(s)" },
   };
   const [updater, update] = useState(0);
+  const [displayCreateCat, setDisplayCreateCat] = useState(false);
+  const [newCategory, setNewCategory] = useState({});
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
+  const [categories, setCategories] = useState(
+    // [{ name: { es: "F", en: "F" }, id: "f" },]
+    null
+  );
+  const [categoriesAsObj, setCategoriesAsObj] = useState(null);
 
   // Functions
   const arrayWith = (originalArr, itemsToAdd) => {
@@ -151,19 +161,15 @@ const Createingredient = () => {
       return;
     }
 
-    const response = await axios({
-      method: "post",
-      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-      data: {
-        method: "createIngredient",
-        names,
-        states: formatStates(),
-        aditionalInfo: selectedAditionalInfo,
-        seasons: selectedMonths,
-      },
+    const { status } = await query("createIngredient", {
+      names,
+      states: formatStates(),
+      aditionalInfo: selectedAditionalInfo,
+      seasons: selectedMonths,
+      category: categories[selectedCategoryIndex].id,
     });
 
-    if (response.status !== 200) {
+    if (status !== 200) {
       return;
     }
 
@@ -174,6 +180,18 @@ const Createingredient = () => {
       setIsEditing(false);
       setSelectedTab("view");
     }
+  };
+
+  const createCategory = async () => {
+    setCategories(null);
+    const { status } = await query("createIngredientCategory", {
+      name: newCategory,
+    });
+    if (status === 200) {
+      setNewCategory({});
+      setDisplayCreateCat(false);
+    }
+    await getIngredientCategories();
   };
 
   const cuantitySetter = async (value, view) => {
@@ -237,19 +255,16 @@ const Createingredient = () => {
     if (!nutriValuesAreValid() || !namesAreValid()) {
       return;
     }
-    const response = await axios({
-      method: "post",
-      url: "https://us-central1-tendrishh.cloudfunctions.net/server",
-      data: {
-        method: "editIngredient",
-        id: editingIngredientId,
-        names,
-        states: formatStates(),
-        aditionalInfo: selectedAditionalInfo,
-        seasons: selectedMonths,
-      },
+    const { status } = await query("editIngredient", {
+      id: editingIngredientId,
+      names,
+      states: formatStates(),
+      aditionalInfo: selectedAditionalInfo,
+      seasons: selectedMonths,
+      category: categories[selectedCategoryIndex].id,
     });
-    if (response.status === 200) {
+
+    if (status === 200) {
       alert(strings.responses.editSuccess[theme.lang]);
       resetTab();
       setIsEditing(false);
@@ -266,6 +281,18 @@ const Createingredient = () => {
       temp[i].nutriValues = nutrivaluesPerUnit(i);
     }
     return temp;
+  };
+
+  const getIngredientCategories = async () => {
+    const { status, data } = await query("getIngredientCategories");
+    if (status === 200) setCategories(data);
+
+    let categoriesAsObj = {};
+    for (let i = 0; i < data.length; i++) {
+      const category = data[i];
+      categoriesAsObj[category.id] = category.name;
+    }
+    setCategoriesAsObj(categoriesAsObj);
   };
 
   const handleAditionalInfoClick = (key) => {
@@ -341,9 +368,10 @@ const Createingredient = () => {
     handleEquivalencyChange(stateIndex, isNumerator, value);
   };
 
-  const handleGoToCreateIngredientTab = () => {
+  const handleGoToCreateIngredientTab = async () => {
     resetTab();
     setSelectedTab("create");
+    await getIngredientCategories();
   };
 
   const handleGoToViewTab = () => {
@@ -413,6 +441,12 @@ const Createingredient = () => {
     setSelectedMonths(temp);
   };
 
+  const handleNewCategoryChange = (value, lang) => {
+    let categories = { ...newCategory };
+    categories[lang] = value;
+    setNewCategory(categories);
+  };
+
   const handleNewState = () => {
     // Create new state
     setStates([...states, sampleState(states[0].measuredBy)]);
@@ -462,6 +496,14 @@ const Createingredient = () => {
         ? ingredient.seasonsAvailable
         : strings.general.seasons.items.map((month) => month.key)
     );
+    if (ingredient.category != null) {
+      for (let i = 0; i < categories.length; i++) {
+        const category = categories[i];
+        if (ingredient.category === category.id) setSelectedCategoryIndex(i);
+      }
+    } else {
+      setSelectedCategoryIndex(0);
+    }
   };
 
   const namesAreValid = () => {
@@ -559,6 +601,7 @@ const Createingredient = () => {
   const search = async () => {
     setLastSearchName(searchInput);
     setLoading(true);
+    getIngredientCategories();
     const response = await axios.post(
       "https://us-central1-tendrishh.cloudfunctions.net/server",
       {
@@ -739,6 +782,90 @@ const Createingredient = () => {
               </div>
               <div style={{ fontSize: 1, color: "rgba(0,0,0,0)" }}>
                 {updater}
+              </div>
+
+              {/* Category */}
+              <div className="input-section">
+                <h3 className="input-name">
+                  {strings.general.category.title[theme.lang]}
+                </h3>
+                {categories == null ? (
+                  <p className="ingredient-categories-loading">
+                    {strings.general.category.loading[theme.lang]}
+                  </p>
+                ) : (
+                  <>
+                    {categories.map((category) => (
+                      <div
+                        key={category.id}
+                        className="ingredient-lang-container"
+                        onClick={() => {
+                          setSelectedCategoryIndex(
+                            categories.indexOf(category)
+                          );
+                        }}
+                      >
+                        {categories.indexOf(category) ===
+                        selectedCategoryIndex ? (
+                          <MdCheckBox className="ingredient-lang-checkbox" />
+                        ) : (
+                          <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                        )}
+                        <p className="ingredient-lang">
+                          {capitilize(category.name[theme.lang].toLowerCase())}
+                        </p>
+                      </div>
+                    ))}
+                    <div
+                      onClick={() => setDisplayCreateCat(!displayCreateCat)}
+                      className="createCat-title-container"
+                    >
+                      <p className="createCat">
+                        {strings.general.category.create.title[theme.lang]}{" "}
+                      </p>
+                      <MdKeyboardArrowDown
+                        className={
+                          displayCreateCat
+                            ? "dropdown-icon dropdown-icon-selected"
+                            : "dropdown-icon"
+                        }
+                      />
+                    </div>
+                    {displayCreateCat ? (
+                      <div className="createCat-container">
+                        {langs.available.map((lang) => (
+                          <div
+                            className="input-container"
+                            key={langs.available.indexOf(lang)}
+                          >
+                            <p className="input-lang">{`${lang.key.toUpperCase()}: `}</p>
+                            <input
+                              className="input"
+                              placeholder={
+                                strings.general.category.create.placeholder[
+                                  lang.key
+                                ]
+                              }
+                              value={newCategory[lang.key]}
+                              onChange={(event) =>
+                                handleNewCategoryChange(
+                                  event.target.value,
+                                  lang.key
+                                )
+                              }
+                            />
+                          </div>
+                        ))}
+                        <div
+                          className="btn create-category-btn"
+                          onClick={createCategory}
+                        >
+                          {strings.general.category.create.btn[theme.lang]}
+                        </div>
+                      </div>
+                    ) : null}
+                  </>
+                )}
               </div>
             </div>
 
@@ -1046,7 +1173,7 @@ const Createingredient = () => {
                 ({stringsView.search.or[theme.lang]})
                 <div
                   className="viewIngredient-search-header-create btn"
-                  onClick={() => handleGoToCreateIngredientTab()}
+                  onClick={handleGoToCreateIngredientTab}
                 >
                   {stringsView.search.create[theme.lang]}
                 </div>
@@ -1096,6 +1223,11 @@ const Createingredient = () => {
                         }
                         onClick={() => selectIngredient(ingredient)}
                       >
+                        {ingredient.category == null
+                          ? `(${
+                              stringsView.search.missingCategory[theme.lang]
+                            }) `
+                          : null}
                         {capitilize(correctLang(ingredient.names))}
                       </div>
                     ))}
@@ -1127,9 +1259,31 @@ const Createingredient = () => {
                         <p className="ingredient-view-name-lang">
                           {lang.toUpperCase()}:
                         </p>
-                        {selectedIngredient.names[lang]}
+                        {capitilize(selectedIngredient.names[lang])}
                       </div>
                     ))}
+                  </div>
+
+                  {/* Category */}
+                  <div className="input-section">
+                    <h3 className="input-name">
+                      {stringsView.view.category[theme.lang]}
+                    </h3>
+                    {selectedIngredient.category != null ? (
+                      categoriesAsObj == null ? (
+                        strings.general.category.loading[theme.lang]
+                      ) : (
+                        capitilize(
+                          correctLang(
+                            categoriesAsObj[selectedIngredient.category]
+                          )
+                        )
+                      )
+                    ) : (
+                      <div style={{ opacity: "60%" }}>
+                        {`${stringsView.search.missingCategory[theme.lang]}`}
+                      </div>
+                    )}
                   </div>
 
                   {/* Aditional info */}

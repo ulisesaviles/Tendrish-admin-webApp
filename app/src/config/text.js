@@ -321,6 +321,30 @@ export const createIngredient = {
         { key: "dec", name: { es: "Diciembre", en: "December" } },
       ],
     },
+    category: {
+      title: {
+        es: "Categoría",
+        en: "Category",
+      },
+      loading: {
+        es: "Cargando...",
+        en: "Loading...",
+      },
+      create: {
+        title: {
+          es: "Crear nueva categoría",
+          en: "Create new category",
+        },
+        placeholder: {
+          es: "Ingresa el nombre de la nueva categoría",
+          en: "Enter the new category's name",
+        },
+        btn: {
+          es: "Crear categoría",
+          en: "Create category",
+        },
+      },
+    },
   },
   nutritionalInfo: [
     {
@@ -603,6 +627,10 @@ export const viewIngredient = {
         en: (name) => `There are not ingredients called "${name}"`,
       },
     },
+    missingCategory: {
+      es: "Sin categoría",
+      en: "Missing category",
+    },
   },
   view: {
     title: {
@@ -612,6 +640,10 @@ export const viewIngredient = {
     name: {
       es: "Nombre",
       en: "Name",
+    },
+    category: {
+      es: "Categoría",
+      en: "Category",
     },
     measuredBy: {
       title: {
