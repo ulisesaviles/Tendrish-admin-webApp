@@ -619,6 +619,11 @@ body {
 .ingredient-info-container:hover {
   cursor: pointer;
 }
+.ingredient-categories-loading {
+  margin: 0;
+  align-self: center;
+  opacity: 0.5;
+}
 
 /* Create recipe */
 .createRecipePopup {
