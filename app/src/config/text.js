@@ -2196,6 +2196,10 @@ export const editUser = {
         en: "No recipe matches your search",
       },
     },
+    seachMore: {
+      es: "Buscar más",
+      en: "Seach more",
+    },
   },
   userSettings: {
     title: {
