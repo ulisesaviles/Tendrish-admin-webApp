@@ -86,6 +86,8 @@ const EditUser = () => {
     useState(null);
   const [loadingRecipe, setLoadingRecipe] = useState(false);
   const [excludedIngredients, setExcludedIngredients] = useState(null);
+  const recipesToGetEachSearch = 30;
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // Functions
   const capitilize = (string) => {
@@ -184,7 +186,7 @@ const EditUser = () => {
     return [];
   };
 
-  const getRecipesByCategory = async (category) => {
+  const getRecipesByMealType = async (start, end) => {
     const response = await axios({
       method: "post",
       url: "https://us-central1-tendrishh.cloudfunctions.net/server",
@@ -194,12 +196,15 @@ const EditUser = () => {
           lang: theme.lang,
           name: recipeFinderInputValue.toLowerCase(),
           published: true,
-          category,
+          category: null,
+          mealType: ["snack1", "snack2"].includes(selectedMealType)
+            ? "snack"
+            : selectedMealType,
           tags: [],
           includedIngredients: [],
         },
-        start: 0,
-        end: 10,
+        start,
+        end,
       },
     });
     if (response.status === 200) return response.data;
@@ -517,22 +522,22 @@ const EditUser = () => {
   };
 
   const searchForRecipe = async () => {
-    // If lunch or dinner, make two requests
-    let res = [];
     setLoadingRecipe(true);
-    if (
-      selectedMeal.category === "dinners" ||
-      selectedMeal.category === "lunches"
-    ) {
-      res = [
-        ...(await getRecipesByCategory("dinners")),
-        ...(await getRecipesByCategory("lunches")),
-      ];
-    } else {
-      res = await getRecipesByCategory(selectedMeal.category);
-    }
+    setSearchResults(await getRecipesByMealType(0, recipesToGetEachSearch));
     setLoadingRecipe(false);
+  };
+
+  const searchMore = async () => {
+    setLoadingMore(true);
+    const res = [
+      ...searchResults,
+      ...(await getRecipesByMealType(
+        searchResults.length,
+        recipesToGetEachSearch + searchResults.length
+      )),
+    ];
     setSearchResults(res);
+    setLoadingMore(false);
   };
 
   const startMealChange = (meal) => {
@@ -905,19 +910,19 @@ const EditUser = () => {
                     : ""
                 }`}
               >
-                {searchResults === null ? (
-                  <div
-                    className="editUser-userFinder-empty-container"
-                    style={{ opacity: "50%" }}
-                  >
-                    {strings.recipeFinder.states.undone[theme.lang]}
-                  </div>
-                ) : loadingRecipe ? (
+                {loadingRecipe ? (
                   <div
                     className="editUser-userFinder-empty-container"
                     style={{ opacity: "50%" }}
                   >
                     {strings.userFinder.loading[theme.lang]}
+                  </div>
+                ) : searchResults === null ? (
+                  <div
+                    className="editUser-userFinder-empty-container"
+                    style={{ opacity: "50%" }}
+                  >
+                    {strings.recipeFinder.states.undone[theme.lang]}
                   </div>
                 ) : typeof searchResults === "object" &&
                   searchResults.length === 0 ? (
@@ -971,6 +976,26 @@ const EditUser = () => {
                         </div>
                       );
                     })}
+                    {loadingMore ? (
+                      <div
+                        style={{
+                          opacity: 0.5,
+                          alignSelf: "center",
+                          width: "100%",
+                          textAlign: "center",
+                        }}
+                      >
+                        {strings.userFinder.loading[theme.lang]}
+                      </div>
+                    ) : searchResults != null &&
+                      searchResults.length % recipesToGetEachSearch === 0 ? (
+                      <p
+                        className="btn editUser-userFinder-settingsBtn"
+                        onClick={searchMore}
+                      >
+                        {strings.recipeFinder.seachMore[theme.lang]}
+                      </p>
+                    ) : null}
                   </>
                 )}
               </div>
