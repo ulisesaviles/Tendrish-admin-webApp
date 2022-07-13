@@ -2266,6 +2266,84 @@ export const editUser = {
       es: "Guardar cambios",
       en: "Save changes",
     },
+    typeOfMealPlan: {
+      title: {
+        es: "Tipo de meal plan",
+        en: "Type of meal plan",
+      },
+      options: [
+        {
+          key: "original",
+          name: {
+            es: "Con todas las recetas de Tendrish",
+            en: "With all Tendrish recipes",
+          },
+        },
+        {
+          key: "notRedMeat",
+          name: {
+            es: "Sin carnes rojas",
+            en: "Without red meat",
+          },
+        },
+        {
+          key: "notSeaFood",
+          name: {
+            es: "Sin mariscos",
+            en: "Without seafood",
+          },
+        },
+        {
+          key: "notChicken",
+          name: {
+            es: "Sin pollo",
+            en: "Without chicken",
+          },
+        },
+        {
+          key: "notLactose",
+          name: {
+            es: "Sin lácteos",
+            en: "Without lactose",
+          },
+        },
+        {
+          key: "notEgg",
+          name: {
+            es: "Sin huevos",
+            en: "Without eggs",
+          },
+        },
+        {
+          key: "notGluten",
+          name: {
+            es: "Sin gluten",
+            en: "Without gluten",
+          },
+        },
+        {
+          key: "notSoy",
+          name: {
+            es: "Sin soya",
+            en: "Without soy",
+          },
+        },
+        // {
+        //   key: "notAnimalOrigin",
+        //   name: {
+        //     es: "Sin alimentos de origen animal",
+        //     en: "Without food of animal origin",
+        //   },
+        // },
+        {
+          key: "vegetarian",
+          name: {
+            es: "Vegetariano",
+            en: "Vegetarian",
+          },
+        },
+      ],
+    },
   },
   notes: {
     title: {

@@ -21,6 +21,7 @@ import { getTheme } from "../config/theme";
 
 // Http
 import axios from "axios";
+import { query } from "../config/queries";
 
 const EditUser = () => {
   // Constants
@@ -88,6 +89,7 @@ const EditUser = () => {
   const [excludedIngredients, setExcludedIngredients] = useState(null);
   const recipesToGetEachSearch = 30;
   const [loadingMore, setLoadingMore] = useState(false);
+  const [selectedTypeOfMealPlan, setSelectedTypeOfMealPlan] = useState(null);
 
   // Functions
   const capitilize = (string) => {
@@ -247,6 +249,7 @@ const EditUser = () => {
           : undefined
       );
       setServings(response.data.servings);
+      setSelectedTypeOfMealPlan(response.data.mealPlanDetails.typeOfMealplan);
     }
   };
 
@@ -382,6 +385,30 @@ const EditUser = () => {
     }
   };
 
+  const handleTypeOfMealPlanChange = async () => {
+    let temp = selectedTypeOfMealPlan;
+    setSelectedTypeOfMealPlan(null);
+
+    // Make request
+    const { status } = await query("updateUserMealPlanType", {
+      userId: selectedUserId,
+      typeOfMealplan: selectedTypeOfMealPlan,
+      admin: {
+        ...admin,
+        password: admin.personalInfo.password,
+      },
+    });
+    setSelectedTypeOfMealPlan(temp);
+
+    // Handle response
+    if (status === 200) {
+      alert(strings.responses.update.success[theme.lang]);
+      handleUserSelection(selectedUserId);
+      return;
+    }
+    alert(strings.responses.update.fail[theme.lang]);
+  };
+
   const handleUserSeach = async (userName) => {
     setErrorName(userName);
     setLoadingUser(true);
@@ -399,7 +426,7 @@ const EditUser = () => {
     setLoadingUser(false);
   };
 
-  const handleUserSelection = async (userId, name) => {
+  const handleUserSelection = async (userId) => {
     handleDateChange(
       todaysDate.date,
       todaysDate.month,
@@ -618,7 +645,14 @@ const EditUser = () => {
 
           {/* Map users */}
           <>
-            {users === null || users.length === 0 ? (
+            {loadingUser ? (
+              <div
+                className="editUser-userFinder-empty-container"
+                style={{ opacity: "50%" }}
+              >
+                {strings.userFinder.loading[theme.lang]}
+              </div>
+            ) : users === null || users.length === 0 ? (
               <div
                 className="editUser-userFinder-empty-container"
                 style={{ opacity: "50%" }}
@@ -626,13 +660,6 @@ const EditUser = () => {
                 {strings.userFinder[users === null ? "null" : "empty"][
                   theme.lang
                 ](errorName)}
-              </div>
-            ) : loadingUser ? (
-              <div
-                className="editUser-userFinder-empty-container"
-                style={{ opacity: "50%" }}
-              >
-                {strings.userFinder.loading[theme.lang]}
               </div>
             ) : (
               // Map users
@@ -649,7 +676,7 @@ const EditUser = () => {
                       }`}
                       onMouseEnter={() => setHoveredUSer(index)}
                       onMouseLeave={() => setHoveredUSer(null)}
-                      onClick={() => handleUserSelection(user.id, user.name)}
+                      onClick={() => handleUserSelection(user.id)}
                     >
                       <div className="editUser-userFinder-user-text-container">
                         <h4
@@ -1003,7 +1030,9 @@ const EditUser = () => {
           ) : thirdSection === "userSettings" ? (
             // User settings
             <>
-              {excludedIngredients === null || servings === null ? (
+              {excludedIngredients === null ||
+              servings === null ||
+              selectedTypeOfMealPlan === null ? (
                 <div
                   className="editUser-userFinder-empty-container"
                   style={{ opacity: "50%" }}
@@ -1089,6 +1118,43 @@ const EditUser = () => {
                       {strings.userSettings.servings.saveBtn[theme.lang]}
                     </p>
                   </div>
+
+                  {/* Type of meal plan */}
+                  {selectedTypeOfMealPlan !== "free" ? (
+                    <div className="input-section">
+                      <p className="input-name">
+                        {strings.userSettings.typeOfMealPlan.title[theme.lang]}
+                      </p>
+                      <>
+                        {strings.userSettings.typeOfMealPlan.options.map(
+                          (option) => (
+                            <div
+                              key={option.key}
+                              className="editUser-exlusion-container"
+                              onClick={() =>
+                                setSelectedTypeOfMealPlan(option.key)
+                              }
+                            >
+                              {selectedTypeOfMealPlan === option.key ? (
+                                <MdCheckBox className="ingredient-lang-checkbox" />
+                              ) : (
+                                <MdCheckBoxOutlineBlank className="ingredient-lang-checkbox" />
+                              )}
+                              {capitilize(correctLang(option.name))}
+                            </div>
+                          )
+                        )}
+                      </>
+
+                      {/* Save btn */}
+                      <div
+                        className="editUSer-exclusions-save-btn btn"
+                        onClick={handleTypeOfMealPlanChange}
+                      >
+                        {strings.userSettings.saveBtn[theme.lang]}
+                      </div>
+                    </div>
+                  ) : null}
 
                   {/* Exclusions */}
                   {excludedIngredients !== undefined ? (
