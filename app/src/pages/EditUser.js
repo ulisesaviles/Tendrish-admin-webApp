@@ -338,6 +338,7 @@ const EditUser = () => {
   const handleRecipeSwap = async (index) => {
     const selectedRecipe = searchResults[index];
     if (
+      selectedMeal !== null &&
       selectedMeal.id != null &&
       !window.confirm(
         `Change '${capitilize(
