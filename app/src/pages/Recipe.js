@@ -691,6 +691,14 @@ function ViewRecipe() {
                         </>
                       ) : null}
                     </>
+                    {/* Id */}
+                    <>
+                      <div className="recipe-recipeSection-recipe-separator" />
+                      <p className="recipe-recipeSection-recipe-category">ID</p>
+                      <p className="recipe-recipeSection-recipe-notes">
+                        {currentRecipe.id}
+                      </p>
+                    </>
                   </div>
                 </div>
                 {/* Options */}
