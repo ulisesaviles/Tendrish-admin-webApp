@@ -286,46 +286,50 @@ function Profiles() {
                   </>
                   {/* Password */}
                   <>
-                    <h4 className="profiles-popup-input-name">
-                      {strings.popups[popupType].password.title[theme.lang]}
-                    </h4>
-                    <input
-                      className="input profiles-popup-input"
-                      placeholder={
-                        strings.popups[popupType].password.placeHolder[
-                          theme.lang
-                        ]
-                      }
-                      value={newAdmin.password.value}
-                      type={newAdmin.password.hidden ? "password" : "text"}
-                      onChange={(event) =>
-                        setNewAdmin({
-                          ...newAdmin,
-                          password: {
-                            ...newAdmin.password,
-                            value: event.target.value,
-                          },
-                        })
-                      }
-                    />
-                    <p
-                      className="profiles-showPassword"
-                      onClick={() =>
-                        setNewAdmin({
-                          ...newAdmin,
-                          password: {
-                            ...newAdmin.password,
-                            hidden: !newAdmin.password.hidden,
-                          },
-                        })
-                      }
-                    >
-                      {
-                        strings.popups[popupType].password[
-                          !newAdmin.password.hidden ? "hide" : "show"
-                        ][theme.lang]
-                      }
-                    </p>
+                    {popupType === "add" ? (
+                      <>
+                        <h4 className="profiles-popup-input-name">
+                          {strings.popups[popupType].password.title[theme.lang]}
+                        </h4>
+                        <input
+                          className="input profiles-popup-input"
+                          placeholder={
+                            strings.popups[popupType].password.placeHolder[
+                              theme.lang
+                            ]
+                          }
+                          value={newAdmin.password.value}
+                          type={newAdmin.password.hidden ? "password" : "text"}
+                          onChange={(event) =>
+                            setNewAdmin({
+                              ...newAdmin,
+                              password: {
+                                ...newAdmin.password,
+                                value: event.target.value,
+                              },
+                            })
+                          }
+                        />
+                        <p
+                          className="profiles-showPassword"
+                          onClick={() =>
+                            setNewAdmin({
+                              ...newAdmin,
+                              password: {
+                                ...newAdmin.password,
+                                hidden: !newAdmin.password.hidden,
+                              },
+                            })
+                          }
+                        >
+                          {
+                            strings.popups[popupType].password[
+                              !newAdmin.password.hidden ? "hide" : "show"
+                            ][theme.lang]
+                          }
+                        </p>
+                      </>
+                    ) : null}
                   </>
                   {/* Name */}
                   <>

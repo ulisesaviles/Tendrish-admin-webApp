@@ -23,9 +23,9 @@ import { useHistory } from "react-router-dom";
 // import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 
 const Login = () => {
-  // Conatants
+  // Constants
   const [logo, setLogo] = useState(lightLogo);
-  const [submited, setSubmited] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const theme = getTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +35,20 @@ const Login = () => {
 
   // Functions
   const handleForgotPass = async () => {
-    alert(strings.forgotPasswordAlert[theme.lang]);
+    const email = prompt(strings.forgotPasswordInput[theme.lang]);
+    try {
+      await axios({
+        method: "post",
+        url: "https://us-central1-tendrishh.cloudfunctions.net/server",
+        data: {
+          method: "forgotPassword",
+          email,
+        },
+      }).catch((e) => alert(strings.noSuchEmail[theme.lang]));
+    } catch (e) {
+      alert(strings.noSuchEmail[theme.lang]);
+    }
+    alert(strings.forgotPasswordAlert[theme.lang](email));
   };
 
   const handleSignIn = async () => {
@@ -60,11 +73,11 @@ const Login = () => {
         return;
       }
 
-      setSubmited(false);
+      setSubmitted(false);
       setError(strings.error[theme.lang]);
     } catch (error) {
       setError(strings.error[theme.lang]);
-      setSubmited(false);
+      setSubmitted(false);
     }
   };
 
@@ -111,7 +124,7 @@ const Login = () => {
             onKeyUp={(event) => {
               if (event.key === "Enter") {
                 event.preventDefault();
-                setSubmited(true);
+                setSubmitted(true);
                 handleSignIn();
               }
             }}
@@ -136,9 +149,9 @@ const Login = () => {
 
         {/* Login */}
         <div
-          className={submited ? "sign-in-btn btn submited" : "sign-in-btn btn"}
+          className={submitted ? "sign-in-btn btn submited" : "sign-in-btn btn"}
           onClick={() => {
-            setSubmited(true);
+            setSubmitted(true);
             handleSignIn();
           }}
         >
@@ -148,7 +161,7 @@ const Login = () => {
         {/* Forgot pass */}
         <p
           className={
-            submited
+            submitted
               ? "submited login-forgot-password"
               : "login-forgot-password"
           }
